@@ -151,26 +151,26 @@ Required baby proportions:
 
 STRICT MARKING AND PATTERN CLONING (HIGHEST PRIORITY):
 The baby must look like the EXACT SAME INDIVIDUAL as the adult, just younger.
-You must preserve the EXACT placement and boundaries of all color patches.
+Preserve the EXACT placement and boundaries of all color patches.
+• If the pet has black covering the entire upper face down to below the eyes, the baby must have the same.
+• If there's a small black patch on the right front leg, the baby must have it in the same location.
+• Only make the features more juvenile (bigger eyes, rounder proportions, fluffier fur) - do NOT change where colors are located on the body.
 
-CRITICAL CHECKS:
+CRITICAL PATTERN CHECKS:
 1. FACIAL MARKINGS:
    - Look at exactly where the fur color changes on the face.
-   - If the pet has black covering the entire upper face down to below the eyes, the baby MUST have the same.
+   - Do NOT raise or lower the color boundaries (e.g. do not turn a "mask" into a "hat").
    - If there is a white stripe on the nose, observe its exact width and shape.
    - If the chin is white, the baby's chin must be white.
-   - Do NOT raise or lower the color boundaries (e.g. do not turn a "mask" into a "hat").
 
 2. BODY MARKINGS:
-   - If there is a small black patch on the right front leg, the baby must have it in the same location.
    - If the chest is white, the baby's chest must be white.
+   - Any asymmetry in the original markings must be preserved in the baby version.
 
 3. NO "BEAUTIFICATION":
    - Do not make markings symmetrical if they are not.
    - Do not add "cute" generic patterns (like white socks or a perfect blaze) if the original doesn't have them.
    - Keep messy, unique, or asymmetrical patterns exactly as they are.
-
-Only make the features more juvenile (bigger eyes, rounder proportions, fluffier fur) - do NOT change where colors are located on the body.
 
 Style requirement:
 • Photorealistic textures and lighting
