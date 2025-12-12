@@ -235,12 +235,12 @@ function App() {
         <div className="flex-1 flex flex-col items-center justify-center space-y-10 animate-fade-in min-h-[500px]">
            {/* Intro Section */}
           <section className="text-center max-w-2xl mx-auto px-2">
-            <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-              See your pet as a <br className="hidden md:block" />
+            <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+              See Your Pet as a <br className="hidden md:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-600">
-                tiny baby again
+                Tiny Baby Again
               </span>
-            </h2>
+            </h1>
             <p className="text-lg text-gray-600 font-light">
               Upload a photo, tell us its name, and see it reimagined as an adorable baby.
             </p>
@@ -261,11 +261,37 @@ function App() {
             />
           </section>
 
-           {/* Placeholder Art for empty state visuals */}
-           <div className="flex space-x-6 opacity-30 select-none">
-              <div className="w-24 h-24 bg-gray-200 rounded-2xl rotate-[-6deg]"></div>
-              <div className="w-24 h-24 bg-gray-200 rounded-2xl rotate-[6deg] -mt-4"></div>
-           </div>
+          {/* SEO Content: How it Works */}
+          <section className="max-w-4xl mx-auto px-6 py-12 border-t border-gray-100">
+             <h2 className="font-display text-2xl font-bold text-gray-800 mb-8 text-center">How to Turn Your Pet into a Baby</h2>
+             <div className="grid md:grid-cols-3 gap-8">
+                <div className="text-center">
+                   <div className="w-12 h-12 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">1</div>
+                   <h3 className="font-bold text-gray-900 mb-2">Upload Photo</h3>
+                   <p className="text-gray-600 text-sm">Select a clear, front-facing photo of your dog, cat, or any pet.</p>
+                </div>
+                <div className="text-center">
+                   <div className="w-12 h-12 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">2</div>
+                   <h3 className="font-bold text-gray-900 mb-2">AI Magic</h3>
+                   <p className="text-gray-600 text-sm">Our advanced AI analyzes your pet's features and regresses their age.</p>
+                </div>
+                <div className="text-center">
+                   <div className="w-12 h-12 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">3</div>
+                   <h3 className="font-bold text-gray-900 mb-2">Meet the Baby</h3>
+                   <p className="text-gray-600 text-sm">Instantly see and download your adorable baby pet photo!</p>
+                </div>
+             </div>
+          </section>
+
+          {/* SEO Content: Why Use BabyPets */}
+          <section className="max-w-3xl mx-auto px-6 pb-12 text-center">
+             <h2 className="font-display text-2xl font-bold text-gray-800 mb-4">Why Use Our AI Pet Baby Generator?</h2>
+             <p className="text-gray-600 leading-relaxed">
+               BabyPets.ai is the easiest way to see your <strong>cat as a kitten</strong> or your <strong>dog as a puppy</strong> again. 
+               Whether you have a rescue pet whose baby photos you missed, or you just want to see a cute reimagining of your best friend, 
+               our <strong>free AI pet transformation</strong> tool creates high-quality, adorable results in seconds.
+             </p>
+          </section>
         </div>
       );
     }
@@ -320,11 +346,7 @@ function App() {
                       </>
                   )}
                 </button>
-                {!allNamesFilled && (
-                    <p className="text-red-500 text-sm mt-2 font-medium animate-pulse bg-red-50 px-3 py-1 rounded-full text-center">
-                        Please name your pet to continue
-                    </p>
-                )}
+                {/* Redundant error message removed as per user request */}
               </>
             )}
 

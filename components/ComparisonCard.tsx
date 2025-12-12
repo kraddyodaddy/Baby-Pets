@@ -216,29 +216,29 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   const renderResultState = () => {
     if (!result || result.status === 'idle') {
       return (
-        <div className="text-center p-6">
-          <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-brand-300">
-            <MagicIcon className="w-6 h-6" />
+        <div className="text-center p-4">
+          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm text-brand-300">
+            <MagicIcon className="w-5 h-5" />
           </div>
-          <p className="text-brand-800/60 font-medium text-sm">Ready to transform</p>
+          <p className="text-brand-800/60 font-medium text-xs leading-tight">Ready to<br/>transform</p>
         </div>
       );
     }
     if (isQueued) {
       return (
-        <div className="flex flex-col items-center justify-center p-8 text-center w-full animate-pulse">
-          <div className="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mb-3 shadow-sm text-yellow-500">
-            <ClockIcon className="w-6 h-6" />
+        <div className="flex flex-col items-center justify-center p-4 text-center w-full animate-pulse">
+          <div className="w-10 h-10 bg-yellow-100 rounded-full flex items-center justify-center mb-2 shadow-sm text-yellow-500">
+            <ClockIcon className="w-5 h-5" />
           </div>
-          <h3 className="text-yellow-700 font-bold text-base mb-1">High demand</h3>
-          <p className="text-yellow-600 font-medium text-xs">Your baby pet will be ready soon.</p>
+          <h3 className="text-yellow-700 font-bold text-sm mb-1">Queueing</h3>
+          <p className="text-yellow-600 font-medium text-[10px] leading-tight">Waiting for slot...</p>
         </div>
       );
     }
     if (isLoading) {
       return (
-        <div className="flex flex-col items-center justify-center p-6 text-center w-full max-w-[80%]">
-          <div className="w-full bg-white rounded-full h-2 mb-4 overflow-hidden shadow-inner border border-gray-100">
+        <div className="flex flex-col items-center justify-center p-4 text-center w-full max-w-[90%]">
+          <div className="w-full bg-white rounded-full h-1.5 mb-3 overflow-hidden shadow-inner border border-gray-100">
             <div 
               className="bg-gradient-to-r from-brand-300 to-brand-500 h-full rounded-full transition-all duration-300 ease-out relative" 
               style={{ width: `${progress}%` }}
@@ -246,7 +246,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
               <div className="absolute inset-0 bg-white/20 animate-[pulse_2s_infinite]"></div>
             </div>
           </div>
-          <p className="text-brand-600 font-display font-medium text-base animate-pulse min-h-[24px] transition-all duration-500">
+          <p className="text-brand-600 font-display font-medium text-xs animate-pulse leading-tight">
             {currentMessage}
           </p>
         </div>
@@ -254,12 +254,12 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
     }
     if (isError) {
       return (
-        <div className="text-center p-6 text-red-500 flex flex-col items-center justify-center h-full w-full">
-          <div className="bg-red-50 p-2 rounded-full mb-2">
-            <XMarkIcon className="w-5 h-5" />
+        <div className="text-center p-4 text-red-500 flex flex-col items-center justify-center h-full w-full">
+          <div className="bg-red-50 p-2 rounded-full mb-1">
+            <XMarkIcon className="w-4 h-4" />
           </div>
-          <p className="text-xs font-bold mb-1 text-gray-800">Transformation Issue</p>
-          <p className="text-xs text-gray-600 px-4 leading-relaxed max-w-xs">{result.error || "Transformation failed."}</p>
+          <p className="text-[10px] font-bold mb-1 text-gray-800">Failed</p>
+          <p className="text-[10px] text-gray-600 leading-tight max-w-xs">{result.error || "Error"}</p>
         </div>
       );
     }
@@ -276,17 +276,18 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   };
 
   const renderNameInput = () => (
-    <div className="w-full">
-      <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
-        Pet Name <span className="text-red-500">*</span>
+    <div className="w-full animate-fade-in-up">
+      <label className="block text-sm font-extrabold text-gray-700 mb-2">
+        What's your pet's name? <span className="text-brand-500">*</span>
       </label>
       <input 
         type="text" 
         value={upload.petName}
         onChange={(e) => onNameChange(upload.id, e.target.value)}
-        placeholder="e.g. Fluffy"
+        placeholder="Enter name (e.g. Fluffy)"
         required
-        className="w-full text-base md:text-lg px-3 py-2 md:py-1.5 rounded-lg border border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all placeholder:text-gray-400"
+        autoFocus={!upload.petName} // Auto focus if name is empty
+        className="w-full text-lg px-4 py-3 rounded-xl border-2 border-brand-200 focus:border-brand-500 focus:ring-4 focus:ring-brand-100 outline-none transition-all placeholder:text-gray-300 bg-white shadow-sm"
         disabled={isLoading || isSuccess || isQueued} 
       />
     </div>
@@ -320,7 +321,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
         <div className="flex space-x-2 justify-between w-full xs:w-auto">
           <button onClick={() => handleShare('Facebook')} disabled={isSharing} className="p-2 text-blue-600 bg-white hover:bg-blue-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><FacebookIcon className="w-5 h-5" /></button>
           <button onClick={() => handleShare('Instagram')} disabled={isSharing} className="p-2 text-pink-600 bg-white hover:bg-pink-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><InstagramIcon className="w-5 h-5" /></button>
-          <button onClick={() => handleShare('Twitter')} disabled={isSharing} className="p-2 text-gray-800 bg-white hover:bg-gray-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><TwitterIcon className="w-5 h-5" /></button>
+          <button onClick={() => handleShare('Twitter')} disabled={isSharing} className="p-2 text-gray-800 bg-white hover:bg-gray-100 rounded-lg transition-colors shadow-sm"><TwitterIcon className="w-5 h-5" /></button>
           <button onClick={() => handleShare('TikTok')} disabled={isSharing} className="p-2 text-black bg-white hover:bg-gray-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><TikTokIcon className="w-5 h-5" /></button>
           <button onClick={() => handleShare('Reddit')} disabled={isSharing} className="p-2 text-orange-600 bg-white hover:bg-orange-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><RedditIcon className="w-5 h-5" /></button>
         </div>
@@ -366,8 +367,9 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
           2. Controls Column (Flow below images)
          ================================================================================= */}
       <div className="flex flex-col w-full md:hidden">
-        {/* 1. Side-by-Side Images - Use sufficient height to show content */}
-        <div className="flex flex-row w-full h-64 xs:h-72 sm:h-96 border-b border-gray-100">
+        {/* 1. Side-by-Side Images - Height optimized for small screens (iPhone SE) */}
+        {/* Reduced height from h-64/96 to h-52 (208px) to h-64 max to allow space for input */}
+        <div className="flex flex-row w-full h-52 xs:h-64 sm:h-80 border-b border-gray-100">
            {/* Left: Original */}
            <div className="w-1/2 relative border-r border-gray-100 bg-gray-50">
              <img src={upload.previewUrl} alt="Original" className="w-full h-full object-cover" />
@@ -480,4 +482,4 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
 
     </div>
   );
-};
+}
