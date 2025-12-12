@@ -215,7 +215,7 @@ function App() {
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-100 shrink-0 h-16 flex items-center z-50">
         <div className="max-w-5xl mx-auto px-4 flex-1 flex items-center justify-between">
           <div className="flex items-center space-x-2">
-            <span className="text-2xl pt-1">🐶🐱</span>
+            <span className="text-2xl pt-1">🐶🐱🐷</span>
             <h1 className="font-display text-2xl font-bold text-gray-900 tracking-tight">Baby<span className="text-brand-500">Pets</span></h1>
           </div>
           <div className="text-sm text-gray-500 hidden sm:block">
