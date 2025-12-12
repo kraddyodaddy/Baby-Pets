@@ -5,6 +5,7 @@ import { ComparisonCard } from './components/ComparisonCard';
 import { Footer } from './components/Footer';
 import { TermsPage, PrivacyPage, FAQPage, ContactPage, AboutPage } from './components/Legal';
 import { GalleryPage } from './components/Gallery';
+import { Showcase } from './components/Examples';
 import { generateBabyPet } from './services/geminiService';
 import type { UploadedImage, TransformationResult } from './types';
 import { MagicIcon } from './components/Icons';
@@ -236,9 +237,9 @@ function App() {
       return (
         <div className="flex-1 w-full flex flex-col animate-fade-in">
            {/* Top Section: Intro + Uploader */}
-           <div className="w-full max-w-5xl mx-auto px-4 pt-10 pb-16 flex flex-col items-center space-y-10 min-h-[400px] justify-center">
+           <div className="w-full max-w-7xl mx-auto px-4 pt-10 pb-8 flex flex-col items-center space-y-2 min-h-[300px] justify-center">
               {/* Intro Section */}
-              <section className="text-center max-w-2xl mx-auto">
+              <section className="text-center max-w-2xl mx-auto mb-10">
                 <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
                   See Your Pet as a <br className="hidden md:block" />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-600">
@@ -248,50 +249,26 @@ function App() {
                 <p className="text-lg text-gray-600 font-light">
                   Upload a photo, tell us its name, and see it reimagined as an adorable baby pet.
                 </p>
-                <p className="text-md text-gray-500 mt-2 font-medium">
-                  (Works best with clear photos of a single pet.)
-                </p>
                 <div className="mt-2 text-xs text-gray-400">
                   Daily Usage: {usageCount} / {MAX_DAILY_GENERATIONS}
                 </div>
               </section>
 
               {/* Upload Section */}
-              <section className="max-w-xl mx-auto w-full">
+              <section className="max-w-xl mx-auto w-full mb-12">
                 <Uploader 
                   onFilesSelected={handleFilesSelected} 
                   count={uploads.length} 
                   disabled={isProcessing}
                 />
               </section>
+
+              {/* Showcase Section - Now Below Upload */}
+              <Showcase />
            </div>
 
-           {/* SEO Content: How it Works - Full Width Bar */}
-           <section className="w-full bg-white border-y border-gray-100 py-8">
-             <div className="max-w-3xl mx-auto px-4">
-               <h2 className="font-display text-lg font-bold text-gray-800 mb-5 text-center">How to See Your Pet as a Baby</h2>
-               <div className="grid grid-cols-3 gap-4 md:gap-8">
-                  <div className="text-center">
-                     <div className="w-8 h-8 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold shadow-sm">1</div>
-                     <h3 className="font-bold text-gray-900 text-xs mb-1">Upload Photo</h3>
-                     <p className="text-gray-500 text-[10px] leading-tight max-w-[150px] mx-auto">Select a clear, front-facing photo of your pet.</p>
-                  </div>
-                  <div className="text-center">
-                     <div className="w-8 h-8 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold shadow-sm">2</div>
-                     <h3 className="font-bold text-gray-900 text-xs mb-1">AI Magic</h3>
-                     <p className="text-gray-500 text-[10px] leading-tight max-w-[150px] mx-auto">Our advanced AI analyzes features and regresses age.</p>
-                  </div>
-                  <div className="text-center">
-                     <div className="w-8 h-8 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold shadow-sm">3</div>
-                     <h3 className="font-bold text-gray-900 text-xs mb-1">Meet Your Baby Pet!</h3>
-                     <p className="text-gray-500 text-[10px] leading-tight max-w-[150px] mx-auto">Instantly see and download your adorable baby pet!</p>
-                  </div>
-               </div>
-             </div>
-           </section>
-
            {/* SEO Content: Why Use BabyPets */}
-           <section className="w-full max-w-3xl mx-auto px-6 pt-16 pb-12 text-center">
+           <section className="w-full max-w-3xl mx-auto px-6 pt-12 pb-12 text-center border-t border-gray-100">
              <h2 className="font-display text-2xl font-bold text-gray-800 mb-4">Why Use Our AI Baby Pet Generator?</h2>
              <p className="text-gray-600 leading-relaxed">
                BabyPets.ai is the easiest way to see your <strong>cat as a kitten</strong> or your <strong>dog as a puppy</strong> again. 
