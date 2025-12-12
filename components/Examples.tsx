@@ -22,14 +22,14 @@ export const Showcase = () => {
                     <div key={index} className="flex flex-col items-center group w-full">
                         {/* 
                            Image Container: 
-                           - Reduced vertical padding (py-1) to make top/bottom border thinner by half compared to sides (px-2)
-                           - px-2 is same as previous p-2 (0.5rem), py-1 is 0.25rem
+                           - Used p-1.5 for a narrow, uniform white border on all sides.
+                           - Used object-cover to make the image fill the square, cropping edges if needed to maximize size.
                         */}
-                        <div className="w-full aspect-square bg-white rounded-3xl shadow-md overflow-hidden transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-xl px-2 py-1 flex items-center justify-center">
+                        <div className="w-full aspect-square bg-white rounded-3xl shadow-md overflow-hidden transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-xl p-1.5 flex items-center justify-center">
                             <img 
                                 src={item.src} 
                                 alt={item.alt} 
-                                className="w-full h-full object-contain rounded-2xl" 
+                                className="w-full h-full object-cover rounded-2xl" 
                             />
                         </div>
                         <h3 className="mt-4 font-display font-bold text-white text-lg drop-shadow-md tracking-wide">{item.name}</h3>
