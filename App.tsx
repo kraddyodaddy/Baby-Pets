@@ -210,7 +210,7 @@ function App() {
   const isUploadMode = uploads.length > 0;
 
   return (
-    <div className={`flex flex-col font-sans text-gray-800 bg-[#fafaf9] ${isUploadMode ? 'h-[100dvh] overflow-hidden' : 'min-h-screen'}`}>
+    <div className={`flex flex-col font-sans text-gray-800 bg-[#fafaf9] ${isUploadMode ? 'h-[100dvh]' : 'min-h-screen'}`}>
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-100 shrink-0 h-16 flex items-center z-50">
         <div className="max-w-5xl mx-auto px-4 flex-1 flex items-center justify-between">
@@ -265,11 +265,11 @@ function App() {
              </div>
           </div>
         ) : (
-          /* UPLOAD MODE: Workspace (No Scroll on desktop, but flexible on mobile) */
+          /* UPLOAD MODE: Workspace */
           <div className="flex-1 flex flex-col items-center h-full w-full py-2 md:py-4 animate-fade-in">
              
-             {/* Card Container: Flex to take available space */}
-             <div className="flex-1 w-full min-h-0 flex flex-col justify-center max-h-full px-1 md:px-0">
+             {/* Card Container: Allow scroll on mobile via overflow-y-auto */}
+             <div className="flex-1 w-full min-h-0 flex flex-col justify-start md:justify-center max-h-full px-1 md:px-0 overflow-y-auto md:overflow-hidden scroll-smooth">
                {uploads.map(upload => (
                   <ComparisonCard 
                     key={upload.id} 
@@ -279,13 +279,13 @@ function App() {
                     onNameChange={handleNameChange}
                     onRegenerate={handleRegenerate}
                     isLimitReached={isLimitReached}
-                    className="h-full shadow-lg border border-gray-200"
+                    className="h-auto md:h-full shadow-lg border border-gray-200 shrink-0 mb-20 md:mb-0" // mb-20 provides space for bottom bar on mobile scroll
                   />
                ))}
              </div>
 
              {/* Action Bar: Fixed at bottom */}
-             <div className="shrink-0 flex flex-col items-center justify-center w-full mt-2 md:mt-4 pb-2 z-20 px-4 md:px-0">
+             <div className="shrink-0 flex flex-col items-center justify-center w-full mt-2 md:mt-4 pb-2 z-20 px-4 md:px-0 bg-[#fafaf9] md:bg-transparent">
                 {isLimitReached ? (
                   <div className="bg-gray-100 border border-gray-200 text-gray-600 px-6 py-3 rounded-full font-medium text-sm md:text-base text-center shadow-sm w-full md:w-auto">
                     Daily limit reached. Come back tomorrow.
