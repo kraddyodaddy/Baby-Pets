@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Uploader } from './components/Uploader';
 import { ComparisonCard } from './components/ComparisonCard';
 import { generateBabyPet } from './services/geminiService';
-import { UploadedImage, TransformationResult } from './types';
+import type { UploadedImage, TransformationResult } from './types';
 import { MagicIcon } from './components/Icons';
 
 const MAX_DAILY_GENERATIONS = 2;
@@ -57,22 +57,30 @@ function App() {
 
     const processItem = async () => {
       // Set status to loading
-      setResults(prev => ({
-        ...prev,
-        [itemToProcess.id]: { ...prev[itemToProcess.id], status: 'loading' }
-      }));
+      setResults((prev: Record<string, TransformationResult>) => {
+        const current = prev[itemToProcess.id];
+        // Ensure we preserve existing data or provide defaults to match TransformationResult type
+        const loadingState: TransformationResult = current 
+            ? { ...current, status: 'loading' }
+            : { originalId: itemToProcess.id, generatedImageUrl: null, status: 'loading' };
+            
+        return {
+            ...prev,
+            [itemToProcess.id]: loadingState
+        };
+      });
 
       const upload = uploads.find(u => u.id === itemToProcess.id);
       if (upload) {
         try {
           const generatedImage = await generateBabyPet(upload.file, upload.petName, itemToProcess.styleVariant);
-          setResults(prev => ({
+          setResults((prev: Record<string, TransformationResult>) => ({
             ...prev,
             [itemToProcess.id]: { originalId: itemToProcess.id, generatedImageUrl: generatedImage, status: 'success' }
           }));
           incrementUsage();
         } catch (err: any) {
-          setResults(prev => ({
+          setResults((prev: Record<string, TransformationResult>) => ({
             ...prev,
             [itemToProcess.id]: { 
               originalId: itemToProcess.id, 
@@ -123,7 +131,7 @@ function App() {
     ));
   }, []);
 
-  const handleStartOver = useCallback(() => {
+  const handleStartOver = useCallback((id?: string) => {
     setUploads([]);
     setResults({});
     setQueue([]);
@@ -137,7 +145,8 @@ function App() {
 
     // Find items that are pending (not successful, loading, or already queued)
     const pendingItems = uploads.filter(u => {
-      const status = results[u.id]?.status;
+      const result = results[u.id];
+      const status = result?.status;
       // Check if already in queue or processing
       const isInQueue = queue.some(item => item.id === u.id);
       return status !== 'success' && status !== 'loading' && !isInQueue;
@@ -151,7 +160,7 @@ function App() {
     }
 
     // Add to queue and set status to 'queued'
-    setResults(prev => {
+    setResults((prev: Record<string, TransformationResult>) => {
       const next = { ...prev };
       pendingItems.forEach(u => {
         next[u.id] = { originalId: u.id, generatedImageUrl: null, status: 'queued' };
@@ -170,23 +179,32 @@ function App() {
     if (!upload) return;
 
     // Set status to queued
-    setResults(prev => ({
-      ...prev,
-      [id]: { ...prev[id], status: 'queued', error: undefined }
-    }));
+    setResults((prev: Record<string, TransformationResult>) => {
+      const existing = prev[id];
+      // Safely construct the queued state even if existing result is undefined
+      const updated: TransformationResult = existing
+        ? { ...existing, status: 'queued', error: undefined }
+        : { originalId: id, generatedImageUrl: null, status: 'queued' };
+
+      return {
+        ...prev,
+        [id]: updated
+      };
+    });
 
     // Add to queue
     setQueue(prev => [...prev, { id, styleVariant }]);
   };
 
   const hasPendingItems = uploads.some(u => {
-    const status = results[u.id]?.status;
+    const result = results[u.id];
+    const status = result?.status;
     const isInQueue = queue.some(item => item.id === u.id);
     return status !== 'success' && status !== 'loading' && status !== 'queued' && !isInQueue;
   });
   
   const allNamesFilled = uploads.length > 0 && uploads.every(u => u.petName.trim().length > 0);
-  const hasSuccess = Object.values(results).some(r => r.status === 'success');
+  const hasSuccess = Object.values(results).some((r: TransformationResult) => r.status === 'success');
   const isProcessing = activeRequests > 0 || queue.length > 0;
   
   const isUploadMode = uploads.length > 0;
@@ -213,7 +231,7 @@ function App() {
         {!isUploadMode ? (
           <div className="flex-1 flex flex-col items-center justify-center space-y-10 animate-fade-in min-h-[500px]">
              {/* Intro Section */}
-            <section className="text-center max-w-2xl mx-auto">
+            <section className="text-center max-w-2xl mx-auto px-2">
               <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
                 See your pet as a <br className="hidden md:block" />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-600">
@@ -232,7 +250,7 @@ function App() {
             </section>
 
             {/* Upload Section */}
-            <section className="max-w-xl mx-auto w-full">
+            <section className="max-w-xl mx-auto w-full px-2">
               <Uploader 
                 onFilesSelected={handleFilesSelected} 
                 count={uploads.length} 
@@ -247,11 +265,11 @@ function App() {
              </div>
           </div>
         ) : (
-          /* UPLOAD MODE: Workspace (No Scroll) */
-          <div className="flex-1 flex flex-col items-center h-full w-full py-4 animate-fade-in">
+          /* UPLOAD MODE: Workspace (No Scroll on desktop, but flexible on mobile) */
+          <div className="flex-1 flex flex-col items-center h-full w-full py-2 md:py-4 animate-fade-in">
              
              {/* Card Container: Flex to take available space */}
-             <div className="flex-1 w-full min-h-0 flex flex-col justify-center max-h-full">
+             <div className="flex-1 w-full min-h-0 flex flex-col justify-center max-h-full px-1 md:px-0">
                {uploads.map(upload => (
                   <ComparisonCard 
                     key={upload.id} 
@@ -267,9 +285,9 @@ function App() {
              </div>
 
              {/* Action Bar: Fixed at bottom */}
-             <div className="shrink-0 flex flex-col items-center justify-center w-full mt-4 pb-2 z-20">
+             <div className="shrink-0 flex flex-col items-center justify-center w-full mt-2 md:mt-4 pb-2 z-20 px-4 md:px-0">
                 {isLimitReached ? (
-                  <div className="bg-gray-100 border border-gray-200 text-gray-600 px-6 py-3 rounded-full font-medium text-sm md:text-base text-center shadow-sm">
+                  <div className="bg-gray-100 border border-gray-200 text-gray-600 px-6 py-3 rounded-full font-medium text-sm md:text-base text-center shadow-sm w-full md:w-auto">
                     Daily limit reached. Come back tomorrow.
                   </div>
                 ) : (
@@ -278,7 +296,7 @@ function App() {
                       onClick={handleTransformAll}
                       disabled={!hasPendingItems || !allNamesFilled}
                       className={`
-                        group relative flex items-center space-x-3 px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5
+                        group relative flex items-center justify-center space-x-3 px-8 py-4 md:py-3 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 w-full md:w-auto
                         ${!hasPendingItems || !allNamesFilled
                           ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none' 
                           : 'bg-gradient-to-r from-brand-500 to-brand-600 text-white hover:brightness-110'
@@ -298,7 +316,7 @@ function App() {
                       )}
                     </button>
                     {!allNamesFilled && (
-                        <p className="text-red-500 text-sm mt-2 font-medium animate-pulse bg-red-50 px-3 py-1 rounded-full">
+                        <p className="text-red-500 text-sm mt-2 font-medium animate-pulse bg-red-50 px-3 py-1 rounded-full text-center">
                             Please name your pet to continue
                         </p>
                     )}
@@ -307,8 +325,8 @@ function App() {
 
                 {hasSuccess && !isProcessing && (
                   <button
-                    onClick={handleStartOver}
-                    className="mt-3 flex items-center space-x-2 px-6 py-2 bg-white text-gray-500 border border-gray-200 rounded-full hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200 transition-all shadow-sm font-medium text-sm"
+                    onClick={() => handleStartOver()}
+                    className="mt-3 flex items-center justify-center space-x-2 px-6 py-3 md:py-2 bg-white text-gray-500 border border-gray-200 rounded-full hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200 transition-all shadow-sm font-medium text-sm w-full md:w-auto"
                   >
                     <span>See another pet baby</span>
                   </button>

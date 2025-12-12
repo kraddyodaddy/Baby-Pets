@@ -1,14 +1,5 @@
 import { GoogleGenAI } from "@google/genai";
 
-const getGeminiClient = () => {
-  const apiKey = process.env.API_KEY;
-  if (!apiKey) {
-    console.error("API_KEY is missing from environment variables");
-    throw new Error("API Key is missing. Please check your configuration.");
-  }
-  return new GoogleGenAI({ apiKey });
-};
-
 // Helper to convert File to Base64
 const fileToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
@@ -61,7 +52,7 @@ const getRandomPastelColor = () => {
 };
 
 export const generateBabyPet = async (imageFile: File, petName?: string, styleInstruction?: string): Promise<string> => {
-  const ai = getGeminiClient();
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const base64Data = await fileToBase64(imageFile);
   
   // Calculate aspect ratio to maintain image shape

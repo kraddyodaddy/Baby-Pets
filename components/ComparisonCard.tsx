@@ -16,12 +16,33 @@ interface ComparisonCardProps {
 }
 
 const LOADING_MESSAGES = [
-  'Baby pets incoming...',
+  'Baby pets incoming soon...',
   'Get ready to see your angel as a baby...',
   'Preparing extra cute fluff...',
   'Almost there, do the cute pet voice...',
   'Turning your best friend into a baby...',
-  'Squeal level cuteness loading...'
+  'Squeal level cuteness loading...',
+  'Sprinkling baby magic... ✨',
+  'Turning back the clock to puppy/kitten days...',
+  'Shrinking those paws...',
+  'Adding extra adorableness...',
+  'Rewinding to maximum cuteness...',
+  'Baby-fying in progress...',
+  'Unleashing the tiny version...',
+  'Making those eyes even bigger...',
+  'Fluffing up the baby fur...',
+  'Your fur baby is getting even baby-er...',
+  'Activating cuteness overload...',
+  'Time traveling to babyhood...',
+  'Preparing your heart for maximum awww...',
+  'Warning: cuteness levels rising...',
+  'Summoning the baby version...',
+  'Almost ready to melt your heart...',
+  'One second... finding their baby photos...',
+  'Teaching them how to be tiny again...',
+  'Dialing up the adorable...',
+  'Your baby is on the way!',
+  '🐶🐱🐭🐹🐰🦊🐻🐼🐨🐯🦁🐮🐷'
 ];
 
 export const ComparisonCard: React.FC<ComparisonCardProps> = ({ 
@@ -48,8 +69,9 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
 
     if (isLoading) {
       setProgress(5); // Start with a little progress
-      setCurrentMessage(LOADING_MESSAGES[0]);
-      let msgIndex = 0;
+      
+      // Pick a random start message
+      setCurrentMessage(LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)]);
 
       // Progress bar simulation: approach 95% over time
       progressInterval = setInterval(() => {
@@ -61,10 +83,10 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
         });
       }, 400);
 
-      // Cycle messages every 2.5 seconds to ensure at least ~3 are shown in a typical 8-10s wait
+      // Cycle messages randomly every 2.5 seconds
       messageInterval = setInterval(() => {
-        msgIndex = (msgIndex + 1) % LOADING_MESSAGES.length;
-        setCurrentMessage(LOADING_MESSAGES[msgIndex]);
+        const randomIndex = Math.floor(Math.random() * LOADING_MESSAGES.length);
+        setCurrentMessage(LOADING_MESSAGES[randomIndex]);
       }, 2500);
 
     } else {
@@ -94,8 +116,6 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       };
 
       // 2. Try native share
-      // We explicitly check if the browser can share the *files* array.
-      // Many desktop browsers have navigator.share but do NOT support files, returning false here.
       let canNativeShare = false;
       if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
         canNativeShare = true;
@@ -107,13 +127,11 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
         throw new Error('Native file share not supported');
       }
     } catch (error: any) {
-      // If user cancelled the native share dialog, don't show fallback
       if (error.name === 'AbortError') {
         setIsSharing(false);
         return;
       }
 
-      // 3. Fallback: Open in new tab for manual saving/sharing
       const imageWindow = window.open("", "_blank");
       if (imageWindow) {
         imageWindow.document.write(`
@@ -146,17 +164,18 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
 
   return (
     <div className={`bg-white rounded-2xl overflow-hidden relative group flex flex-col md:flex-row ${className}`}>
-      {/* Remove Button */}
+      {/* Remove Button - Larger touch target */}
       <button 
         onClick={() => onRemove(upload.id)}
-        className="absolute top-2 right-2 md:left-2 md:right-auto z-30 bg-white/80 hover:bg-white text-gray-500 hover:text-red-500 p-1.5 rounded-full shadow-sm backdrop-blur-sm transition-colors"
+        className="absolute top-2 right-2 md:left-2 md:right-auto z-30 bg-white/80 hover:bg-white text-gray-500 hover:text-red-500 p-3 rounded-full shadow-sm backdrop-blur-sm transition-colors focus:outline-none focus:ring-2 focus:ring-red-500"
         title="Remove photo"
+        aria-label="Remove photo"
       >
-        <XMarkIcon className="w-4 h-4" />
+        <XMarkIcon className="w-5 h-5" />
       </button>
 
       {/* LEFT SIDE (Mobile: Top Half) - Original Image & Input */}
-      <div className="flex flex-col md:w-1/2 h-1/2 md:h-full border-b md:border-b-0 md:border-r border-gray-100 relative">
+      <div className="flex flex-col flex-1 md:h-full border-b md:border-b-0 md:border-r border-gray-100 relative min-h-0">
         {/* Original Image Container */}
         <div className="relative flex-1 min-h-0 bg-gray-50 overflow-hidden">
           <img 
@@ -169,7 +188,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
           </div>
         </div>
         
-        {/* Compact Name Input Section */}
+        {/* Compact Name Input Section - Larger text for mobile */}
         <div className="shrink-0 p-3 bg-white border-t border-gray-100 z-10">
           <label className="block text-xs font-bold text-gray-500 uppercase tracking-wide mb-1">
               Pet Name <span className="text-red-500">*</span>
@@ -180,14 +199,15 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
             onChange={(e) => onNameChange(upload.id, e.target.value)}
             placeholder="e.g. Fluffy"
             required
-            className="w-full text-[14pt] px-3 py-1.5 rounded-lg border border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all placeholder:text-gray-400"
+            /* text-base (16px) prevents iOS zoom on focus */
+            className="w-full text-base md:text-lg px-3 py-2 md:py-1.5 rounded-lg border border-gray-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all placeholder:text-gray-400"
             disabled={isLoading || isSuccess || isQueued} 
           />
         </div>
       </div>
 
       {/* RIGHT SIDE (Mobile: Bottom Half) - Result Image / Status */}
-      <div className="relative md:w-1/2 h-1/2 md:h-full bg-brand-50 flex flex-col items-center justify-center overflow-hidden">
+      <div className="relative flex-1 md:h-full bg-brand-50 flex flex-col items-center justify-center overflow-hidden min-h-0">
         {!result || result.status === 'idle' ? (
           <div className="text-center p-6">
             <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-3 shadow-sm text-brand-300">
@@ -236,54 +256,54 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
             {/* Action Buttons Overlay */}
             <div className="absolute bottom-2 left-2 right-2 md:bottom-4 md:left-4 md:right-4 flex flex-col space-y-2 z-20">
               
-              {/* Social Share Bar */}
-              <div className="bg-white/90 backdrop-blur-md rounded-xl p-1.5 shadow-lg flex items-center justify-between border border-white/50">
+              {/* Social Share Bar - Improved touch targets */}
+              <div className="bg-white/90 backdrop-blur-md rounded-xl p-2 md:p-1.5 shadow-lg flex items-center justify-between border border-white/50">
                 <span className="text-[10px] font-bold text-gray-500 px-1 uppercase tracking-wide hidden sm:block">Share:</span>
-                <div className="flex space-x-0.5 justify-around w-full sm:w-auto">
-                  <button onClick={() => handleShare('Facebook')} disabled={isSharing} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Share to Facebook">
-                    <FacebookIcon className="w-5 h-5" />
+                <div className="flex space-x-1 justify-around w-full sm:w-auto">
+                  <button onClick={() => handleShare('Facebook')} disabled={isSharing} className="p-2 md:p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors" title="Share to Facebook">
+                    <FacebookIcon className="w-5 h-5 md:w-5 md:h-5" />
                   </button>
-                  <button onClick={() => handleShare('Instagram')} disabled={isSharing} className="p-1.5 text-pink-600 hover:bg-pink-50 rounded-lg transition-colors" title="Share to Instagram">
-                    <InstagramIcon className="w-5 h-5" />
+                  <button onClick={() => handleShare('Instagram')} disabled={isSharing} className="p-2 md:p-1.5 text-pink-600 hover:bg-pink-50 rounded-lg transition-colors" title="Share to Instagram">
+                    <InstagramIcon className="w-5 h-5 md:w-5 md:h-5" />
                   </button>
-                  <button onClick={() => handleShare('Twitter')} disabled={isSharing} className="p-1.5 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors" title="Share to Twitter">
-                    <TwitterIcon className="w-5 h-5" />
+                  <button onClick={() => handleShare('Twitter')} disabled={isSharing} className="p-2 md:p-1.5 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors" title="Share to Twitter">
+                    <TwitterIcon className="w-5 h-5 md:w-5 md:h-5" />
                   </button>
-                  <button onClick={() => handleShare('TikTok')} disabled={isSharing} className="p-1.5 text-black hover:bg-gray-100 rounded-lg transition-colors" title="Share to TikTok">
-                    <TikTokIcon className="w-5 h-5" />
+                  <button onClick={() => handleShare('TikTok')} disabled={isSharing} className="p-2 md:p-1.5 text-black hover:bg-gray-100 rounded-lg transition-colors" title="Share to TikTok">
+                    <TikTokIcon className="w-5 h-5 md:w-5 md:h-5" />
                   </button>
-                  <button onClick={() => handleShare('Reddit')} disabled={isSharing} className="p-1.5 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors" title="Share to Reddit">
-                    <RedditIcon className="w-5 h-5" />
+                  <button onClick={() => handleShare('Reddit')} disabled={isSharing} className="p-2 md:p-1.5 text-orange-600 hover:bg-orange-50 rounded-lg transition-colors" title="Share to Reddit">
+                    <RedditIcon className="w-5 h-5 md:w-5 md:h-5" />
                   </button>
                 </div>
               </div>
 
-              {/* Download Button */}
+              {/* Download Button - Larger for mobile */}
               <a 
                 href={result.generatedImageUrl} 
                 download={`baby-${upload.petName || 'pet'}.png`}
-                className="bg-white/90 backdrop-blur-md hover:bg-white text-brand-600 py-2 rounded-xl shadow-lg transition-colors flex items-center justify-center font-medium text-xs md:text-sm border border-white/50"
+                className="bg-white/90 backdrop-blur-md hover:bg-white text-brand-600 py-3 md:py-2 rounded-xl shadow-lg transition-colors flex items-center justify-center font-medium text-sm md:text-sm border border-white/50 w-full"
                 title="Download Image"
               >
-                <DownloadIcon className="w-4 h-4 mr-2" />
+                <DownloadIcon className="w-5 h-5 mr-2" />
                 Download Image
               </a>
             </div>
 
             {/* Regenerate Options (Only if limit not reached) */}
             {!isLimitReached && (
-              <div className="absolute top-2 left-2 right-2 flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+              <div className="absolute top-2 left-2 right-2 flex flex-row justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
                 <button 
                   onClick={() => onRegenerate(upload.id)}
-                  className="bg-white/90 hover:bg-white text-[10px] md:text-xs font-medium text-brand-600 px-3 py-1.5 rounded-full shadow-md backdrop-blur-sm transition-transform hover:scale-105"
+                  className="bg-white/90 hover:bg-white text-xs font-medium text-brand-600 px-4 py-2 rounded-full shadow-md backdrop-blur-sm transition-transform hover:scale-105 whitespace-nowrap"
                 >
-                  Make another version
+                  Again
                 </button>
                 <button 
                   onClick={() => onRegenerate(upload.id, "Use a softer, dreamier, alternate artistic style.")}
-                  className="bg-white/90 hover:bg-white text-[10px] md:text-xs font-medium text-brand-600 px-3 py-1.5 rounded-full shadow-md backdrop-blur-sm transition-transform hover:scale-105"
+                  className="bg-white/90 hover:bg-white text-xs font-medium text-brand-600 px-4 py-2 rounded-full shadow-md backdrop-blur-sm transition-transform hover:scale-105 whitespace-nowrap"
                 >
-                  Try a different style
+                  New Style
                 </button>
               </div>
             )}

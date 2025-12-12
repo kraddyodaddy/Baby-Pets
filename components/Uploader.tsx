@@ -42,7 +42,7 @@ export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, c
       <div
         onClick={handleBoxClick}
         className={`
-          relative border-2 border-dashed rounded-2xl p-8 
+          relative border-2 border-dashed rounded-2xl p-8 min-h-[300px] md:min-h-[auto]
           flex flex-col items-center justify-center text-center 
           transition-all duration-300 ease-in-out cursor-pointer
           ${isFull 
@@ -55,10 +55,10 @@ export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, c
         <div className={`p-4 rounded-full mb-3 ${isFull ? 'bg-gray-100 text-gray-400' : 'bg-white text-brand-500 shadow-sm'}`}>
           <UploadIcon className="w-8 h-8" />
         </div>
-        <h3 className="font-display text-lg font-bold text-gray-800 mb-1">
+        <h3 className="font-display text-xl font-bold text-gray-800 mb-2">
           {isFull ? "Photo Added" : "Upload Pet Photo"}
         </h3>
-        <p className="text-gray-500 text-sm max-w-xs">
+        <p className="text-gray-500 text-base max-w-xs">
           {isFull 
             ? "You have added a photo." 
             : "Select a clear photo of your furry friend."}
