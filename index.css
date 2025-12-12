@@ -21,8 +21,8 @@
 /* Global Styles */
 body {
   font-family: 'Inter', sans-serif;
-  background-color: #F9F6F2;
-  color: #1f2937;
+  background-color: #FFFEF7;
+  color: #4A4A4A;
 }
 
 /* Scrollbar styling */
@@ -34,9 +34,9 @@ body {
   background: transparent; 
 }
 ::-webkit-scrollbar-thumb {
-  background: #d6ccc2; 
+  background: #FFB6D9; 
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #c5b8ad; 
+  background: #E092B0; 
 }

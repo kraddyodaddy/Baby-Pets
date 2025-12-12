@@ -240,16 +240,16 @@ function App() {
            <div className="w-full max-w-7xl mx-auto px-4 pt-10 pb-8 flex flex-col items-center space-y-2 min-h-[300px] justify-center">
               {/* Intro Section */}
               <section className="text-center max-w-2xl mx-auto mb-10">
-                <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+                <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-700 mb-4 leading-tight">
                   See Your Pet as a <br className="hidden md:block" />
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-600">
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-pastel-pink via-pastel-purple to-pastel-blue">
                     Baby Pet Again
                   </span>
                 </h1>
-                <p className="text-lg text-gray-600 font-light">
+                <p className="text-lg text-gray-500 font-light">
                   Upload a photo, tell us its name, and see it reimagined as an adorable baby pet.
                 </p>
-                <div className="mt-2 text-xs text-gray-400">
+                <div className="mt-2 text-xs text-pastel-purple font-medium">
                   Daily Usage: {usageCount} / {MAX_DAILY_GENERATIONS}
                 </div>
               </section>
@@ -268,9 +268,9 @@ function App() {
            </div>
 
            {/* SEO Content: Why Use BabyPets */}
-           <section className="w-full max-w-3xl mx-auto px-6 pt-12 pb-12 text-center border-t border-gray-100">
-             <h2 className="font-display text-2xl font-bold text-gray-800 mb-4">Why Use Our AI Baby Pet Generator?</h2>
-             <p className="text-gray-600 leading-relaxed">
+           <section className="w-full max-w-3xl mx-auto px-6 pt-12 pb-12 text-center border-t border-brand-100">
+             <h2 className="font-display text-2xl font-bold text-gray-700 mb-4">Why Use Our AI Baby Pet Generator?</h2>
+             <p className="text-gray-500 leading-relaxed">
                BabyPets.ai is the easiest way to see your <strong>cat as a kitten</strong> or your <strong>dog as a puppy</strong> again. 
                Whether you have a rescue pet whose baby photos you missed, or you just want to see a cute reimagining of your best friend, 
                our <strong>free AI pet transformation</strong> tool creates high-quality, adorable results in seconds.
@@ -278,7 +278,7 @@ function App() {
            </section>
 
            {/* Additional SEO Paragraph */}
-           <section className="w-full bg-[#f4efe9] border-t border-gray-200/50 py-10">
+           <section className="w-full bg-pastel-pink-light/20 border-t border-pastel-pink/20 py-10">
               <div className="max-w-4xl mx-auto px-6 text-center">
                   <p className="text-gray-500 text-sm leading-7">
                     <strong>BabyPets.ai</strong> utilizes advanced artificial intelligence to perform <strong>pet age regression</strong>, transforming photos of adult dogs and cats into hyper-realistic <strong>puppies and kittens</strong>. 
@@ -304,13 +304,13 @@ function App() {
                 onNameChange={handleNameChange}
                 onRegenerate={handleRegenerate}
                 isLimitReached={isLimitReached}
-                className="h-auto md:h-full shadow-lg border border-gray-200 shrink-0 mb-20 md:mb-0"
+                className="h-auto md:h-full shadow-lg border border-pastel-pink/30 shrink-0 mb-20 md:mb-0"
               />
            ))}
          </div>
 
          {/* Action Bar */}
-         <div className="shrink-0 flex flex-col items-center justify-center w-full mt-2 md:mt-4 pb-2 z-20 px-4 md:px-0 bg-[#F9F6F2] md:bg-transparent">
+         <div className="shrink-0 flex flex-col items-center justify-center w-full mt-2 md:mt-4 pb-2 z-20 px-4 md:px-0 bg-pastel-cream md:bg-transparent">
             {isLimitReached ? (
               <div className="bg-gray-100 border border-gray-200 text-gray-600 px-6 py-3 rounded-full font-medium text-sm md:text-base text-center shadow-sm w-full md:w-auto">
                 Daily limit reached. Come back tomorrow.
@@ -324,7 +324,7 @@ function App() {
                     group relative flex items-center justify-center space-x-3 px-8 py-4 md:py-3 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 w-full md:w-auto
                     ${!hasPendingItems || !allNamesFilled
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none' 
-                      : 'bg-gradient-to-r from-brand-500 to-brand-600 text-white hover:brightness-110'
+                      : 'bg-gradient-to-r from-pastel-pink via-pastel-purple to-pastel-blue text-white hover:brightness-105'
                     }
                   `}
                 >
@@ -346,7 +346,7 @@ function App() {
             {hasSuccess && !isProcessing && (
               <button
                 onClick={() => handleStartOver()}
-                className="mt-3 flex items-center justify-center space-x-2 px-6 py-3 md:py-2 bg-white text-gray-500 border border-gray-200 rounded-full hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200 transition-all shadow-sm font-medium text-sm w-full md:w-auto"
+                className="mt-3 flex items-center justify-center space-x-2 px-6 py-3 md:py-2 bg-white text-gray-500 border border-brand-200 rounded-full hover:bg-brand-50 hover:text-brand-600 hover:border-brand-300 transition-all shadow-sm font-medium text-sm w-full md:w-auto"
               >
                 <span>See another baby pet</span>
               </button>
@@ -357,9 +357,9 @@ function App() {
   };
 
   return (
-    <div className={`flex flex-col font-sans text-gray-800 bg-[#F9F6F2] min-h-screen ${isUploadMode && currentView === 'home' ? 'h-[100dvh] overflow-hidden' : ''}`}>
+    <div className={`flex flex-col font-sans text-gray-700 bg-pastel-cream min-h-screen ${isUploadMode && currentView === 'home' ? 'h-[100dvh] overflow-hidden' : ''}`}>
       {/* Header */}
-      <header className="bg-white/80 backdrop-blur-md border-b border-gray-100 shrink-0 h-16 flex items-center z-50 sticky top-0">
+      <header className="bg-white/80 backdrop-blur-md border-b border-brand-100 shrink-0 h-16 flex items-center z-50 sticky top-0">
         <div className="max-w-5xl mx-auto px-4 flex-1 flex items-center justify-between">
           <button 
             onClick={() => handleNavigate('home')} 
@@ -367,19 +367,19 @@ function App() {
             aria-label="Go to Home"
           >
             <span className="text-2xl pt-1">🐶🐱🐰</span>
-            <h1 className="font-display text-2xl font-bold text-gray-900 tracking-tight">Baby<span className="text-brand-500">Pets</span></h1>
+            <h1 className="font-display text-2xl font-bold text-gray-700 tracking-tight">Baby<span className="text-pastel-pink">Pets</span></h1>
           </button>
           
           <nav className="flex items-center space-x-6">
             <button 
                 onClick={() => handleNavigate('home')} 
-                className={`text-sm font-bold transition-colors ${currentView === 'home' ? 'text-brand-500' : 'text-gray-500 hover:text-brand-500'}`}
+                className={`text-sm font-bold transition-colors ${currentView === 'home' ? 'text-pastel-pink' : 'text-gray-500 hover:text-pastel-pink'}`}
             >
                 Home
             </button>
             <button 
                 onClick={() => handleNavigate('gallery')} 
-                className={`text-sm font-bold transition-colors ${currentView === 'gallery' ? 'text-brand-500' : 'text-gray-500 hover:text-brand-500'}`}
+                className={`text-sm font-bold transition-colors ${currentView === 'gallery' ? 'text-pastel-pink' : 'text-gray-500 hover:text-pastel-pink'}`}
             >
                 Gallery
             </button>

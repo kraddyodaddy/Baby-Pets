@@ -9,13 +9,13 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, currentView }) => {
   const getLinkClass = (viewName: string) => {
     return `cursor-pointer transition-colors ${
       currentView === viewName 
-        ? 'text-brand-500 font-bold' 
-        : 'text-gray-500 hover:text-brand-500'
+        ? 'text-pastel-pink font-bold' 
+        : 'text-gray-400 hover:text-pastel-pink'
     }`;
   };
 
   return (
-    <footer className="bg-white border-t border-gray-100 py-8 mt-auto w-full">
+    <footer className="bg-white border-t border-brand-100 py-8 mt-auto w-full">
       <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-4">
         <div className="text-gray-400 text-sm font-medium order-2 md:order-1">
           © {new Date().getFullYear()} BabyPets.
