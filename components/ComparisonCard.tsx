@@ -162,6 +162,53 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
     }
   };
 
+  const handleDownloadClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    
+    // On mobile, try to use native share (Save Image) flow
+    if (isMobile && navigator.share && result?.generatedImageUrl) {
+      e.preventDefault();
+      
+      if (isSharing) return;
+      setIsSharing(true);
+
+      try {
+        const response = await fetch(result.generatedImageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], `baby-${upload.petName || 'pet'}.png`, { type: 'image/png' });
+        
+        const shareData = {
+          files: [file],
+          title: 'Baby Pet Photo'
+        };
+
+        if (navigator.canShare && navigator.canShare(shareData)) {
+          await navigator.share(shareData);
+        } else {
+          // Fallback to traditional download if sharing files isn't supported
+          const link = document.createElement('a');
+          link.href = result.generatedImageUrl;
+          link.download = `baby-${upload.petName || 'pet'}.png`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+        }
+      } catch (error: any) {
+        // If it wasn't a user cancellation, try fallback
+        if (error.name !== 'AbortError') {
+           const link = document.createElement('a');
+           link.href = result.generatedImageUrl;
+           link.download = `baby-${upload.petName || 'pet'}.png`;
+           document.body.appendChild(link);
+           link.click();
+           document.body.removeChild(link);
+        }
+      } finally {
+        setIsSharing(false);
+      }
+    }
+  };
+
   // ---------------------------------------------------------------------------
   // RENDER HELPERS
   // ---------------------------------------------------------------------------
@@ -283,14 +330,19 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
 
   const renderDownloadButton = () => {
     if (!isSuccess || !result?.generatedImageUrl) return null;
+    
+    // Check if device is likely mobile to show "Save Image" vs "Download Image"
+    const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
     return (
       <a 
         href={result.generatedImageUrl} 
         download={`baby-${upload.petName || 'pet'}.png`}
-        className="bg-brand-500 hover:bg-brand-600 text-white py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center font-bold text-base w-full active:transform active:scale-95"
+        onClick={handleDownloadClick}
+        className="bg-brand-500 hover:bg-brand-600 text-white py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center font-bold text-base w-full active:transform active:scale-95 cursor-pointer"
       >
         <DownloadIcon className="w-5 h-5 mr-2" />
-        Download Image
+        {isMobile ? 'Save Image' : 'Download Image'}
       </a>
     );
   };
@@ -419,14 +471,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
                         <button onClick={() => handleShare('TikTok')} className="p-1.5 text-black hover:bg-gray-100 rounded-lg transition-colors"><TikTokIcon className="w-5 h-5" /></button>
                       </div>
                    </div>
-                   <a 
-                     href={result?.generatedImageUrl || '#'} 
-                     download={`baby-${upload.petName || 'pet'}.png`}
-                     className="bg-white/90 backdrop-blur-md hover:bg-white text-brand-600 py-2.5 rounded-xl shadow-lg transition-colors flex items-center justify-center font-medium text-sm border border-white/50 w-full"
-                   >
-                     <DownloadIcon className="w-5 h-5 mr-2" />
-                     Download Image
-                   </a>
+                   {renderDownloadButton()}
                 </div>
              </>
            )}
