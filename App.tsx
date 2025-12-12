@@ -8,7 +8,7 @@ import { generateBabyPet } from './services/geminiService';
 import type { UploadedImage, TransformationResult } from './types';
 import { MagicIcon } from './components/Icons';
 
-const MAX_DAILY_GENERATIONS = 4;
+const MAX_DAILY_GENERATIONS = 10;
 const CONCURRENCY_LIMIT = 1; // Process items one by one to simulate high demand queue
 
 interface QueueItem {

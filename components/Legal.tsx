@@ -169,7 +169,7 @@ export const FAQPage = () => (
 
       <div>
         <h3 className="font-bold text-gray-900 text-xl mb-2">How many pets can I transform?</h3>
-        <p>Currently, users are limited to 4 generations per day to ensure fair usage for everyone and manage server costs.</p>
+        <p>Currently, users are limited to 10 generations per day to ensure fair usage for everyone and manage server costs.</p>
       </div>
 
       <div>
