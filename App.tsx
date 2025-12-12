@@ -4,6 +4,7 @@ import { Uploader } from './components/Uploader';
 import { ComparisonCard } from './components/ComparisonCard';
 import { Footer } from './components/Footer';
 import { TermsPage, PrivacyPage, FAQPage, ContactPage, AboutPage } from './components/Legal';
+import { GalleryPage } from './components/Gallery';
 import { generateBabyPet } from './services/geminiService';
 import type { UploadedImage, TransformationResult } from './types';
 import { MagicIcon } from './components/Icons';
@@ -16,7 +17,7 @@ interface QueueItem {
   styleVariant?: string;
 }
 
-type ViewState = 'home' | 'terms' | 'privacy' | 'faq' | 'contact' | 'about';
+type ViewState = 'home' | 'terms' | 'privacy' | 'faq' | 'contact' | 'about' | 'gallery';
 
 function App() {
   const [currentView, setCurrentView] = useState<ViewState>('home');
@@ -228,77 +229,83 @@ function App() {
     if (currentView === 'faq') return <FAQPage />;
     if (currentView === 'contact') return <ContactPage />;
     if (currentView === 'about') return <AboutPage onNavigate={handleNavigate} />;
+    if (currentView === 'gallery') return <GalleryPage onNavigate={handleNavigate} />;
 
     // Home View Logic
     if (!isUploadMode) {
       return (
-        <div className="flex-1 flex flex-col items-center justify-center space-y-10 animate-fade-in min-h-[500px]">
-           {/* Intro Section */}
-          <section className="text-center max-w-2xl mx-auto px-2">
-            <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-              See Your Pet as a <br className="hidden md:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-600">
-                Baby Pet Again
-              </span>
-            </h1>
-            <p className="text-lg text-gray-600 font-light">
-              Upload a photo, tell us its name, and see it reimagined as an adorable baby pet.
-            </p>
-            <p className="text-md text-gray-500 mt-2 font-medium">
-              (Works best with clear photos of a single pet.)
-            </p>
-            <div className="mt-2 text-xs text-gray-400">
-              Daily Usage: {usageCount} / {MAX_DAILY_GENERATIONS}
-            </div>
-          </section>
+        <div className="flex-1 w-full flex flex-col animate-fade-in">
+           {/* Top Section: Intro + Uploader */}
+           <div className="w-full max-w-5xl mx-auto px-4 pt-10 pb-16 flex flex-col items-center space-y-10 min-h-[400px] justify-center">
+              {/* Intro Section */}
+              <section className="text-center max-w-2xl mx-auto">
+                <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
+                  See Your Pet as a <br className="hidden md:block" />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-600">
+                    Baby Pet Again
+                  </span>
+                </h1>
+                <p className="text-lg text-gray-600 font-light">
+                  Upload a photo, tell us its name, and see it reimagined as an adorable baby pet.
+                </p>
+                <p className="text-md text-gray-500 mt-2 font-medium">
+                  (Works best with clear photos of a single pet.)
+                </p>
+                <div className="mt-2 text-xs text-gray-400">
+                  Daily Usage: {usageCount} / {MAX_DAILY_GENERATIONS}
+                </div>
+              </section>
 
-          {/* Upload Section */}
-          <section className="max-w-xl mx-auto w-full px-2">
-            <Uploader 
-              onFilesSelected={handleFilesSelected} 
-              count={uploads.length} 
-              disabled={isProcessing}
-            />
-          </section>
+              {/* Upload Section */}
+              <section className="max-w-xl mx-auto w-full">
+                <Uploader 
+                  onFilesSelected={handleFilesSelected} 
+                  count={uploads.length} 
+                  disabled={isProcessing}
+                />
+              </section>
+           </div>
 
-          {/* SEO Content: How it Works */}
-          <section className="max-w-4xl mx-auto px-6 py-12 border-t border-gray-100">
-             <h2 className="font-display text-2xl font-bold text-gray-800 mb-8 text-center">How to Turn Your Pet into a Baby Pet</h2>
-             <div className="grid md:grid-cols-3 gap-8">
-                <div className="text-center">
-                   <div className="w-12 h-12 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">1</div>
-                   <h3 className="font-bold text-gray-900 mb-2">Upload Photo</h3>
-                   <p className="text-gray-600 text-sm">Select a clear, front-facing photo of your dog, cat, or any pet.</p>
-                </div>
-                <div className="text-center">
-                   <div className="w-12 h-12 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">2</div>
-                   <h3 className="font-bold text-gray-900 mb-2">AI Magic</h3>
-                   <p className="text-gray-600 text-sm">Our advanced AI analyzes your pet's features and regresses their age.</p>
-                </div>
-                <div className="text-center">
-                   <div className="w-12 h-12 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">3</div>
-                   <h3 className="font-bold text-gray-900 mb-2">Meet the Baby Pet</h3>
-                   <p className="text-gray-600 text-sm">Instantly see and download your adorable baby pet photo!</p>
-                </div>
+           {/* SEO Content: How it Works - Full Width Bar */}
+           <section className="w-full bg-white border-y border-gray-100 py-10">
+             <div className="max-w-3xl mx-auto px-4">
+               <h2 className="font-display text-lg font-bold text-gray-800 mb-5 text-center">How to See Your Pet as a Baby</h2>
+               <div className="grid grid-cols-3 gap-4 md:gap-8">
+                  <div className="text-center">
+                     <div className="w-8 h-8 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold shadow-sm">1</div>
+                     <h3 className="font-bold text-gray-900 text-xs mb-1">Upload Photo</h3>
+                     <p className="text-gray-500 text-[10px] leading-tight max-w-[150px] mx-auto">Select a clear, front-facing photo of your pet.</p>
+                  </div>
+                  <div className="text-center">
+                     <div className="w-8 h-8 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold shadow-sm">2</div>
+                     <h3 className="font-bold text-gray-900 text-xs mb-1">AI Magic</h3>
+                     <p className="text-gray-500 text-[10px] leading-tight max-w-[150px] mx-auto">Our advanced AI analyzes features and regresses age.</p>
+                  </div>
+                  <div className="text-center">
+                     <div className="w-8 h-8 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-2 text-sm font-bold shadow-sm">3</div>
+                     <h3 className="font-bold text-gray-900 text-xs mb-1">Meet Your Baby Pet!</h3>
+                     <p className="text-gray-500 text-[10px] leading-tight max-w-[150px] mx-auto">Instantly see and download your adorable baby pet!</p>
+                  </div>
+               </div>
              </div>
-          </section>
+           </section>
 
-          {/* SEO Content: Why Use BabyPets */}
-          <section className="max-w-3xl mx-auto px-6 pb-12 text-center">
+           {/* SEO Content: Why Use BabyPets */}
+           <section className="w-full max-w-3xl mx-auto px-6 py-16 text-center">
              <h2 className="font-display text-2xl font-bold text-gray-800 mb-4">Why Use Our AI Baby Pet Generator?</h2>
              <p className="text-gray-600 leading-relaxed">
                BabyPets.ai is the easiest way to see your <strong>cat as a kitten</strong> or your <strong>dog as a puppy</strong> again. 
                Whether you have a rescue pet whose baby photos you missed, or you just want to see a cute reimagining of your best friend, 
                our <strong>free AI pet transformation</strong> tool creates high-quality, adorable results in seconds.
              </p>
-          </section>
+           </section>
         </div>
       );
     }
 
     // Upload Mode (Workspace)
     return (
-      <div className="flex-1 flex flex-col items-center h-full w-full py-2 md:py-4 animate-fade-in">
+      <div className="flex-1 w-full max-w-5xl mx-auto px-4 flex flex-col items-center h-full py-2 md:py-4 animate-fade-in">
          {/* Card Container */}
          <div className="flex-1 w-full min-h-0 flex flex-col justify-start md:justify-center max-h-full px-1 md:px-0 overflow-y-auto md:overflow-hidden scroll-smooth">
            {uploads.map(upload => (
@@ -346,7 +353,6 @@ function App() {
                       </>
                   )}
                 </button>
-                {/* Redundant error message removed as per user request */}
               </>
             )}
 
@@ -376,14 +382,24 @@ function App() {
             <span className="text-2xl pt-1">🐶🐱🐰</span>
             <h1 className="font-display text-2xl font-bold text-gray-900 tracking-tight">Baby<span className="text-brand-500">Pets</span></h1>
           </button>
-          <div className="text-sm text-gray-500 hidden sm:block">
-            Powered by Gemini AI
-          </div>
+          
+          <nav className="flex items-center space-x-4">
+            <button 
+                onClick={() => handleNavigate('gallery')} 
+                className={`text-sm font-bold transition-colors ${currentView === 'gallery' ? 'text-brand-500' : 'text-gray-500 hover:text-brand-500'}`}
+            >
+                Gallery
+            </button>
+            <div className="text-sm text-gray-300 hidden sm:block">|</div>
+            <div className="text-sm text-gray-400 hidden sm:block">
+               Gemini AI
+            </div>
+          </nav>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className={`flex-1 w-full max-w-5xl mx-auto px-4 flex flex-col ${isUploadMode && currentView === 'home' ? 'overflow-hidden' : 'py-8'}`}>
+      <main className={`flex-1 w-full flex flex-col ${isUploadMode && currentView === 'home' ? 'overflow-hidden' : ''}`}>
         {renderMainContent()}
       </main>
 

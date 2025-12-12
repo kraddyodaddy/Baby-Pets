@@ -4,6 +4,9 @@ import {
   XMarkIcon, MagicIcon, DownloadIcon, ClockIcon, 
   FacebookIcon, InstagramIcon, TwitterIcon, TikTokIcon, RedditIcon 
 } from './Icons';
+import { validatePetImage, fileToBase64 } from '../services/geminiService';
+import { addToGallery } from '../services/galleryService';
+import { v4 as uuidv4 } from 'uuid';
 
 interface ComparisonCardProps {
   upload: UploadedImage;
@@ -62,6 +65,12 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   const [progress, setProgress] = useState(0);
   const [currentMessage, setCurrentMessage] = useState(LOADING_MESSAGES[0]);
   const [isSharing, setIsSharing] = useState(false);
+
+  // Gallery State
+  const [galleryCheck, setGalleryCheck] = useState(false);
+  const [isSubmittingToGallery, setIsSubmittingToGallery] = useState(false);
+  const [galleryStatus, setGalleryStatus] = useState<'idle' | 'success' | 'error' | 'rejected'>('idle');
+  const [galleryErrorMessage, setGalleryErrorMessage] = useState('');
 
   useEffect(() => {
     let progressInterval: ReturnType<typeof setInterval> | undefined;
@@ -209,6 +218,46 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
     }
   };
 
+  const handleAddToGallery = async () => {
+    if (!result?.generatedImageUrl || isSubmittingToGallery || galleryStatus === 'success') return;
+
+    setIsSubmittingToGallery(true);
+    setGalleryStatus('idle');
+    setGalleryErrorMessage('');
+
+    try {
+      // 1. AI Safety Check
+      const isSafe = await validatePetImage(upload.file);
+      
+      if (!isSafe) {
+        setGalleryStatus('rejected');
+        setGalleryErrorMessage("Sorry, this image doesn't meet our gallery guidelines (must be a clear, appropriate pet photo).");
+        setIsSubmittingToGallery(false);
+        return;
+      }
+
+      // 2. Prepare Data
+      const originalBase64 = await fileToBase64(upload.file);
+      const base64Prefix = upload.file.type === 'image/png' ? 'data:image/png;base64,' : 'data:image/jpeg;base64,';
+      
+      addToGallery({
+        id: uuidv4(),
+        petName: upload.petName || 'Baby Pet',
+        originalImage: `${base64Prefix}${originalBase64}`,
+        babyImage: result.generatedImageUrl,
+        timestamp: Date.now()
+      });
+
+      setGalleryStatus('success');
+    } catch (e) {
+      console.error(e);
+      setGalleryStatus('error');
+      setGalleryErrorMessage("Something went wrong while saving to the gallery.");
+    } finally {
+      setIsSubmittingToGallery(false);
+    }
+  };
+
   // ---------------------------------------------------------------------------
   // RENDER HELPERS
   // ---------------------------------------------------------------------------
@@ -313,6 +362,68 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
     );
   };
 
+  const renderGallerySection = () => {
+    if (!isSuccess) return null;
+
+    if (galleryStatus === 'success') {
+      return (
+        <div className="w-full bg-green-50 border border-green-200 text-green-700 p-3 rounded-xl text-sm font-medium text-center">
+          ✨ Successfully added to the Gallery!
+        </div>
+      );
+    }
+
+    if (galleryStatus === 'rejected') {
+       return (
+        <div className="w-full bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl text-xs text-center">
+          {galleryErrorMessage}
+        </div>
+       );
+    }
+    
+    if (galleryStatus === 'error') {
+       return (
+        <div className="w-full bg-red-50 border border-red-200 text-red-600 p-3 rounded-xl text-xs text-center">
+          {galleryErrorMessage}
+        </div>
+       );
+    }
+
+    return (
+      <div className="w-full bg-brand-50/50 border border-brand-100 rounded-xl p-3 flex flex-col space-y-3">
+        <label className="flex items-center space-x-2 cursor-pointer">
+          <input 
+            type="checkbox" 
+            checked={galleryCheck} 
+            onChange={(e) => setGalleryCheck(e.target.checked)}
+            className="w-4 h-4 text-brand-500 rounded focus:ring-brand-500 border-gray-300"
+          />
+          <span className="text-sm text-gray-700 font-medium select-none">Share my transformation to the public gallery</span>
+        </label>
+        
+        {galleryCheck && (
+          <button 
+            onClick={handleAddToGallery}
+            disabled={isSubmittingToGallery}
+            className={`
+              w-full py-2 rounded-lg text-sm font-bold transition-colors shadow-sm flex items-center justify-center
+              ${isSubmittingToGallery 
+                ? 'bg-gray-100 text-gray-400 cursor-wait' 
+                : 'bg-white border-2 border-brand-500 text-brand-600 hover:bg-brand-50'
+              }
+            `}
+          >
+             {isSubmittingToGallery ? (
+               <>Processing AI Check...</>
+             ) : (
+               <>Submit to Gallery</>
+             )}
+          </button>
+        )}
+      </div>
+    );
+  };
+
   const renderShareBar = () => {
     if (!isSuccess) return null;
     return (
@@ -410,6 +521,9 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
                
                {/* d) Download Button */}
                {renderDownloadButton()}
+
+               {/* e) Gallery Submission */}
+               {renderGallerySection()}
              </div>
            )}
         </div>
@@ -464,14 +578,52 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
 
                 {/* Bottom Actions (Share & Download) */}
                 <div className="absolute bottom-4 left-4 right-4 flex flex-col space-y-2 z-20">
-                   <div className="bg-white/90 backdrop-blur-md rounded-xl p-2 shadow-lg flex items-center justify-between border border-white/50">
-                      <span className="text-[10px] font-bold text-gray-500 px-2 uppercase tracking-wide">Share:</span>
-                      <div className="flex space-x-1">
-                        <button onClick={() => handleShare('Facebook')} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"><FacebookIcon className="w-5 h-5" /></button>
-                        <button onClick={() => handleShare('Instagram')} className="p-1.5 text-pink-600 hover:bg-pink-50 rounded-lg transition-colors"><InstagramIcon className="w-5 h-5" /></button>
-                        <button onClick={() => handleShare('Twitter')} className="p-1.5 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"><TwitterIcon className="w-5 h-5" /></button>
-                        <button onClick={() => handleShare('TikTok')} className="p-1.5 text-black hover:bg-gray-100 rounded-lg transition-colors"><TikTokIcon className="w-5 h-5" /></button>
+                   <div className="bg-white/90 backdrop-blur-md rounded-xl p-2 shadow-lg flex flex-col space-y-2 border border-white/50">
+                      {/* Share Icons */}
+                      <div className="flex items-center justify-between px-1">
+                        <span className="text-[10px] font-bold text-gray-500 px-1 uppercase tracking-wide">Share:</span>
+                        <div className="flex space-x-1">
+                          <button onClick={() => handleShare('Facebook')} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"><FacebookIcon className="w-5 h-5" /></button>
+                          <button onClick={() => handleShare('Instagram')} className="p-1.5 text-pink-600 hover:bg-pink-50 rounded-lg transition-colors"><InstagramIcon className="w-5 h-5" /></button>
+                          <button onClick={() => handleShare('Twitter')} className="p-1.5 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"><TwitterIcon className="w-5 h-5" /></button>
+                          <button onClick={() => handleShare('TikTok')} className="p-1.5 text-black hover:bg-gray-100 rounded-lg transition-colors"><TikTokIcon className="w-5 h-5" /></button>
+                        </div>
                       </div>
+                      
+                      {/* Gallery Checkbox */}
+                      {galleryStatus !== 'success' && (
+                        <div className="border-t border-gray-200 pt-2 px-1">
+                            {galleryStatus === 'error' || galleryStatus === 'rejected' ? (
+                                <p className="text-[10px] text-red-500 text-center">{galleryErrorMessage}</p>
+                            ) : (
+                                <div className="flex items-center justify-between">
+                                    <label className="flex items-center space-x-2 cursor-pointer">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={galleryCheck} 
+                                            onChange={(e) => setGalleryCheck(e.target.checked)}
+                                            className="w-3.5 h-3.5 text-brand-500 rounded focus:ring-brand-500 border-gray-300"
+                                        />
+                                        <span className="text-xs text-gray-600 font-medium">Add to Gallery</span>
+                                    </label>
+                                    {galleryCheck && (
+                                        <button 
+                                            onClick={handleAddToGallery}
+                                            disabled={isSubmittingToGallery}
+                                            className="text-xs bg-brand-500 text-white px-2 py-1 rounded hover:bg-brand-600"
+                                        >
+                                            {isSubmittingToGallery ? '...' : 'Post'}
+                                        </button>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                      )}
+                      
+                      {galleryStatus === 'success' && (
+                          <div className="text-center text-xs text-green-600 font-bold py-1">Shared to Gallery!</div>
+                      )}
+
                    </div>
                    {renderDownloadButton()}
                 </div>

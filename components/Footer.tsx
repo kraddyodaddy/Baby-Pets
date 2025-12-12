@@ -22,6 +22,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, currentView }) => {
         </div>
         
         <nav className="flex flex-wrap justify-center gap-6 text-sm order-1 md:order-2">
+          <button onClick={() => onNavigate('gallery')} className={getLinkClass('gallery')}>
+            Gallery
+          </button>
           <button onClick={() => onNavigate('about')} className={getLinkClass('about')}>
             About Us
           </button>

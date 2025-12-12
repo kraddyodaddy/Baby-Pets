@@ -1,7 +1,7 @@
 import { GoogleGenAI } from "@google/genai";
 
 // Helper to convert File to Base64
-const fileToBase64 = (file: File): Promise<string> => {
+export const fileToBase64 = (file: File): Promise<string> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
@@ -49,6 +49,39 @@ const getRandomPastelColor = () => {
     "Slate Blue"
   ];
   return pastels[Math.floor(Math.random() * pastels.length)];
+};
+
+export const validatePetImage = async (imageFile: File): Promise<boolean> => {
+  const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+  const base64Data = await fileToBase64(imageFile);
+  const model = 'gemini-2.5-flash';
+
+  try {
+    const response = await ai.models.generateContent({
+      model: model,
+      contents: {
+        parts: [
+          {
+            inlineData: {
+              data: base64Data,
+              mimeType: imageFile.type,
+            },
+          },
+          {
+            text: "Analyze this image. Is it: 1) A clear photo of a single pet (dog, cat, or other pet), 2) Appropriate for all ages, 3) Good quality? Respond with only YES or NO.",
+          },
+        ],
+      },
+    });
+    
+    const text = response.text?.trim().toUpperCase();
+    return text?.includes("YES") || false;
+  } catch (error) {
+    console.error("Error validating image:", error);
+    // If AI fails, we default to conservative 'false' or allow it? 
+    // For safety, let's default to false if we can't verify.
+    return false;
+  }
 };
 
 export const generateBabyPet = async (imageFile: File, petName?: string, styleInstruction?: string): Promise<string> => {
