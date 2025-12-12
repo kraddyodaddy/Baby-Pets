@@ -1,38 +1,45 @@
 import React from 'react';
 
 const EXAMPLES = [
-  { name: 'Baby Addie', src: '/addie_dog.jpg', alt: 'Baby Addie - Dog transformation example' },
-  { name: 'Baby Mochi', src: '/mochi_cat.jpg', alt: 'Baby Mochi - Cat transformation example' },
-  { name: 'Baby Mimoette', src: '/mimoette_cat.jpg', alt: 'Baby Mimoette - Cat transformation example' },
-  { name: 'Baby Peanut', src: '/peanut_cat.jpg', alt: 'Baby Peanut - Cat transformation example' },
+  { name: 'Baby Addie', src: 'https://i.ibb.co/FbW0vfwz/addie-dog.jpg', alt: 'Baby Addie - Dog transformation example' },
+  { name: 'Baby Mochi', src: 'https://i.ibb.co/MDbrwWTg/mochi-cat.jpg', alt: 'Baby Mochi - Cat transformation example' },
+  { name: 'Baby Mimoette', src: 'https://i.ibb.co/whKRpbyn/mimoette-cat.jpg', alt: 'Baby Mimoette - Cat transformation example' },
+  { name: 'Baby Peanut', src: 'https://i.ibb.co/C32G6cL4/peanut-cat.jpg', alt: 'Baby Peanut - Cat transformation example' },
 ];
 
 export const Showcase = () => {
   return (
-    <div className="w-full max-w-5xl mx-auto px-6 py-8 md:py-10">
-        <div className="text-center mb-6">
-            <h2 className="font-display text-2xl md:text-3xl font-bold text-gray-700">See the Magic ✨</h2>
+    <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12">
+        <div className="text-center mb-10">
+            <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-700">See the Magic ✨</h2>
         </div>
         
-        {/* Grid Layout: 2 columns on mobile (stacked 2x2), 4 columns on desktop (single row) */}
-        {/* Constrained max-width to keep images smaller and centered */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto">
-            {EXAMPLES.map((item, index) => (
-                <div key={index} className="flex flex-col items-center group w-full">
-                    <div className="w-full aspect-[4/5] bg-white rounded-3xl shadow-sm border border-brand-100 overflow-hidden transition-all duration-300 group-hover:-translate-y-1 group-hover:shadow-md group-hover:border-pastel-purple">
-                        <img 
-                            src={item.src} 
-                            alt={item.alt} 
-                            className="w-full h-full object-cover" 
-                        />
+        {/* Gradient Background Container */}
+        <div className="w-full rounded-[2.5rem] p-6 md:p-10 bg-gradient-to-r from-pastel-pink via-pastel-purple to-pastel-blue shadow-xl">
+            {/* Grid Layout */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
+                {EXAMPLES.map((item, index) => (
+                    <div key={index} className="flex flex-col items-center group w-full">
+                        {/* 
+                           Image Container: 
+                           - Reduced vertical padding (py-1) to make top/bottom border thinner by half compared to sides (px-2)
+                           - px-2 is same as previous p-2 (0.5rem), py-1 is 0.25rem
+                        */}
+                        <div className="w-full aspect-square bg-white rounded-3xl shadow-md overflow-hidden transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-xl px-2 py-1 flex items-center justify-center">
+                            <img 
+                                src={item.src} 
+                                alt={item.alt} 
+                                className="w-full h-full object-contain rounded-2xl" 
+                            />
+                        </div>
+                        <h3 className="mt-4 font-display font-bold text-white text-lg drop-shadow-md tracking-wide">{item.name}</h3>
                     </div>
-                    <h3 className="mt-2 font-display font-bold text-gray-600 text-sm md:text-base">{item.name}</h3>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
         
-        <div className="text-center mt-6">
-             <p className="text-pastel-purple font-medium text-sm animate-pulse">See what others have created! 👆</p>
+        <div className="text-center mt-10">
+             <p className="text-pastel-purple font-bold text-lg animate-pulse">See what others have created! 👆</p>
         </div>
     </div>
   );

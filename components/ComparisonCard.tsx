@@ -371,7 +371,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
         <img 
           src={result.generatedImageUrl} 
           alt="Baby Pet Version" 
-          className="w-full h-full object-cover animate-fade-in absolute inset-0 md:static"
+          className="w-full h-full object-contain animate-fade-in absolute inset-0 md:static"
         />
       );
     }
@@ -558,11 +558,11 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
          ================================================================================= */}
       <div className="flex flex-col w-full md:hidden">
         {/* 1. Side-by-Side Images - Height optimized for small screens (iPhone SE) */}
-        {/* Reduced height from h-64/96 to h-52 (208px) to h-64 max to allow space for input */}
-        <div className="flex flex-row w-full h-52 xs:h-64 sm:h-80 border-b border-gray-100">
+        {/* Changed from fixed h-52/h-64/h-80 to aspect ratio 2:1 so each side is a square, reducing tall borders on wide screens */}
+        <div className="flex flex-row w-full aspect-[2/1] border-b border-gray-100">
            {/* Left: Original */}
-           <div className="w-1/2 relative border-r border-gray-100 bg-gray-50">
-             <img src={upload.previewUrl} alt="Original" className="w-full h-full object-cover" />
+           <div className="w-1/2 relative border-r border-gray-100 bg-gray-50 flex items-center justify-center">
+             <img src={upload.previewUrl} alt="Original" className="w-full h-full object-contain" />
              <div className="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm pointer-events-none">Original</div>
            </div>
            
@@ -619,8 +619,8 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       <div className="hidden md:flex md:flex-row w-full h-full min-h-[400px]">
         {/* Left Side: Original + Input */}
         <div className="flex flex-col flex-1 border-r border-brand-100 relative w-1/2">
-           <div className="relative flex-1 bg-gray-50 overflow-hidden">
-             <img src={upload.previewUrl} alt="Original" className="w-full h-full object-cover" />
+           <div className="relative flex-1 bg-gray-50 overflow-hidden flex items-center justify-center">
+             <img src={upload.previewUrl} alt="Original" className="w-full h-full object-contain" />
              <div className="absolute bottom-4 left-4 bg-black/40 text-white text-xs px-2 py-1 rounded-md backdrop-blur-md">Original</div>
            </div>
            <div className="shrink-0 p-4 bg-white border-t border-brand-100 z-10">

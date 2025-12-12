@@ -40,20 +40,20 @@ export const GalleryPage = ({ onNavigate }: { onNavigate: (view: any) => void })
             <div key={item.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
               {/* Images Side by Side */}
               <div className="flex h-48 sm:h-56 md:h-64">
-                <div className="w-1/2 relative bg-gray-50">
+                <div className="w-1/2 relative bg-gray-50 flex items-center justify-center">
                   <img 
                     src={item.originalImage} 
                     alt="Original" 
-                    className="w-full h-full object-cover" 
+                    className="w-full h-full object-contain" 
                     loading="lazy"
                   />
                   <div className="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm">Before</div>
                 </div>
-                <div className="w-1/2 relative bg-brand-50">
+                <div className="w-1/2 relative bg-brand-50 flex items-center justify-center">
                   <img 
                     src={item.babyImage} 
                     alt="Baby Version" 
-                    className="w-full h-full object-cover"
+                    className="w-full h-full object-contain"
                     loading="lazy"
                   />
                   <div className="absolute bottom-2 right-2 bg-brand-500/80 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm">After</div>
