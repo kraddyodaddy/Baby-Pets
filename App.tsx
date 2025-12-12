@@ -153,6 +153,7 @@ function App() {
   }, []);
 
   const isLimitReached = usageCount >= MAX_DAILY_GENERATIONS;
+  const remainingGenerations = Math.max(0, MAX_DAILY_GENERATIONS - usageCount);
 
   const handleTransformAll = async () => {
     if (isLimitReached) return;
@@ -239,28 +240,30 @@ function App() {
            {/* Top Section: Intro + Uploader */}
            <div className="w-full max-w-7xl mx-auto px-4 pt-10 pb-8 flex flex-col items-center space-y-2 min-h-[300px] justify-center">
               {/* Intro Section */}
-              <section className="text-center max-w-2xl mx-auto mb-10">
+              <section className="text-center max-w-4xl mx-auto mb-8">
                 <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-700 mb-4 leading-tight">
                   See Your Pet as a <br className="hidden md:block" />
                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-pastel-pink via-pastel-purple to-pastel-blue">
                     Baby Pet Again
                   </span>
                 </h1>
-                <p className="text-lg text-gray-500 font-light">
+                
+                <p className="text-lg text-gray-500 font-light mb-4">
                   Upload a photo, tell us its name, and see it reimagined as an adorable baby pet.
                 </p>
-                <div className="mt-2 text-xs text-pastel-purple font-medium">
-                  Daily Usage: {usageCount} / {MAX_DAILY_GENERATIONS}
-                </div>
               </section>
 
               {/* Upload Section */}
-              <section className="max-w-xl mx-auto w-full mb-12">
+              <section className="max-w-xl mx-auto w-full mb-12 flex flex-col items-center">
                 <Uploader 
                   onFilesSelected={handleFilesSelected} 
                   count={uploads.length} 
                   disabled={isProcessing}
                 />
+                
+                <div className="mt-3 text-center text-sm text-gray-400 font-medium">
+                   {remainingGenerations} free generations remaining today
+                </div>
               </section>
 
               {/* Showcase Section - Now Below Upload */}

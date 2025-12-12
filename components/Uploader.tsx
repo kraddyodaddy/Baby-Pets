@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { UploadIcon } from './Icons';
+import React, { useRef, useState } from 'react';
+import { UploadIcon, PawIcon } from './Icons';
 
 interface UploaderProps {
   onFilesSelected: (files: File[]) => void;
@@ -9,12 +9,12 @@ interface UploaderProps {
 
 export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, count }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isDragOver, setIsDragOver] = useState(false);
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
       const selectedFiles = Array.from(e.target.files);
       onFilesSelected(selectedFiles);
-      // Reset input so same files can be selected again if user deletes them
       if (fileInputRef.current) {
         fileInputRef.current.value = '';
       }
@@ -24,6 +24,26 @@ export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, c
   const handleBoxClick = () => {
     if (!disabled && fileInputRef.current) {
       fileInputRef.current.click();
+    }
+  };
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault();
+    if (!disabled && !isFull) {
+      setIsDragOver(true);
+    }
+  };
+
+  const handleDragLeave = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragOver(false);
+    if (!disabled && !isFull && e.dataTransfer.files && e.dataTransfer.files.length > 0) {
+      onFilesSelected(Array.from(e.dataTransfer.files));
     }
   };
 
@@ -41,27 +61,42 @@ export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, c
       />
       <div
         onClick={handleBoxClick}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
         className={`
-          relative border-2 border-solid rounded-3xl p-8 min-h-[300px] md:min-h-[auto]
+          relative border-4 border-solid rounded-[2rem] p-6 min-h-[220px] md:min-h-[280px]
           flex flex-col items-center justify-center text-center 
-          transition-all duration-300 ease-in-out cursor-pointer
+          transition-all duration-300 ease-in-out cursor-pointer group
           ${isFull 
             ? 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed' 
-            : 'border-pastel-pink bg-pastel-pink-superlight hover:bg-brand-100 hover:border-pastel-purple hover:shadow-md'
+            : isDragOver
+              ? 'border-pastel-purple bg-pastel-pink-light scale-[1.02] shadow-xl'
+              : 'border-pastel-pink bg-pastel-pink-superlight hover:bg-white hover:border-pastel-purple hover:shadow-2xl hover:scale-[1.01]'
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}
       >
-        <div className={`p-4 rounded-full mb-3 ${isFull ? 'bg-gray-100 text-gray-400' : 'bg-white text-pastel-pink shadow-sm'}`}>
-          <UploadIcon className="w-10 h-10" />
+        {/* Background Decorative Icon */}
+        {!isFull && (
+           <PawIcon className="absolute opacity-5 w-40 h-40 text-pastel-pink pointer-events-none transform -rotate-12" />
+        )}
+
+        <div className={`
+            relative p-4 rounded-full mb-4 transition-transform duration-300 group-hover:scale-110
+            ${isFull ? 'bg-gray-100 text-gray-400' : 'bg-white text-pastel-pink shadow-md group-hover:text-pastel-purple'}
+        `}>
+          <UploadIcon className="w-10 h-10 md:w-12 md:h-12" />
         </div>
-        <h3 className="font-display text-2xl font-bold text-gray-700 mb-2">
-          {isFull ? "Photo Added" : "Upload Pet Photo"}
+        
+        <h3 className="relative font-display text-xl md:text-2xl font-bold text-gray-700 mb-2 group-hover:text-brand-600 transition-colors">
+          {isFull ? "Photo Added" : "Click or drag photo here"}
         </h3>
-        <p className="text-gray-500 text-base max-w-xs">
+        
+        <p className="relative text-gray-500 text-sm md:text-base max-w-sm font-medium">
           {isFull 
             ? "You have added a photo." 
-            : "Select a clear photo of your furry friend."}
+            : "Upload a clear photo of your furry friend to see the magic! ✨"}
         </p>
       </div>
     </div>
