@@ -18,7 +18,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, currentView }) => {
     <footer className="bg-white border-t border-gray-100 py-8 mt-auto w-full">
       <div className="max-w-5xl mx-auto px-4 flex flex-col md:flex-row justify-between items-center gap-6 md:gap-4">
         <div className="text-gray-400 text-sm font-medium order-2 md:order-1">
-          © {new Date().getFullYear()} BabyPets. Made with Gemini 2.5.
+          © {new Date().getFullYear()} BabyPets.
         </div>
         
         <nav className="flex flex-wrap justify-center gap-6 text-sm order-1 md:order-2">

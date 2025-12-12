@@ -267,7 +267,7 @@ function App() {
            </div>
 
            {/* SEO Content: How it Works - Full Width Bar */}
-           <section className="w-full bg-white border-y border-gray-100 py-10">
+           <section className="w-full bg-white border-y border-gray-100 py-8">
              <div className="max-w-3xl mx-auto px-4">
                <h2 className="font-display text-lg font-bold text-gray-800 mb-5 text-center">How to See Your Pet as a Baby</h2>
                <div className="grid grid-cols-3 gap-4 md:gap-8">
@@ -323,7 +323,7 @@ function App() {
          </div>
 
          {/* Action Bar */}
-         <div className="shrink-0 flex flex-col items-center justify-center w-full mt-2 md:mt-4 pb-2 z-20 px-4 md:px-0 bg-[#fafaf9] md:bg-transparent">
+         <div className="shrink-0 flex flex-col items-center justify-center w-full mt-2 md:mt-4 pb-2 z-20 px-4 md:px-0 bg-[#F9F6F2] md:bg-transparent">
             {isLimitReached ? (
               <div className="bg-gray-100 border border-gray-200 text-gray-600 px-6 py-3 rounded-full font-medium text-sm md:text-base text-center shadow-sm w-full md:w-auto">
                 Daily limit reached. Come back tomorrow.
@@ -370,7 +370,7 @@ function App() {
   };
 
   return (
-    <div className={`flex flex-col font-sans text-gray-800 bg-[#fafaf9] min-h-screen ${isUploadMode && currentView === 'home' ? 'h-[100dvh] overflow-hidden' : ''}`}>
+    <div className={`flex flex-col font-sans text-gray-800 bg-[#F9F6F2] min-h-screen ${isUploadMode && currentView === 'home' ? 'h-[100dvh] overflow-hidden' : ''}`}>
       {/* Header */}
       <header className="bg-white/80 backdrop-blur-md border-b border-gray-100 shrink-0 h-16 flex items-center z-50 sticky top-0">
         <div className="max-w-5xl mx-auto px-4 flex-1 flex items-center justify-between">
@@ -383,17 +383,19 @@ function App() {
             <h1 className="font-display text-2xl font-bold text-gray-900 tracking-tight">Baby<span className="text-brand-500">Pets</span></h1>
           </button>
           
-          <nav className="flex items-center space-x-4">
+          <nav className="flex items-center space-x-6">
+            <button 
+                onClick={() => handleNavigate('home')} 
+                className={`text-sm font-bold transition-colors ${currentView === 'home' ? 'text-brand-500' : 'text-gray-500 hover:text-brand-500'}`}
+            >
+                Home
+            </button>
             <button 
                 onClick={() => handleNavigate('gallery')} 
                 className={`text-sm font-bold transition-colors ${currentView === 'gallery' ? 'text-brand-500' : 'text-gray-500 hover:text-brand-500'}`}
             >
                 Gallery
             </button>
-            <div className="text-sm text-gray-300 hidden sm:block">|</div>
-            <div className="text-sm text-gray-400 hidden sm:block">
-               Gemini AI
-            </div>
           </nav>
         </div>
       </header>
