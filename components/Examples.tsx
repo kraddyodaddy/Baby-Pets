@@ -32,7 +32,14 @@ export const Showcase = () => {
                                 className="w-full h-full object-cover rounded-2xl" 
                             />
                         </div>
-                        <h3 className="mt-4 font-display font-bold text-white text-lg drop-shadow-md tracking-wide">{item.name}</h3>
+                        {/* 
+                            Updated Text Styling:
+                            - Maintained large size.
+                            - Added stronger drop-shadow (0.5 opacity) to make the white text 'brighter' (pop more) against the pastel background.
+                        */}
+                        <h3 className="mt-5 font-display font-bold text-white text-2xl md:text-3xl drop-shadow-[0_2px_2px_rgba(0,0,0,0.5)] tracking-wide transition-transform duration-300 group-hover:scale-105">
+                            {item.name}
+                        </h3>
                     </div>
                 ))}
             </div>

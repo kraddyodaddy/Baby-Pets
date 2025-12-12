@@ -42,7 +42,7 @@ export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, c
       <div
         onClick={handleBoxClick}
         className={`
-          relative border-2 border-dashed rounded-3xl p-8 min-h-[300px] md:min-h-[auto]
+          relative border-2 border-solid rounded-3xl p-8 min-h-[300px] md:min-h-[auto]
           flex flex-col items-center justify-center text-center 
           transition-all duration-300 ease-in-out cursor-pointer
           ${isFull 
