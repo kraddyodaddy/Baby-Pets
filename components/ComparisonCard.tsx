@@ -42,7 +42,7 @@ const LOADING_MESSAGES = [
   'Teaching them how to be tiny again...',
   'Dialing up the adorable...',
   'Your baby is on the way!',
-  '🐶🐱🐭🐹🐰🦊🐻🐼🐨🐯🦁🐮🐷'
+  '🐶🐱🐭🐹🐰🦊🐻🐼🐨🐯🦁🐮'
 ];
 
 export const ComparisonCard: React.FC<ComparisonCardProps> = ({ 
