@@ -22,17 +22,20 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, currentView }) => {
         </div>
         
         <nav className="flex flex-wrap justify-center gap-6 text-sm order-1 md:order-2">
-          <button onClick={() => onNavigate('terms')} className={getLinkClass('terms')}>
-            Terms of Service
-          </button>
-          <button onClick={() => onNavigate('privacy')} className={getLinkClass('privacy')}>
-            Privacy Policy
+          <button onClick={() => onNavigate('about')} className={getLinkClass('about')}>
+            About Us
           </button>
           <button onClick={() => onNavigate('faq')} className={getLinkClass('faq')}>
             FAQ
           </button>
           <button onClick={() => onNavigate('contact')} className={getLinkClass('contact')}>
             Contact
+          </button>
+          <button onClick={() => onNavigate('privacy')} className={getLinkClass('privacy')}>
+            Privacy Policy
+          </button>
+          <button onClick={() => onNavigate('terms')} className={getLinkClass('terms')}>
+            Terms of Service
           </button>
         </nav>
       </div>

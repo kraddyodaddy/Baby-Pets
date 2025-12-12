@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { Uploader } from './components/Uploader';
 import { ComparisonCard } from './components/ComparisonCard';
 import { Footer } from './components/Footer';
-import { TermsPage, PrivacyPage, FAQPage, ContactPage } from './components/Legal';
+import { TermsPage, PrivacyPage, FAQPage, ContactPage, AboutPage } from './components/Legal';
 import { generateBabyPet } from './services/geminiService';
 import type { UploadedImage, TransformationResult } from './types';
 import { MagicIcon } from './components/Icons';
@@ -16,7 +16,7 @@ interface QueueItem {
   styleVariant?: string;
 }
 
-type ViewState = 'home' | 'terms' | 'privacy' | 'faq' | 'contact';
+type ViewState = 'home' | 'terms' | 'privacy' | 'faq' | 'contact' | 'about';
 
 function App() {
   const [currentView, setCurrentView] = useState<ViewState>('home');
@@ -227,6 +227,7 @@ function App() {
     if (currentView === 'privacy') return <PrivacyPage />;
     if (currentView === 'faq') return <FAQPage />;
     if (currentView === 'contact') return <ContactPage />;
+    if (currentView === 'about') return <AboutPage onNavigate={handleNavigate} />;
 
     // Home View Logic
     if (!isUploadMode) {

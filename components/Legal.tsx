@@ -12,6 +12,46 @@ const LegalLayout = ({ title, children }: { title: string, children?: React.Reac
   </div>
 );
 
+export const AboutPage = ({ onNavigate }: { onNavigate?: (view: any) => void }) => (
+  <LegalLayout title="About Us">
+    <p className="text-xl text-gray-700 leading-relaxed mb-6 font-medium">
+      Welcome to <strong>BabyPets.ai</strong>, where we use the magic of Artificial Intelligence to turn your beloved pets into their most adorable baby selves.
+    </p>
+
+    <h3>Who We Are</h3>
+    <p>
+      We are a team of pet lovers and technology enthusiasts who often wondered: "What did our rescue dog look like as a puppy?" Since we didn't have any photos from his early days, we built a tool to imagine it. The results were so heartwarming that we decided to share this joy with the world.
+    </p>
+
+    <h3>How It Works</h3>
+    <p>
+      BabyPets utilizes state-of-the-art AI technology (Google Gemini) to analyze your pet's photo. It identifies key features—fur patterns, eye color, and pose—and performs a "digital age regression." It enhances "cute" traits like eye size and roundness while shortening snouts and softening textures, creating a realistic glimpse into the past.
+    </p>
+
+    <h3>Our Commitment to Trust</h3>
+    <p>
+      We understand that photos of your pets are personal.
+    </p>
+    <ul>
+      <li><strong>Privacy First:</strong> Your photos are processed securely and are not used to train our AI models. We do not store your personal photos permanently; they are discarded after your session.</li>
+      <li><strong>Transparency:</strong> All images generated on this site are AI-created artistic interpretations. They are for entertainment purposes.</li>
+      <li><strong>Safety:</strong> We have safety filters in place to prevent the generation of inappropriate content.</li>
+    </ul>
+
+    <h3>Contact Us</h3>
+    <p>
+      Have questions, feedback, or just want to say hi? We'd love to chat. 
+      {onNavigate ? (
+        <>
+          {' '}Visit our <button onClick={() => onNavigate('contact')} className="text-brand-600 underline font-medium hover:text-brand-700">Contact page</button> to get in touch.
+        </>
+      ) : (
+        ' Please visit our Contact page to get in touch.'
+      )}
+    </p>
+  </LegalLayout>
+);
+
 export const TermsPage = () => (
   <LegalLayout title="Terms of Service">
     <p>Last updated: {new Date().toLocaleDateString()}</p>
