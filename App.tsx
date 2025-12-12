@@ -238,11 +238,11 @@ function App() {
             <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
               See Your Pet as a <br className="hidden md:block" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-brand-400 to-brand-600">
-                Tiny Baby Again
+                Baby Pet Again
               </span>
             </h1>
             <p className="text-lg text-gray-600 font-light">
-              Upload a photo, tell us its name, and see it reimagined as an adorable baby.
+              Upload a photo, tell us its name, and see it reimagined as an adorable baby pet.
             </p>
             <p className="text-md text-gray-500 mt-2 font-medium">
               (Works best with clear photos of a single pet.)
@@ -263,7 +263,7 @@ function App() {
 
           {/* SEO Content: How it Works */}
           <section className="max-w-4xl mx-auto px-6 py-12 border-t border-gray-100">
-             <h2 className="font-display text-2xl font-bold text-gray-800 mb-8 text-center">How to Turn Your Pet into a Baby</h2>
+             <h2 className="font-display text-2xl font-bold text-gray-800 mb-8 text-center">How to Turn Your Pet into a Baby Pet</h2>
              <div className="grid md:grid-cols-3 gap-8">
                 <div className="text-center">
                    <div className="w-12 h-12 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">1</div>
@@ -277,7 +277,7 @@ function App() {
                 </div>
                 <div className="text-center">
                    <div className="w-12 h-12 bg-brand-100 text-brand-600 rounded-full flex items-center justify-center mx-auto mb-4 text-xl font-bold">3</div>
-                   <h3 className="font-bold text-gray-900 mb-2">Meet the Baby</h3>
+                   <h3 className="font-bold text-gray-900 mb-2">Meet the Baby Pet</h3>
                    <p className="text-gray-600 text-sm">Instantly see and download your adorable baby pet photo!</p>
                 </div>
              </div>
@@ -285,7 +285,7 @@ function App() {
 
           {/* SEO Content: Why Use BabyPets */}
           <section className="max-w-3xl mx-auto px-6 pb-12 text-center">
-             <h2 className="font-display text-2xl font-bold text-gray-800 mb-4">Why Use Our AI Pet Baby Generator?</h2>
+             <h2 className="font-display text-2xl font-bold text-gray-800 mb-4">Why Use Our AI Baby Pet Generator?</h2>
              <p className="text-gray-600 leading-relaxed">
                BabyPets.ai is the easiest way to see your <strong>cat as a kitten</strong> or your <strong>dog as a puppy</strong> again. 
                Whether you have a rescue pet whose baby photos you missed, or you just want to see a cute reimagining of your best friend, 
@@ -342,7 +342,7 @@ function App() {
                   ) : (
                       <>
                         <MagicIcon className="w-6 h-6 animate-pulse" />
-                        <span>Transform into Baby</span>
+                        <span>Transform into Baby Pet</span>
                       </>
                   )}
                 </button>
@@ -355,7 +355,7 @@ function App() {
                 onClick={() => handleStartOver()}
                 className="mt-3 flex items-center justify-center space-x-2 px-6 py-3 md:py-2 bg-white text-gray-500 border border-gray-200 rounded-full hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200 transition-all shadow-sm font-medium text-sm w-full md:w-auto"
               >
-                <span>See another pet baby</span>
+                <span>See another baby pet</span>
               </button>
             )}
          </div>

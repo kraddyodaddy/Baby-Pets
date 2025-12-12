@@ -17,10 +17,10 @@ interface ComparisonCardProps {
 
 const LOADING_MESSAGES = [
   'Baby pets incoming soon...',
-  'Get ready to see your angel as a baby...',
+  'Get ready to see your angel as a baby pet...',
   'Preparing extra cute fluff...',
   'Almost there, do the cute pet voice...',
-  'Turning your best friend into a baby...',
+  'Turning your best friend into a baby pet...',
   'Squeal level cuteness loading...',
   'Sprinkling baby magic... ✨',
   'Turning back the clock to puppy/kitten days...',
@@ -41,7 +41,7 @@ const LOADING_MESSAGES = [
   'One second... finding their baby photos...',
   'Teaching them how to be tiny again...',
   'Dialing up the adorable...',
-  'Your baby is on the way!',
+  'Your baby pet is on the way!',
   '🐶🐱🐭🐹🐰🦊🐻🐼🐨🐯🦁🐮'
 ];
 
@@ -267,7 +267,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       return (
         <img 
           src={result.generatedImageUrl} 
-          alt="Baby Version" 
+          alt="Baby Pet Version" 
           className="w-full h-full object-cover animate-fade-in absolute inset-0 md:static"
         />
       );
@@ -379,7 +379,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
            {/* Right: Result */}
            <div className="w-1/2 relative bg-brand-50 flex flex-col items-center justify-center">
              {renderResultState()}
-             {isSuccess && <div className="absolute bottom-2 right-2 bg-brand-500/80 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm pointer-events-none">Baby</div>}
+             {isSuccess && <div className="absolute bottom-2 right-2 bg-brand-500/80 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm pointer-events-none">Baby Pet</div>}
            </div>
         </div>
 

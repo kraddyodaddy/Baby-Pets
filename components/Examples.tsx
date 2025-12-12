@@ -17,7 +17,7 @@ const ExampleItem = ({ original, result, name, delay }: { original: string, resu
 
       <div className="relative w-20 h-20 md:w-24 md:h-24 shrink-0">
         <img src={result} alt={`Baby ${name}`} className="w-full h-full object-cover rounded-xl shadow-inner" />
-        <div className="absolute bottom-1 right-1 bg-brand-500/90 text-white text-[8px] font-bold px-1.5 py-0.5 rounded backdrop-blur-sm shadow-sm">Baby</div>
+        <div className="absolute bottom-1 right-1 bg-brand-500/90 text-white text-[8px] font-bold px-1.5 py-0.5 rounded backdrop-blur-sm shadow-sm">Baby Pet</div>
       </div>
     </div>
     <span className="text-xs font-display font-bold text-gray-400 tracking-wide">{name}</span>
