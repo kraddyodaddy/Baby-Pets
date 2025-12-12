@@ -315,7 +315,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
          ================================================================================= */}
       <div className="flex flex-col w-full md:hidden">
         {/* 1. Side-by-Side Images */}
-        <div className="flex flex-row h-56 sm:h-72 w-full border-b border-gray-100">
+        <div className="flex flex-row h-48 sm:h-72 w-full border-b border-gray-100">
            {/* Left: Original */}
            <div className="w-1/2 relative border-r border-gray-100 bg-gray-50 overflow-hidden">
              <img src={upload.previewUrl} alt="Original" className="w-full h-full object-cover" />
