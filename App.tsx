@@ -372,12 +372,6 @@ function App() {
           
           <nav className="flex items-center space-x-6">
             <button 
-                onClick={() => handleNavigate('home')} 
-                className={`text-sm font-bold transition-colors ${currentView === 'home' ? 'text-pastel-pink' : 'text-gray-500 hover:text-pastel-pink'}`}
-            >
-                Home
-            </button>
-            <button 
                 onClick={() => handleNavigate('gallery')} 
                 className={`text-sm font-bold transition-colors ${currentView === 'gallery' ? 'text-pastel-pink' : 'text-gray-500 hover:text-pastel-pink'}`}
             >
