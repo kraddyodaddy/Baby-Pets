@@ -291,13 +291,23 @@ function App() {
            </section>
 
            {/* SEO Content: Why Use BabyPets */}
-           <section className="w-full max-w-3xl mx-auto px-6 py-16 text-center">
+           <section className="w-full max-w-3xl mx-auto px-6 pt-16 pb-12 text-center">
              <h2 className="font-display text-2xl font-bold text-gray-800 mb-4">Why Use Our AI Baby Pet Generator?</h2>
              <p className="text-gray-600 leading-relaxed">
                BabyPets.ai is the easiest way to see your <strong>cat as a kitten</strong> or your <strong>dog as a puppy</strong> again. 
                Whether you have a rescue pet whose baby photos you missed, or you just want to see a cute reimagining of your best friend, 
                our <strong>free AI pet transformation</strong> tool creates high-quality, adorable results in seconds.
              </p>
+           </section>
+
+           {/* Additional SEO Paragraph */}
+           <section className="w-full bg-[#f4efe9] border-t border-gray-200/50 py-10">
+              <div className="max-w-4xl mx-auto px-6 text-center">
+                  <p className="text-gray-500 text-sm leading-7">
+                    <strong>BabyPets.ai</strong> utilizes advanced artificial intelligence to perform <strong>pet age regression</strong>, transforming photos of adult dogs and cats into hyper-realistic <strong>puppies and kittens</strong>. 
+                    Our free, secure, and fast <strong>AI pet generator</strong> preserves your pet's unique markings while creating adorable baby memories, making it the ultimate tool for pet lovers to relive the magic of their pet's early days.
+                  </p>
+              </div>
            </section>
         </div>
       );

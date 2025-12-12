@@ -42,12 +42,12 @@ export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, c
       <div
         onClick={handleBoxClick}
         className={`
-          relative border-2 border-dashed rounded-2xl p-8 min-h-[300px] md:min-h-[auto]
+          relative border-2 rounded-2xl p-8 min-h-[300px] md:min-h-[auto]
           flex flex-col items-center justify-center text-center 
           transition-all duration-300 ease-in-out cursor-pointer
           ${isFull 
             ? 'border-gray-200 bg-gray-50 opacity-50 cursor-not-allowed' 
-            : 'border-brand-300 bg-brand-50/50 hover:bg-brand-50 hover:border-brand-400'
+            : 'border-brand-200 bg-brand-50/50 hover:bg-brand-50 hover:border-brand-300 hover:shadow-sm'
           }
           ${disabled ? 'opacity-50 cursor-not-allowed' : ''}
         `}
