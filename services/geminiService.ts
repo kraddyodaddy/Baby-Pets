@@ -149,34 +149,28 @@ Required baby proportions:
 • Short limbs, small round body posture
 • Fluffier softer coat
 
-Expression bias:
-• Ensure the expression is gentle, curious, or playful rather than neutral.
+STRICT MARKING AND PATTERN CLONING (HIGHEST PRIORITY):
+The baby must look like the EXACT SAME INDIVIDUAL as the adult, just younger.
+You must preserve the EXACT placement and boundaries of all color patches.
 
-STRICT COLOR AND MARKING CLONING REQUIREMENT:
-The baby must inherit the EXACT coat colors, pattern layout, marking positions, symmetry, stripe placement, nose color, eye color, and fur contrast from the original photo.
+CRITICAL CHECKS:
+1. FACIAL MARKINGS:
+   - Look at exactly where the fur color changes on the face.
+   - If the pet has black covering the entire upper face down to below the eyes, the baby MUST have the same.
+   - If there is a white stripe on the nose, observe its exact width and shape.
+   - If the chin is white, the baby's chin must be white.
+   - Do NOT raise or lower the color boundaries (e.g. do not turn a "mask" into a "hat").
 
-Do NOT generate a “cute reinterpretation” or an improved aesthetic version.
-This is a *forensic match requirement*.
+2. BODY MARKINGS:
+   - If there is a small black patch on the right front leg, the baby must have it in the same location.
+   - If the chest is white, the baby's chest must be white.
 
-If the animal has:
-– asymmetrical markings
-– uneven fur tone
-– faded areas
-– discoloration
-– unique patches
-– strange shapes
+3. NO "BEAUTIFICATION":
+   - Do not make markings symmetrical if they are not.
+   - Do not add "cute" generic patterns (like white socks or a perfect blaze) if the original doesn't have them.
+   - Keep messy, unique, or asymmetrical patterns exactly as they are.
 
-REPRODUCE THEM EXACTLY.
-
-If the original animal has dark fur with bright eyes, the baby must also have dark fur with bright eyes.
-If the original animal has white cheeks with black ears, the baby must also have white cheeks with black ears.
-
-Never introduce new colors.
-Never remove existing pattern traits.
-Never beautify symmetry.
-
-You are MATCHING, not inventing.
-Ignore lighting shadows. Only copy actual fur color boundaries as structural markings.
+Only make the features more juvenile (bigger eyes, rounder proportions, fluffier fur) - do NOT change where colors are located on the body.
 
 Style requirement:
 • Photorealistic textures and lighting
@@ -190,11 +184,8 @@ ${labelInstruction}
 Watermark requirement:
 Add a small, subtle text watermark in the bottom right corner that reads 'Created by BabyPets.ai'.
 
-Before final output:
-Compare the generated animal to the original reference and confirm all face and coat markings MATCH.
-If anything is different, regenerate until it matches.
-
-Final result must look like a real photograph of a six to eight week old version of the same animal, with correct markings, infant proportions, and the requested text banner integrated into the scene.`,
+Final Verification:
+Compare the generated baby to the original. If the pattern is different, it is a failure. The pattern must match.`,
           },
         ],
       },
