@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UploadedImage, TransformationResult } from '../types';
 import { 
-  XMarkIcon, MagicIcon, DownloadIcon, ClockIcon, 
+  XMarkIcon, MagicIcon, DownloadIcon, ClockIcon, ShareIcon,
   FacebookIcon, InstagramIcon, TwitterIcon, TikTokIcon, RedditIcon 
 } from './Icons';
 import { validatePetImage, fileToBase64 } from '../services/geminiService';
@@ -65,6 +65,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   const [progress, setProgress] = useState(0);
   const [currentMessage, setCurrentMessage] = useState(LOADING_MESSAGES[0]);
   const [isSharing, setIsSharing] = useState(false);
+  const [copyFeedback, setCopyFeedback] = useState(false);
 
   // Gallery State
   const [galleryCheck, setGalleryCheck] = useState(false);
@@ -168,6 +169,59 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       }
     } finally {
       setIsSharing(false);
+    }
+  };
+
+  const handleShareWithFriend = async () => {
+    if (!result?.generatedImageUrl || isSharing) return;
+
+    setIsSharing(true);
+    
+    // Data to share
+    const shareUrl = "https://babypets.ai";
+    const shareText = "Look what I made at BabyPets.ai! 🐾";
+    const title = `Baby ${upload.petName || 'Pet'}`;
+
+    try {
+        // Try to fetch image
+        const response = await fetch(result.generatedImageUrl);
+        const blob = await response.blob();
+        const file = new File([blob], `baby-${upload.petName || 'pet'}.png`, { type: 'image/png' });
+        
+        const shareData = {
+            title: title,
+            text: `${shareText} ${shareUrl}`,
+            files: [file],
+        };
+
+        if (navigator.canShare && navigator.canShare(shareData)) {
+            await navigator.share(shareData);
+        } else {
+             // Try text only share if file share not supported
+             const textShareData = {
+                title: title,
+                text: `${shareText} ${shareUrl}`,
+                url: shareUrl
+             };
+             if (navigator.canShare && navigator.canShare(textShareData)) {
+                 await navigator.share(textShareData);
+             } else {
+                 throw new Error("Web Share API not supported");
+             }
+        }
+    } catch (error: any) {
+        if (error.name !== 'AbortError') {
+             // Fallback to clipboard
+             try {
+                await navigator.clipboard.writeText(`${shareText} ${shareUrl}`);
+                setCopyFeedback(true);
+                setTimeout(() => setCopyFeedback(false), 2000);
+             } catch (err) {
+                 console.error("Clipboard copy failed");
+             }
+        }
+    } finally {
+        setIsSharing(false);
     }
   };
 
@@ -439,6 +493,31 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       </div>
     );
   };
+  
+  const renderShareWithFriendButton = () => {
+     if (!isSuccess) return null;
+     
+     return (
+        <button
+          onClick={handleShareWithFriend}
+          disabled={isSharing}
+          className={`
+            mb-1 w-full py-3.5 rounded-xl font-bold text-base shadow-md transition-all flex items-center justify-center
+            bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white
+            active:transform active:scale-95
+          `}
+        >
+           {copyFeedback ? (
+               <span>Link Copied! ✅</span>
+           ) : (
+               <>
+                 <ShareIcon className="w-5 h-5 mr-2" />
+                 Share with Friend
+               </>
+           )}
+        </button>
+     );
+  };
 
   const renderDownloadButton = () => {
     if (!isSuccess || !result?.generatedImageUrl) return null;
@@ -519,10 +598,13 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
                {/* c) Social Share */}
                {renderShareBar()}
                
-               {/* d) Download Button */}
+               {/* d) Share with Friend */}
+               {renderShareWithFriendButton()}
+
+               {/* e) Download Button */}
                {renderDownloadButton()}
 
-               {/* e) Gallery Submission */}
+               {/* f) Gallery Submission */}
                {renderGallerySection()}
              </div>
            )}
@@ -625,6 +707,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
                       )}
 
                    </div>
+                   {renderShareWithFriendButton()}
                    {renderDownloadButton()}
                 </div>
              </>
