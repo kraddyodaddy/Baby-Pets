@@ -251,13 +251,13 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       <div className="flex flex-row space-x-2 w-full">
         <button 
           onClick={() => onRegenerate(upload.id)}
-          className="flex-1 bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 py-2.5 rounded-xl text-sm font-medium transition-colors"
+          className="flex-1 bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 py-3 md:py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm"
         >
           Again
         </button>
         <button 
           onClick={() => onRegenerate(upload.id, "Use a softer, dreamier, alternate artistic style.")}
-          className="flex-1 bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 py-2.5 rounded-xl text-sm font-medium transition-colors"
+          className="flex-1 bg-brand-50 hover:bg-brand-100 text-brand-700 border border-brand-200 py-3 md:py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm"
         >
           New Style
         </button>
@@ -268,14 +268,14 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   const renderShareBar = () => {
     if (!isSuccess) return null;
     return (
-      <div className="bg-gray-50 rounded-xl p-2 flex items-center justify-between border border-gray-100 w-full">
+      <div className="bg-gray-50 rounded-xl p-3 flex items-center justify-between border border-gray-100 w-full shadow-sm">
         <span className="text-[10px] font-bold text-gray-500 px-1 uppercase tracking-wide hidden xs:block">Share:</span>
-        <div className="flex space-x-1 justify-around w-full xs:w-auto">
-          <button onClick={() => handleShare('Facebook')} disabled={isSharing} className="p-2 text-blue-600 hover:bg-blue-100 rounded-lg transition-colors"><FacebookIcon className="w-5 h-5" /></button>
-          <button onClick={() => handleShare('Instagram')} disabled={isSharing} className="p-2 text-pink-600 hover:bg-pink-100 rounded-lg transition-colors"><InstagramIcon className="w-5 h-5" /></button>
-          <button onClick={() => handleShare('Twitter')} disabled={isSharing} className="p-2 text-gray-800 hover:bg-gray-200 rounded-lg transition-colors"><TwitterIcon className="w-5 h-5" /></button>
-          <button onClick={() => handleShare('TikTok')} disabled={isSharing} className="p-2 text-black hover:bg-gray-200 rounded-lg transition-colors"><TikTokIcon className="w-5 h-5" /></button>
-          <button onClick={() => handleShare('Reddit')} disabled={isSharing} className="p-2 text-orange-600 hover:bg-orange-100 rounded-lg transition-colors"><RedditIcon className="w-5 h-5" /></button>
+        <div className="flex space-x-2 justify-between w-full xs:w-auto">
+          <button onClick={() => handleShare('Facebook')} disabled={isSharing} className="p-2 text-blue-600 bg-white hover:bg-blue-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><FacebookIcon className="w-5 h-5" /></button>
+          <button onClick={() => handleShare('Instagram')} disabled={isSharing} className="p-2 text-pink-600 bg-white hover:bg-pink-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><InstagramIcon className="w-5 h-5" /></button>
+          <button onClick={() => handleShare('Twitter')} disabled={isSharing} className="p-2 text-gray-800 bg-white hover:bg-gray-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><TwitterIcon className="w-5 h-5" /></button>
+          <button onClick={() => handleShare('TikTok')} disabled={isSharing} className="p-2 text-black bg-white hover:bg-gray-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><TikTokIcon className="w-5 h-5" /></button>
+          <button onClick={() => handleShare('Reddit')} disabled={isSharing} className="p-2 text-orange-600 bg-white hover:bg-orange-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><RedditIcon className="w-5 h-5" /></button>
         </div>
       </div>
     );
@@ -287,7 +287,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       <a 
         href={result.generatedImageUrl} 
         download={`baby-${upload.petName || 'pet'}.png`}
-        className="bg-brand-500 hover:bg-brand-600 text-white py-3 rounded-xl shadow-md transition-colors flex items-center justify-center font-bold text-sm w-full"
+        className="bg-brand-500 hover:bg-brand-600 text-white py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center font-bold text-base w-full active:transform active:scale-95"
       >
         <DownloadIcon className="w-5 h-5 mr-2" />
         Download Image
@@ -310,33 +310,51 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       {/* =================================================================================
           MOBILE LAYOUT (< md) 
           Structure: 
-          1. Images Row (Side-by-side)
-          2. Controls Column (Flow)
+          1. Images Row (Side-by-side, fully visible)
+          2. Controls Column (Flow below images)
          ================================================================================= */}
       <div className="flex flex-col w-full md:hidden">
-        {/* 1. Side-by-Side Images */}
-        <div className="flex flex-row h-48 sm:h-72 w-full border-b border-gray-100">
+        {/* 1. Side-by-Side Images - Use sufficient height to show content */}
+        <div className="flex flex-row w-full h-64 xs:h-72 sm:h-96 border-b border-gray-100">
            {/* Left: Original */}
-           <div className="w-1/2 relative border-r border-gray-100 bg-gray-50 overflow-hidden">
+           <div className="w-1/2 relative border-r border-gray-100 bg-gray-50">
              <img src={upload.previewUrl} alt="Original" className="w-full h-full object-cover" />
-             <div className="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm">Original</div>
+             <div className="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm pointer-events-none">Original</div>
            </div>
            
            {/* Right: Result */}
-           <div className="w-1/2 relative bg-brand-50 flex flex-col items-center justify-center overflow-hidden">
+           <div className="w-1/2 relative bg-brand-50 flex flex-col items-center justify-center">
              {renderResultState()}
-             {isSuccess && <div className="absolute bottom-2 right-2 bg-brand-500/80 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm">Baby</div>}
+             {isSuccess && <div className="absolute bottom-2 right-2 bg-brand-500/80 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm pointer-events-none">Baby</div>}
            </div>
         </div>
 
         {/* 2. Controls Flow (Below images) */}
-        <div className="p-4 space-y-4 bg-white">
-           {renderNameInput()}
+        <div className="p-4 bg-white">
+           {/* Pet Name or Input */}
+           {!isSuccess ? renderNameInput() : (
+             <div className="text-center pb-2 border-b border-gray-50 mb-3">
+               <h3 className="font-display font-bold text-2xl text-gray-800">Baby {upload.petName}</h3>
+             </div>
+           )}
            
            {isSuccess && (
-             <div className="space-y-3 pt-2 animate-fade-in">
-               {renderRegenerateButtons()}
+             <div className="flex flex-col space-y-3 animate-fade-in">
+               
+               {/* Daily Limit Message if applicable */}
+               {isLimitReached && (
+                 <div className="bg-gray-100 text-gray-500 text-xs font-medium py-2 px-3 rounded-lg text-center">
+                   Daily limit reached. Come back tomorrow!
+                 </div>
+               )}
+
+               {/* b) Again / New Style */}
+               {!isLimitReached && renderRegenerateButtons()}
+               
+               {/* c) Social Share */}
                {renderShareBar()}
+               
+               {/* d) Download Button */}
                {renderDownloadButton()}
              </div>
            )}
@@ -356,7 +374,12 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
              <div className="absolute bottom-4 left-4 bg-black/40 text-white text-xs px-2 py-1 rounded-md backdrop-blur-md">Original</div>
            </div>
            <div className="shrink-0 p-4 bg-white border-t border-gray-100 z-10">
-             {renderNameInput()}
+             {/* Hide input on desktop too if success, replace with name */}
+             {!isSuccess ? renderNameInput() : (
+                <div className="text-center py-2">
+                   <h3 className="font-display font-bold text-xl text-gray-800">Baby {upload.petName}</h3>
+                </div>
+             )}
            </div>
         </div>
 
