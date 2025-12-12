@@ -137,55 +137,35 @@ Before generating any image, analyze the input photo.
      "Your photo is a bit too blurry for accurate transformation. Please upload a clearer image where your pet’s face is in focus so we can create a realistic Baby version."
 
 Step 2: GENERATION (Only if Step 1 passes)
-Generate a photorealistic juvenile version of that same individual.
+TASK: REIMAGINE this specific animal as a 6-week-old baby.
+The goal is EXTREME CUTENESS through significant age regression.
 
-Age target: six to eight weeks old (infant stage).
-Do NOT shrink the adult — reconstruct infant anatomy.
+CRITICAL FAILURE PREVENTION:
+- Do NOT return the original image. You must generate a NEW image.
+- Do NOT just shrink the adult body. You must CHANGE the physical proportions to be infant-like.
 
-Required baby proportions:
-• Distinctly infant-like: Larger head compared to body
-• Larger eyes, shorter snout, softer muzzle
-• Round cheeks and slightly oversized ears (if species appropriate)
-• Short limbs, small round body posture
-• Fluffier softer coat
+REQUIRED ANATOMICAL CHANGES (Apply Aggressively):
+1. EYES: Make them significantly LARGER, ROUNDER, and WETTER/SHINIER. This is the most important "baby" feature.
+2. HEAD-TO-BODY RATIO: The head must be much larger relative to the body (chibi-style realism).
+3. SNOUT/MUZZLE: Drastically SHORTEN the snout. It should be small and button-like, not long and adult-like.
+4. BODY SHAPE: Round, chubby, and compact. Limbs must be shorter and stubbier.
+5. COAT: Use soft, fluffy, fuzzy puppy/kitten down texture, not coarse adult hair.
 
-STRICT MARKING AND PATTERN CLONING (HIGHEST PRIORITY):
-The baby must look like the EXACT SAME INDIVIDUAL as the adult, just younger.
-Preserve the EXACT placement and boundaries of all color patches.
-• If the pet has black covering the entire upper face down to below the eyes, the baby must have the same.
-• If there's a small black patch on the right front leg, the baby must have it in the same location.
-• Only make the features more juvenile (bigger eyes, rounder proportions, fluffier fur) - do NOT change where colors are located on the body.
-
-CRITICAL PATTERN CHECKS:
-1. FACIAL MARKINGS:
-   - Look at exactly where the fur color changes on the face.
-   - Do NOT raise or lower the color boundaries (e.g. do not turn a "mask" into a "hat").
-   - If there is a white stripe on the nose, observe its exact width and shape.
-   - If the chin is white, the baby's chin must be white.
-
-2. BODY MARKINGS:
-   - If the chest is white, the baby's chest must be white.
-   - Any asymmetry in the original markings must be preserved in the baby version.
-
-3. NO "BEAUTIFICATION":
-   - Do not make markings symmetrical if they are not.
-   - Do not add "cute" generic patterns (like white socks or a perfect blaze) if the original doesn't have them.
-   - Keep messy, unique, or asymmetrical patterns exactly as they are.
+IDENTITY PRESERVATION (MARKINGS):
+- While changing the ANATOMY, you MUST preserve the exact COLOR PATTERN and UNIQUE MARKINGS of the original pet.
+- If the pet has a specific spot on its left ear, the baby must have it too.
+- If the pet has white socks, the baby must have them.
+- The baby must look like the *same individual* traveling back in time.
 
 Style requirement:
-• Photorealistic textures and lighting
-• Natural anatomy and scale
-• No stylization or artificial look
-• DEPTH OF FIELD HANDLING: When generating the baby version, preserve the shallow-focus look: keep the pet sharp, keep the background soft. Do not melt fur or ears into the blur. Correct portrait halo artifacts and keep natural edge detail.
+• Photorealistic textures and lighting (Not a cartoon, but adorable proportions)
+• Soft, dreamy depth of field
 ${additionalStyle}
 
 ${labelInstruction}
 
 Watermark requirement:
-Add a small, subtle text watermark in the bottom right corner that reads 'Created by BabyPets.ai'.
-
-Final Verification:
-Compare the generated baby to the original. If the pattern is different, it is a failure. The pattern must match.`,
+Add a small, subtle text watermark in the bottom right corner that reads 'Created by BabyPets.ai'.`,
           },
         ],
       },
