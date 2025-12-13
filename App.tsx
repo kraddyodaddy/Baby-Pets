@@ -268,7 +268,7 @@ function App() {
 
            {/* SEO Content: Why Use BabyPets */}
            <section className="w-full max-w-3xl mx-auto px-6 pt-12 pb-12 text-center border-t border-brand-100">
-             <h2 className="font-display text-2xl font-bold text-gray-700 mb-4">Why Use Our AI Baby Pet Generator?</h2>
+             <h2 className="font-display text-2xl font-bold text-gray-700 mb-4">Why Use Our AI Baby Pet Creator?</h2>
              <p className="text-gray-500 leading-relaxed">
                BabyPets.ai is the easiest way to see your <strong>cat as a kitten</strong> or your <strong>dog as a puppy</strong> again. 
                Whether you have a rescue pet whose baby photos you missed, or you just want to see a cute reimagining of your best friend, 
@@ -280,8 +280,8 @@ function App() {
            <section className="w-full bg-pastel-pink-light/20 border-t border-pastel-pink/20 py-10">
               <div className="max-w-4xl mx-auto px-6 text-center">
                   <p className="text-gray-500 text-sm leading-7">
-                    <strong>BabyPets.ai</strong> utilizes advanced artificial intelligence to perform <strong>pet age regression</strong>, transforming photos of adult dogs and cats into hyper-realistic <strong>puppies and kittens</strong>. 
-                    Our free, secure, and fast <strong>AI pet generator</strong> preserves your pet's unique markings while creating adorable baby memories, making it the ultimate tool for pet lovers to relive the magic of their pet's early days.
+                    <strong>BabyPets.ai</strong> utilizes advanced artificial intelligence to let you <strong>see your pet as a baby again</strong>, transforming photos of adult dogs and cats into hyper-realistic <strong>puppies and kittens</strong>. 
+                    Our free, secure, and fast <strong>AI pet creator</strong> preserves your pet's unique markings while creating adorable baby memories, making it the ultimate tool for pet lovers to relive the magic of their pet's early days.
                   </p>
               </div>
            </section>

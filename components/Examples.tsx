@@ -46,7 +46,7 @@ export const Showcase = () => {
         </div>
         
         <div className="text-center mt-10">
-             <p className="text-pastel-purple font-bold text-lg animate-pulse">See what others have created! 👆</p>
+             <p className="text-pastel-purple font-bold text-lg animate-pulse">Puppies, Kittens, and Bunnies, Oh my!</p>
         </div>
     </div>
   );
