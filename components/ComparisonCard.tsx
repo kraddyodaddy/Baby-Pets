@@ -463,29 +463,30 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
 
   const renderCompactGalleryControl = () => {
      if (galleryStatus === 'success') {
-         return <span className="text-xs font-bold text-green-600 flex items-center">✅ Added to Gallery</span>;
+         return <span className="text-xs md:text-sm font-bold text-green-600 flex items-center bg-green-50 px-3 py-1.5 rounded-full border border-green-100 shadow-sm">✅ Posted!</span>;
      }
      if (galleryStatus === 'error' || galleryStatus === 'rejected') {
-         return <span className="text-xs text-red-500">{galleryErrorMessage || "Error saving"}</span>;
+         return <span className="text-xs text-red-500 font-medium px-2">{galleryErrorMessage || "Error saving"}</span>;
      }
+     
      return (
-        <div className="flex items-center space-x-2">
+        <div className={`flex items-center space-x-2 transition-all duration-300 ${galleryCheck ? 'bg-green-50 border-green-200' : 'bg-gray-50 border-gray-100'} px-3 py-1.5 rounded-full border`}>
             <label className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity">
                 <input 
                     type="checkbox" 
                     checked={galleryCheck} 
                     onChange={(e) => setGalleryCheck(e.target.checked)}
-                    className="w-4 h-4 text-pastel-pink rounded border-gray-300 focus:ring-pastel-pink"
+                    className="w-4 h-4 text-emerald-500 rounded border-gray-300 focus:ring-emerald-500"
                 />
-                <span className="text-xs md:text-sm text-gray-600 font-medium select-none">Add to Gallery</span>
+                <span className={`text-xs md:text-sm font-bold select-none whitespace-nowrap ${galleryCheck ? 'text-emerald-700' : 'text-gray-500'}`}>Gallery</span>
             </label>
             {galleryCheck && (
                 <button 
                   onClick={(e) => { e.preventDefault(); handleAddToGallery(); }}
                   disabled={isSubmittingToGallery}
-                  className="text-[10px] bg-pastel-pink text-white px-3 py-1 rounded-full hover:bg-brand-600 shadow-sm font-bold transition-all animate-fade-in"
+                  className="ml-1 text-[10px] md:text-xs bg-gradient-to-r from-emerald-400 to-green-500 text-white px-3 py-1.5 rounded-full hover:shadow-md hover:scale-105 shadow-sm font-bold transition-all animate-fade-in tracking-wide"
                 >
-                  {isSubmittingToGallery ? 'Saving...' : 'Post'}
+                  {isSubmittingToGallery ? '...' : 'POST'}
                 </button>
             )}
         </div>
@@ -495,25 +496,25 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   const renderCompactActions = () => {
       const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
       return (
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-2 md:space-x-3">
               <button
                  onClick={handleShareWithFriend}
-                 className="flex items-center space-x-1.5 px-3 py-2 bg-brand-50 hover:bg-brand-100 text-brand-600 rounded-lg text-sm font-bold transition-colors"
+                 className="flex items-center justify-center space-x-1.5 px-4 py-2 bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 text-white rounded-full text-sm font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
                  title="Share"
               >
                   <ShareIcon className="w-4 h-4" />
-                  <span className="hidden sm:inline">Share</span>
+                  <span className={`${isMobile ? 'hidden' : 'inline'}`}>Share</span>
               </button>
               
               <a 
                 href={result?.generatedImageUrl || '#'} 
                 download={`baby-${upload.petName || 'pet'}.png`}
                 onClick={handleDownloadClick}
-                className="flex items-center space-x-1.5 px-3 py-2 bg-pastel-pink hover:bg-brand-400 text-white rounded-lg text-sm font-bold transition-colors shadow-sm"
+                className="flex items-center justify-center space-x-1.5 px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full text-sm font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
                 title="Download"
               >
                   <DownloadIcon className="w-4 h-4" />
-                  <span className="hidden sm:inline">{isMobile ? 'Save' : 'Download'}</span>
+                  <span className={`${isMobile ? 'hidden' : 'inline'}`}>{isMobile ? 'Save' : 'Download'}</span>
               </a>
           </div>
       );
