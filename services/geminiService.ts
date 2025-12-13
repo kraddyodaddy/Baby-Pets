@@ -170,29 +170,26 @@ Before generating any image, analyze the input photo.
      "Your photo is a bit too blurry for accurate transformation. Please upload a clearer image where your pet’s face is in focus so we can create a realistic Baby version."
 
 Step 2: GENERATION (Only if Step 1 passes)
-TASK: Create a HYPER-REALISTIC PHOTOGRAPH of this specific animal as a 2-6 WEEK OLD BABY.
-The result must be indistinguishable from a real photo taken with a high-end camera.
+TASK: Generate a PHOTOREALISTIC image of this specific animal as a baby (puppy/kitten). The result must look like an actual photograph, not a cartoon or illustration.
 
-STRICT STYLE RULES (Avoid "AI Look"):
-- NO "3D render" or "CGI" look.
-- NO smooth, plastic-like textures.
-- NO "cartoon", "Pixar", or "Disney" stylization.
-- The fur must look natural, with individual strands, stray hairs, and realistic texture variability.
-- The lighting must be natural and photographic, not artificial studio rendering.
-
-BIOLOGICAL ACCURACY (Age 2-6 Weeks):
-- EYES: Large and innocent, but BIOLOGICALLY REALISTIC. Do not make them unnaturally huge or alien-like.
-- SNOUT: Drastically shorter than the adult version (button nose), but anatomically correct for a puppy/kitten.
-- BODY: Round, soft, and slightly clumsy looking.
-- PAWS: Soft, oversized for the body.
-- PROPORTIONS: Use correct neonate proportions (large cranium, shorter limbs), NOT stylized "chibi" proportions.
+CRITICAL REQUIREMENTS:
+- Photorealistic style only - must look like a real photograph
+- Natural fur texture with realistic detail
+- Real camera photo quality, not CGI or cartoon
+- Natural lighting and shadows
+- Authentic puppy/kitten proportions and features (approx 2-6 weeks old)
+- Keep it looking like a real animal photo you'd take with a phone camera
+- Preserve the exact coloring and markings from the original photo
+- Match the background and environment from the original photo
+- NO cartoon style, NO illustration style, NO anime style
+- NO overly smoothed or artificial features
+- Must look indistinguishable from a real photograph
 
 IDENTITY PRESERVATION (MARKINGS) - HIGHEST PRIORITY:
 - You MUST COPY the EXACT color distribution and fur patterns from the original image.
 - PAY ATTENTION to ASYMMETRY. If the original cat has a black patch over the left eye but not the right, the baby MUST have that exact same asymmetric patch.
-- Do NOT use generic "breed standard" markings (e.g. don't make a generic tuxedo cat). 
+- Do NOT use generic "breed standard" markings.
 - MAP THE TEXTURE: The markings on the baby's face must match the markings on the adult's face 1:1.
-- If the pet has specific white socks, spots on the nose, or a blaze on the forehead, these MUST be present in the baby version.
 
 ${additionalStyle}
 
