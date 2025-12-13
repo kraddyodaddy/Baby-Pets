@@ -517,15 +517,6 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   return (
     <div className={`bg-white rounded-3xl shadow-lg border border-brand-100 overflow-hidden relative flex flex-col md:flex-row ${className}`}>
       
-      {/* Remove Button (Absolute) */}
-      <button 
-        onClick={() => onRemove(upload.id)}
-        className="absolute top-2 right-2 z-40 bg-white/80 hover:bg-red-50 text-gray-400 hover:text-red-400 p-2 rounded-full shadow-sm backdrop-blur-sm transition-colors border border-gray-100"
-        aria-label="Remove"
-      >
-        <XMarkIcon className="w-5 h-5" />
-      </button>
-
       {/* =================================================================================
           MOBILE LAYOUT (< md) 
          ================================================================================= */}
@@ -638,6 +629,15 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
            )}
         </div>
       </div>
+      
+      {/* Remove Button (Absolute) - Moved to bottom and increased z-index */}
+      <button 
+        onClick={() => onRemove(upload.id)}
+        className="absolute top-2 right-2 z-50 bg-white/80 hover:bg-red-50 text-gray-400 hover:text-red-400 p-2 rounded-full shadow-sm backdrop-blur-sm transition-colors border border-gray-100"
+        aria-label="Remove"
+      >
+        <XMarkIcon className="w-5 h-5" />
+      </button>
 
     </div>
   );
