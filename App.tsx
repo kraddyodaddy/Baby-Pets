@@ -314,40 +314,45 @@ function App() {
               <div className="bg-gray-100 border border-gray-200 text-gray-600 px-6 py-3 rounded-full font-medium text-sm md:text-base text-center shadow-sm w-full md:w-auto">
                 Daily limit reached. Come back tomorrow.
               </div>
-            ) : (
-              <>
+            ) : hasSuccess && !hasPendingItems && !isProcessing ? (
+                // SUCCESS STATE - Show Big "Start Over" Button, Hide Disabled Transform Button
                 <button
-                  onClick={handleTransformAll}
-                  disabled={!hasPendingItems || !allNamesFilled}
-                  className={`
-                    group relative flex items-center justify-center space-x-3 px-8 py-4 md:py-3 rounded-full font-bold text-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-0.5 w-full md:w-auto
-                    ${!hasPendingItems || !allNamesFilled
-                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none' 
-                      : 'bg-gradient-to-r from-pastel-pink via-pastel-purple to-pastel-blue text-white hover:brightness-105'
-                    }
-                  `}
+                    onClick={() => handleStartOver()}
+                    className="group relative flex items-center justify-center space-x-3 px-10 py-5 rounded-full font-display font-black text-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 active:scale-95 w-full md:w-auto overflow-hidden bg-[linear-gradient(135deg,#FF1493,#9D4EDD)] text-white hover:brightness-110 ring-4 ring-transparent hover:ring-pink-200"
                 >
-                  {isProcessing && !hasPendingItems ? (
-                      <>
-                        <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                        <span>Adding to Queue...</span>
-                      </>
-                  ) : (
-                      <>
-                        <MagicIcon className="w-6 h-6 animate-pulse" />
-                        <span>Transform into Baby Pet</span>
-                      </>
-                  )}
+                    <span className="text-2xl animate-[wiggle_1.5s_ease-in-out_infinite]">🐾</span>
+                    <span className="relative z-20">Transform Another Pet!</span>
                 </button>
-              </>
-            )}
-
-            {hasSuccess && !isProcessing && (
+            ) : (
+              // DEFAULT STATE - Show Transform Button
               <button
-                onClick={() => handleStartOver()}
-                className="mt-3 flex items-center justify-center space-x-2 px-6 py-3 md:py-2 bg-white text-gray-500 border border-brand-200 rounded-full hover:bg-brand-50 hover:text-brand-600 hover:border-brand-300 transition-all shadow-sm font-medium text-sm w-full md:w-auto"
+                onClick={handleTransformAll}
+                disabled={!hasPendingItems || !allNamesFilled}
+                className={`
+                  group relative flex items-center justify-center space-x-3 px-10 py-5 rounded-full font-display font-black text-xl shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 active:scale-95 w-full md:w-auto overflow-hidden
+                  ${!hasPendingItems || !allNamesFilled
+                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed shadow-none' 
+                    : 'bg-[linear-gradient(135deg,#FF1493,#9D4EDD)] text-white hover:brightness-110 ring-4 ring-transparent hover:ring-pink-200'
+                  }
+                `}
               >
-                <span>See another baby pet</span>
+                {/* Shimmer effect overlay */}
+                {hasPendingItems && allNamesFilled && (
+                  <div className="absolute inset-0 -translate-x-full group-hover:animate-[shimmer_1.5s_infinite] bg-gradient-to-r from-transparent via-white/25 to-transparent z-10" />
+                )}
+                
+                {isProcessing && !hasPendingItems ? (
+                    <>
+                      <div className="w-6 h-6 border-3 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      <span className="relative z-20">Creating Magic...</span>
+                    </>
+                ) : (
+                    <>
+                      <span className="text-2xl animate-[wiggle_1.5s_ease-in-out_infinite]">✨</span>
+                      <span className="relative z-20">Transform into Baby Pet</span>
+                      <span className="text-2xl animate-[wiggle_1.5s_ease-in-out_infinite_reverse]">✨</span>
+                    </>
+                )}
               </button>
             )}
          </div>

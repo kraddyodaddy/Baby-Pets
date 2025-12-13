@@ -7,6 +7,7 @@ import {
 import { validatePetImage, fileToBase64 } from '../services/geminiService';
 import { addToGallery } from '../services/galleryService';
 import { v4 as uuidv4 } from 'uuid';
+import confetti from 'canvas-confetti';
 
 interface ComparisonCardProps {
   upload: UploadedImage;
@@ -19,34 +20,25 @@ interface ComparisonCardProps {
 }
 
 const LOADING_MESSAGES = [
-  'Baby pets incoming soon...',
-  'Get ready to see your angel as a baby pet...',
-  'Preparing extra cute fluff...',
-  'Almost there, do the cute pet voice...',
-  'Turning your best friend into a baby pet...',
-  'Squeal level cuteness loading...',
-  'Sprinkling baby magic... ✨',
-  'Turning back the clock to puppy/kitten days...',
-  'Shrinking those paws...',
-  'Adding extra adorableness...',
-  'Rewinding to maximum cuteness...',
-  'Baby-fying in progress...',
-  'Unleashing the tiny version...',
-  'Making those eyes even bigger...',
-  'Fluffing up the baby fur...',
-  'Your fur baby is getting even baby-er...',
-  'Activating cuteness overload...',
-  'Time traveling to babyhood...',
-  'Preparing your heart for maximum awww...',
-  'Warning: cuteness levels rising...',
-  'Summoning the baby version...',
-  'Almost ready to melt your heart...',
-  'One second... finding their baby photos...',
-  'Teaching them how to be tiny again...',
-  'Dialing up the adorable...',
-  'Your baby pet is on the way!',
-  '🐶🐱🐭🐹🐰🦊🐻🐼🐨🐯🦁🐮'
+  { text: 'Baby pets incoming soon...', icon: '🚀' },
+  { text: 'Get ready to see your angel...', icon: '👼' },
+  { text: 'Preparing extra cute fluff...', icon: '☁️' },
+  { text: 'Almost there, do the cute voice...', icon: '🗣️' },
+  { text: 'Shrinking those paws...', icon: '🐾' },
+  { text: 'Squeal level cuteness loading...', icon: '😱' },
+  { text: 'Sprinkling baby magic... ✨', icon: '✨' },
+  { text: 'Rewinding time...', icon: '⏪' },
+  { text: 'Adding extra adorableness...', icon: '🥰' },
+  { text: 'Unleashing the tiny version...', icon: '🐣' },
+  { text: 'Making eyes bigger...', icon: '👀' },
+  { text: 'Fluffing up the fur...', icon: '🧶' },
+  { text: 'Activating cuteness overload...', icon: '⚡' },
+  { text: 'Time traveling to babyhood...', icon: '⏳' },
+  { text: 'Dialing up the adorable...', icon: '📞' },
+  { text: 'Your baby pet is on the way!', icon: '🚚' },
 ];
+
+const ANIMATIONS = ['animate-bounce', 'animate-pulse', 'animate-wiggle', 'animate-slide-up-fade'];
 
 export const ComparisonCard: React.FC<ComparisonCardProps> = ({ 
   upload, 
@@ -63,7 +55,8 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   const isError = result?.status === 'error';
 
   const [progress, setProgress] = useState(0);
-  const [currentMessage, setCurrentMessage] = useState(LOADING_MESSAGES[0]);
+  const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
+  const [currentAnimation, setCurrentAnimation] = useState(ANIMATIONS[0]);
   const [isSharing, setIsSharing] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState(false);
 
@@ -72,23 +65,68 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   const [isSubmittingToGallery, setIsSubmittingToGallery] = useState(false);
   const [galleryStatus, setGalleryStatus] = useState<'idle' | 'success' | 'error' | 'rejected'>('idle');
   const [galleryErrorMessage, setGalleryErrorMessage] = useState('');
+  
+  // Reveal State
+  const [hasRevealed, setHasRevealed] = useState(false);
+
+  // Trigger confetti and reveal when success
+  useEffect(() => {
+    if (isSuccess && !hasRevealed) {
+        setHasRevealed(true);
+        // Delay confetti slightly for effect
+        setTimeout(() => {
+            const count = 200;
+            const defaults = {
+              origin: { y: 0.7 }
+            };
+            
+            function fire(particleRatio: number, opts: any) {
+              confetti({
+                ...defaults,
+                ...opts,
+                particleCount: Math.floor(count * particleRatio)
+              });
+            }
+            
+            fire(0.25, {
+              spread: 26,
+              startVelocity: 55,
+            });
+            fire(0.2, {
+              spread: 60,
+            });
+            fire(0.35, {
+              spread: 100,
+              decay: 0.91,
+              scalar: 0.8
+            });
+            fire(0.1, {
+              spread: 120,
+              startVelocity: 25,
+              decay: 0.92,
+              scalar: 1.2
+            });
+            fire(0.1, {
+              spread: 120,
+              startVelocity: 45,
+            });
+        }, 100);
+    }
+  }, [isSuccess]);
 
   useEffect(() => {
     let progressInterval: ReturnType<typeof setInterval> | undefined;
     let messageInterval: ReturnType<typeof setInterval> | undefined;
 
     if (isLoading) {
-      setProgress(5); // Start with a little progress
-      
-      // Pick a random start message
-      setCurrentMessage(LOADING_MESSAGES[Math.floor(Math.random() * LOADING_MESSAGES.length)]);
+      setProgress(5); 
+      setHasRevealed(false); // Reset reveal state on new generation
 
-      // Progress bar simulation: approach 95% over time
+      // Progress bar simulation
       progressInterval = setInterval(() => {
         setProgress(prev => {
           if (prev >= 95) return 95;
           const remaining = 95 - prev;
-          // Move roughly 5% of the remaining distance per tick to simulate deceleration
           return prev + (remaining * 0.05);
         });
       }, 400);
@@ -96,7 +134,9 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       // Cycle messages randomly every 2.5 seconds
       messageInterval = setInterval(() => {
         const randomIndex = Math.floor(Math.random() * LOADING_MESSAGES.length);
-        setCurrentMessage(LOADING_MESSAGES[randomIndex]);
+        const randomAnim = ANIMATIONS[Math.floor(Math.random() * ANIMATIONS.length)];
+        setCurrentMessageIndex(randomIndex);
+        setCurrentAnimation(randomAnim);
       }, 2500);
 
     } else {
@@ -320,59 +360,84 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
     if (!result || result.status === 'idle') {
       return (
         <div className="text-center p-4">
-          <div className="w-10 h-10 bg-white rounded-full flex items-center justify-center mx-auto mb-2 shadow-sm text-pastel-pink">
-            <MagicIcon className="w-6 h-6" />
+          <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-4 shadow-md text-pastel-pink transform transition-transform hover:scale-110">
+            <MagicIcon className="w-8 h-8" />
           </div>
-          <p className="text-pastel-purple/80 font-medium text-xs leading-tight">Ready to<br/>transform</p>
+          <p className="text-pastel-purple font-bold text-sm md:text-base leading-tight">Ready to<br/>transform</p>
         </div>
       );
     }
     if (isQueued) {
       return (
-        <div className="flex flex-col items-center justify-center p-4 text-center w-full animate-pulse">
-          <div className="w-10 h-10 bg-pastel-yellow rounded-full flex items-center justify-center mb-2 shadow-sm text-yellow-600">
-            <ClockIcon className="w-6 h-6" />
+        <div className="flex flex-col items-center justify-center p-4 text-center w-full">
+          <div className="w-16 h-16 bg-pastel-yellow rounded-full flex items-center justify-center mb-4 shadow-md text-yellow-600 animate-pulse">
+            <ClockIcon className="w-8 h-8" />
           </div>
-          <h3 className="text-yellow-700 font-bold text-sm mb-1">Queueing</h3>
-          <p className="text-yellow-600 font-medium text-[10px] leading-tight">Waiting for slot...</p>
+          <h3 className="text-yellow-700 font-bold text-lg mb-1">Queueing</h3>
+          <p className="text-yellow-600 font-medium text-xs">Waiting for slot...</p>
         </div>
       );
     }
     if (isLoading) {
+      const msg = LOADING_MESSAGES[currentMessageIndex];
       return (
-        <div className="flex flex-col items-center justify-center p-4 text-center w-full max-w-[90%]">
-          <div className="w-full bg-white rounded-full h-2 mb-3 overflow-hidden shadow-inner border border-brand-100">
+        <div className="flex flex-col items-center justify-center p-6 text-center w-full h-full bg-pastel-pink-superlight/50 backdrop-blur-sm z-20">
+          
+          {/* Animated Icon */}
+          <div className="text-6xl mb-6 animate-bounce-slow filter drop-shadow-md">
+            {msg.icon}
+          </div>
+
+          {/* Large Animated Text */}
+          <div className="h-24 flex items-center justify-center mb-8 w-full max-w-md">
+             <h3 
+               key={currentMessageIndex}
+               className={`text-2xl md:text-3xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-pastel-purple text-center leading-tight drop-shadow-sm ${currentAnimation}`}
+             >
+               {msg.text}
+             </h3>
+          </div>
+
+          {/* Progress Bar */}
+          <div className="w-full max-w-[200px] bg-white rounded-full h-4 overflow-hidden shadow-inner border border-brand-100">
             <div 
               className="bg-gradient-to-r from-pastel-blue via-pastel-purple to-pastel-pink h-full rounded-full transition-all duration-300 ease-out relative" 
               style={{ width: `${progress}%` }}
             >
-              <div className="absolute inset-0 bg-white/20 animate-[pulse_2s_infinite]"></div>
+              <div className="absolute inset-0 bg-white/30 animate-[shimmer_1s_infinite]"></div>
             </div>
           </div>
-          <p className="text-pastel-pink font-display font-medium text-xs animate-pulse leading-tight">
-            {currentMessage}
-          </p>
         </div>
       );
     }
     if (isError) {
       return (
         <div className="text-center p-4 text-red-400 flex flex-col items-center justify-center h-full w-full">
-          <div className="bg-red-50 p-2 rounded-full mb-1">
-            <XMarkIcon className="w-4 h-4" />
+          <div className="bg-red-50 p-4 rounded-full mb-3">
+            <XMarkIcon className="w-8 h-8" />
           </div>
-          <p className="text-[10px] font-bold mb-1 text-gray-700">Failed</p>
-          <p className="text-[10px] text-gray-500 leading-tight max-w-xs">{result.error || "Error"}</p>
+          <p className="text-sm font-bold mb-1 text-gray-700">Transformation Failed</p>
+          <p className="text-xs text-gray-500 leading-tight max-w-xs">{result.error || "Something went wrong"}</p>
         </div>
       );
     }
     if (isSuccess && result.generatedImageUrl) {
       return (
-        <img 
-          src={result.generatedImageUrl} 
-          alt="Baby Pet Version" 
-          className="w-full h-full object-contain animate-fade-in absolute inset-0" 
-        />
+        <div className="relative w-full h-full flex items-center justify-center bg-white">
+           {/* Initial Reveal Curtain/Flash */}
+           <div className="absolute inset-0 z-20 bg-white flex flex-col items-center justify-center pointer-events-none animate-[slideUpFade_1s_ease-in_2s_reverse_forwards]">
+               <h2 className="text-4xl md:text-5xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-pastel-pink to-brand-600 animate-pulse text-center px-4">
+                 Meet Baby {upload.petName || 'Pet'}!
+               </h2>
+           </div>
+
+           {/* The Image - Popping in */}
+           <img 
+             src={result.generatedImageUrl} 
+             alt="Baby Pet Version" 
+             className="w-full h-full object-contain animate-pop-in relative z-10" 
+           />
+        </div>
       );
     }
     return null;
@@ -479,11 +544,11 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
            </div>
            
            {/* Right: Result */}
-           <div className="w-1/2 relative bg-pastel-pink-superlight flex flex-col items-center justify-center">
+           <div className="w-1/2 relative bg-pastel-pink-superlight flex flex-col items-center justify-center overflow-hidden">
              <div className="absolute inset-0 flex items-center justify-center">
                 {renderResultState()}
              </div>
-             {isSuccess && <div className="absolute bottom-2 right-2 bg-pastel-pink/90 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm pointer-events-none">Baby Pet</div>}
+             {isSuccess && <div className="absolute bottom-2 right-2 bg-pastel-pink/90 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm pointer-events-none z-30">Baby Pet</div>}
            </div>
         </div>
 
@@ -545,7 +610,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
                
                {/* Top Regenerate Buttons Overlay */}
                {isSuccess && !isLimitReached && (
-                  <div className="absolute top-4 left-0 right-0 flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
+                  <div className="absolute top-4 left-0 right-0 flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-40">
                      <button 
                        onClick={() => onRegenerate(upload.id)}
                        className="bg-white/90 hover:bg-white text-xs font-medium text-pastel-pink px-4 py-2 rounded-full shadow-md backdrop-blur-sm transform hover:scale-105 transition-all"
