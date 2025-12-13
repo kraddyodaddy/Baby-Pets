@@ -502,7 +502,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
           onClick={handleShareWithFriend}
           disabled={isSharing}
           className={`
-            mb-1 w-full py-3.5 rounded-xl font-bold text-base shadow-md transition-all flex items-center justify-center
+            w-full py-3.5 rounded-xl font-bold text-base shadow-md transition-all flex items-center justify-center
             bg-gradient-to-r from-pastel-blue to-pastel-purple hover:brightness-105 text-white
             active:transform active:scale-95
           `}
@@ -633,15 +633,15 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
            </div>
         </div>
 
-        {/* Right Side: Result + Overlays */}
-        <div className="relative flex-1 bg-pastel-pink-superlight flex flex-col items-center justify-center overflow-hidden w-1/2">
-           {renderResultState()}
+        {/* Right Side: Result + Controls */}
+        <div className="flex flex-col flex-1 w-1/2 bg-pastel-pink-superlight">
            
-           {/* Desktop Overlays for Success State */}
-           {isSuccess && (
-             <>
-                {/* Top Regenerate Buttons */}
-                {!isLimitReached && (
+           {/* Image Area (Flex Grow) */}
+           <div className="relative flex-1 w-full flex items-center justify-center overflow-hidden">
+               {renderResultState()}
+               
+               {/* Top Regenerate Buttons Overlay */}
+               {isSuccess && !isLimitReached && (
                   <div className="absolute top-4 left-0 right-0 flex justify-center space-x-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20">
                      <button 
                        onClick={() => onRegenerate(upload.id)}
@@ -656,14 +656,17 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
                        New Style
                      </button>
                   </div>
-                )}
+               )}
+           </div>
 
-                {/* Bottom Actions (Share & Download) */}
-                <div className="absolute bottom-4 left-4 right-4 flex flex-col space-y-2 z-20">
-                   <div className="bg-white/90 backdrop-blur-md rounded-xl p-2 shadow-lg flex flex-col space-y-2 border border-white/50">
-                      {/* Share Icons */}
-                      <div className="flex items-center justify-between px-1">
-                        <span className="text-[10px] font-bold text-gray-500 px-1 uppercase tracking-wide">Share:</span>
+           {/* Bottom Controls Area (Static) */}
+           {isSuccess && (
+             <div className="shrink-0 p-4 bg-white border-t border-brand-100 z-10 flex flex-col space-y-3">
+                 {/* Top Row: Share Icons + Gallery Checkbox */}
+                 <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 bg-gray-50 rounded-xl p-3 border border-gray-100">
+                      {/* Share Icons Section */}
+                      <div className="flex items-center justify-between xl:justify-start w-full xl:w-auto xl:space-x-3">
+                        <span className="text-[10px] font-bold text-gray-400 px-1 uppercase tracking-wide shrink-0">Share:</span>
                         <div className="flex space-x-1">
                           <button onClick={() => handleShare('Facebook')} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"><FacebookIcon className="w-5 h-5" /></button>
                           <button onClick={() => handleShare('Instagram')} className="p-1.5 text-pink-600 hover:bg-pink-50 rounded-lg transition-colors"><InstagramIcon className="w-5 h-5" /></button>
@@ -671,14 +674,14 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
                           <button onClick={() => handleShare('TikTok')} className="p-1.5 text-black hover:bg-gray-100 rounded-lg transition-colors"><TikTokIcon className="w-5 h-5" /></button>
                         </div>
                       </div>
-                      
-                      {/* Gallery Checkbox */}
+
+                      {/* Gallery Checkbox Section */}
                       {galleryStatus !== 'success' && (
-                        <div className="border-t border-gray-200 pt-2 px-1">
+                        <div className="xl:pl-4 xl:border-l xl:border-gray-200 w-full xl:w-auto flex justify-center xl:justify-end">
                             {galleryStatus === 'error' || galleryStatus === 'rejected' ? (
                                 <p className="text-[10px] text-red-500 text-center">{galleryErrorMessage}</p>
                             ) : (
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-3">
                                     <label className="flex items-center space-x-2 cursor-pointer">
                                         <input 
                                             type="checkbox" 
@@ -692,7 +695,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
                                         <button 
                                             onClick={handleAddToGallery}
                                             disabled={isSubmittingToGallery}
-                                            className="text-xs bg-pastel-pink text-white px-2 py-1 rounded hover:bg-brand-600"
+                                            className="text-xs bg-pastel-pink text-white px-3 py-1 rounded-full hover:bg-brand-600 shadow-sm"
                                         >
                                             {isSubmittingToGallery ? '...' : 'Post'}
                                         </button>
@@ -703,14 +706,20 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
                       )}
                       
                       {galleryStatus === 'success' && (
-                          <div className="text-center text-xs text-green-600 font-bold py-1">Shared to Gallery!</div>
+                          <div className="xl:pl-4 xl:border-l xl:border-gray-200 text-center text-xs text-green-600 font-bold py-1">Shared to Gallery!</div>
                       )}
+                 </div>
 
-                   </div>
-                   {renderShareWithFriendButton()}
-                   {renderDownloadButton()}
-                </div>
-             </>
+                 {/* Bottom Row: Buttons Side by Side */}
+                 <div className="flex flex-row space-x-3">
+                    <div className="flex-1">
+                        {renderShareWithFriendButton()}
+                    </div>
+                    <div className="flex-1">
+                        {renderDownloadButton()}
+                    </div>
+                 </div>
+             </div>
            )}
         </div>
       </div>

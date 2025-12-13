@@ -96,7 +96,7 @@ export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, c
         <p className="relative text-gray-500 text-sm md:text-base max-w-sm font-medium">
           {isFull 
             ? "You have added a photo." 
-            : "Upload a clear photo of your furry friend to see the magic! ✨"}
+            : "Upload a photo, tell us its name, and watch as dogs turn into puppies, and cats turn into kittens"}
         </p>
       </div>
     </div>

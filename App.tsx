@@ -247,10 +247,6 @@ function App() {
                     Baby Pet Again
                   </span>
                 </h1>
-                
-                <p className="text-lg text-gray-500 font-light mb-4">
-                  Upload a photo, tell us its name, and see it reimagined as an adorable baby pet.
-                </p>
               </section>
 
               {/* Upload Section */}
