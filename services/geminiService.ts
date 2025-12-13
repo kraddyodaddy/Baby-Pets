@@ -170,19 +170,22 @@ Before generating any image, analyze the input photo.
      "Your photo is a bit too blurry for accurate transformation. Please upload a clearer image where your pet’s face is in focus so we can create a realistic Baby version."
 
 Step 2: GENERATION (Only if Step 1 passes)
-TASK: REIMAGINE this specific animal as a 6-week-old baby.
-The goal is EXTREME CUTENESS through significant age regression.
+TASK: Create a HYPER-REALISTIC PHOTOGRAPH of this specific animal as a 2-6 WEEK OLD BABY.
+The result must be indistinguishable from a real photo taken with a high-end camera.
 
-CRITICAL FAILURE PREVENTION:
-- Do NOT return the original image. You must generate a NEW image.
-- Do NOT just shrink the adult body. You must CHANGE the physical proportions to be infant-like.
+STRICT STYLE RULES (Avoid "AI Look"):
+- NO "3D render" or "CGI" look.
+- NO smooth, plastic-like textures.
+- NO "cartoon", "Pixar", or "Disney" stylization.
+- The fur must look natural, with individual strands, stray hairs, and realistic texture variability.
+- The lighting must be natural and photographic, not artificial studio rendering.
 
-REQUIRED ANATOMICAL CHANGES (Apply Aggressively):
-1. EYES: Make them significantly LARGER, ROUNDER, and WETTER/SHINIER. This is the most important "baby" feature.
-2. HEAD-TO-BODY RATIO: The head must be much larger relative to the body (chibi-style realism).
-3. SNOUT/MUZZLE: Drastically SHORTEN the snout. It should be small and button-like, not long and adult-like.
-4. BODY SHAPE: Round, chubby, and compact. Limbs must be shorter and stubbier.
-5. COAT: Use soft, fluffy, fuzzy puppy/kitten down texture, not coarse adult hair.
+BIOLOGICAL ACCURACY (Age 2-6 Weeks):
+- EYES: Large and innocent, but BIOLOGICALLY REALISTIC. Do not make them unnaturally huge or alien-like.
+- SNOUT: Drastically shorter than the adult version (button nose), but anatomically correct for a puppy/kitten.
+- BODY: Round, soft, and slightly clumsy looking.
+- PAWS: Soft, oversized for the body.
+- PROPORTIONS: Use correct neonate proportions (large cranium, shorter limbs), NOT stylized "chibi" proportions.
 
 IDENTITY PRESERVATION (MARKINGS) - HIGHEST PRIORITY:
 - You MUST COPY the EXACT color distribution and fur patterns from the original image.
@@ -191,9 +194,6 @@ IDENTITY PRESERVATION (MARKINGS) - HIGHEST PRIORITY:
 - MAP THE TEXTURE: The markings on the baby's face must match the markings on the adult's face 1:1.
 - If the pet has specific white socks, spots on the nose, or a blaze on the forehead, these MUST be present in the baby version.
 
-Style requirement:
-• Photorealistic textures and lighting (Not a cartoon, but adorable proportions)
-• Soft, dreamy depth of field
 ${additionalStyle}
 
 ${labelInstruction}
