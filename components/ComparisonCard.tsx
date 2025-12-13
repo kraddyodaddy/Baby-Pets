@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { UploadedImage, TransformationResult } from '../types';
 import { 
-  XMarkIcon, MagicIcon, DownloadIcon, ClockIcon, ShareIcon,
+  XMarkIcon, MagicIcon, DownloadIcon, ClockIcon, ShareIcon, CameraIcon,
   FacebookIcon, InstagramIcon, TwitterIcon, TikTokIcon, RedditIcon 
 } from './Icons';
 import { validatePetImage, fileToBase64 } from '../services/geminiService';
@@ -34,6 +34,98 @@ const LOADING_MESSAGES = [
 
 const ANIMATIONS = ['animate-soft-slide-up', 'animate-gentle-blur', 'animate-dreamy-fade'];
 
+// Helper to generate comparison image
+const createComparisonImage = (originalUrl: string, generatedUrl: string, petName: string): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const img1 = new Image();
+    const img2 = new Image();
+    
+    // Cross origin handling usually needed for external URLs
+    img1.crossOrigin = "anonymous";
+    img2.crossOrigin = "anonymous";
+    
+    let loaded = 0;
+    const onLoaded = () => {
+      loaded++;
+      if (loaded === 2) render();
+    };
+
+    img1.onload = onLoaded;
+    img2.onload = onLoaded;
+    img1.onerror = (e) => reject(e);
+    img2.onerror = (e) => reject(e);
+
+    img1.src = originalUrl;
+    img2.src = generatedUrl;
+
+    function render() {
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        if (!ctx) throw new Error("No canvas context");
+
+        // Layout Config
+        const padding = 40;
+        const gap = 20;
+        const labelHeight = 60;
+        const headerHeight = 80;
+        const footerHeight = 60;
+
+        // Target dimensions - match height to ensure consistency
+        const workHeight = 1080; 
+        
+        const scale1 = workHeight / img1.height;
+        const scale2 = workHeight / img2.height;
+        
+        const w1 = img1.width * scale1;
+        const w2 = img2.width * scale2;
+        
+        const totalWidth = padding + w1 + gap + w2 + padding;
+        const totalHeight = padding + headerHeight + workHeight + labelHeight + footerHeight + padding;
+        
+        canvas.width = totalWidth;
+        canvas.height = totalHeight;
+
+        // Draw Background
+        ctx.fillStyle = '#FFFEF7';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Header
+        ctx.fillStyle = '#4A4A4A';
+        ctx.font = 'bold 50px Quicksand, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText(`Baby ${petName}`, totalWidth / 2, padding + 50);
+
+        // Images
+        const imgY = padding + headerHeight;
+        ctx.drawImage(img1, padding, imgY, w1, workHeight);
+        ctx.drawImage(img2, padding + w1 + gap, imgY, w2, workHeight);
+
+        // Labels (Semi-transparent overlay at bottom of images)
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+        ctx.fillRect(padding, imgY + workHeight - 60, w1, 60);
+        ctx.fillRect(padding + w1 + gap, imgY + workHeight - 60, w2, 60);
+
+        ctx.fillStyle = '#E092B0'; // Brand pink
+        ctx.font = 'bold 30px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Original', padding + w1/2, imgY + workHeight - 20);
+        ctx.fillText('Baby Version', padding + w1 + gap + w2/2, imgY + workHeight - 20);
+        
+        // Footer (Watermark)
+        ctx.fillStyle = '#A8A8A6';
+        ctx.font = 'italic 30px Quicksand, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Created with BabyPets.ai', totalWidth / 2, totalHeight - padding - 10);
+
+        resolve(canvas.toDataURL('image/jpeg', 0.9));
+      } catch (err) {
+        reject(err);
+      }
+    }
+  });
+};
+
 export const ComparisonCard: React.FC<ComparisonCardProps> = ({ 
   upload, 
   result, 
@@ -52,6 +144,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [currentAnimation, setCurrentAnimation] = useState(ANIMATIONS[0]);
   const [isSharing, setIsSharing] = useState(false);
+  const [isGeneratingComparison, setIsGeneratingComparison] = useState(false);
   const [copyFeedback, setCopyFeedback] = useState(false);
 
   // Gallery State
@@ -259,13 +352,12 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
     }
   };
 
-  const handleDownloadClick = async (e: React.MouseEvent<HTMLAnchorElement>) => {
+  const handleDownloadClick = async (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
+    e.preventDefault();
     const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
     
     // On mobile, try to use native share (Save Image) flow
     if (isMobile && navigator.share && result?.generatedImageUrl) {
-      e.preventDefault();
-      
       if (isSharing) return;
       setIsSharing(true);
 
@@ -303,6 +395,61 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       } finally {
         setIsSharing(false);
       }
+    } else if (result?.generatedImageUrl) {
+       // Desktop / standard download
+       const link = document.createElement('a');
+       link.href = result.generatedImageUrl;
+       link.download = `baby-${upload.petName || 'pet'}.png`;
+       document.body.appendChild(link);
+       link.click();
+       document.body.removeChild(link);
+    }
+  };
+
+  const handleDownloadComparison = async () => {
+    if (!result?.generatedImageUrl || isGeneratingComparison) return;
+    
+    setIsGeneratingComparison(true);
+    try {
+      const comparisonDataUrl = await createComparisonImage(
+        upload.previewUrl, 
+        result.generatedImageUrl, 
+        upload.petName || 'Pet'
+      );
+
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+
+      if (isMobile && navigator.share) {
+         // Convert data URL to blob for sharing
+         const res = await fetch(comparisonDataUrl);
+         const blob = await res.blob();
+         const file = new File([blob], `comparison-${upload.petName || 'pet'}.jpg`, { type: 'image/jpeg' });
+         const shareData = { files: [file], title: 'Baby Pet Comparison' };
+         
+         if (navigator.canShare && navigator.canShare(shareData)) {
+            await navigator.share(shareData);
+         } else {
+            const link = document.createElement('a');
+            link.href = comparisonDataUrl;
+            link.download = `comparison-${upload.petName || 'pet'}.jpg`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+         }
+      } else {
+        const link = document.createElement('a');
+        link.href = comparisonDataUrl;
+        link.download = `comparison-${upload.petName || 'pet'}.jpg`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      }
+
+    } catch (e) {
+      console.error("Failed to generate comparison", e);
+      alert("Could not generate comparison image.");
+    } finally {
+      setIsGeneratingComparison(false);
     }
   };
 
@@ -487,29 +634,47 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
      );
   };
 
-  const renderCompactActions = () => {
-      const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const renderDownloadActions = (isMobile: boolean) => {
+      const buttonClass = "flex items-center justify-center space-x-1.5 px-4 py-2 text-white rounded-full text-xs md:text-sm font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95 whitespace-nowrap";
+      
       return (
-          <div className="flex items-center space-x-2 md:space-x-3">
-              <button
-                 onClick={handleShareWithFriend}
-                 className="flex items-center justify-center space-x-1.5 px-4 py-2 bg-gradient-to-r from-blue-400 to-indigo-500 hover:from-blue-500 hover:to-indigo-600 text-white rounded-full text-sm font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
-                 title="Share"
-              >
-                  <ShareIcon className="w-4 h-4" />
-                  <span className={`${isMobile ? 'hidden' : 'inline'}`}>Share</span>
-              </button>
+          <div className={`flex ${isMobile ? 'flex-col space-y-2 mt-3' : 'items-center space-x-2'}`}>
+              {!isMobile && (
+                <button
+                   onClick={handleShareWithFriend}
+                   className="flex items-center justify-center p-2 text-gray-400 hover:text-blue-500 hover:bg-blue-50 rounded-full transition-colors"
+                   title="Share Link"
+                >
+                   <ShareIcon className="w-5 h-5" />
+                </button>
+              )}
               
-              <a 
-                href={result?.generatedImageUrl || '#'} 
-                download={`baby-${upload.petName || 'pet'}.png`}
-                onClick={handleDownloadClick}
-                className="flex items-center justify-center space-x-1.5 px-4 py-2 bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full text-sm font-bold transition-all shadow-md hover:shadow-lg hover:-translate-y-0.5 active:scale-95"
-                title="Download"
-              >
-                  <DownloadIcon className="w-4 h-4" />
-                  <span className={`${isMobile ? 'hidden' : 'inline'}`}>{isMobile ? 'Save' : 'Download'}</span>
-              </a>
+              <div className={`flex ${isMobile ? 'space-x-2' : 'space-x-2'}`}>
+                  {/* Download Baby Only */}
+                  <button 
+                    onClick={handleDownloadClick}
+                    className={`${buttonClass} bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 flex-1`}
+                    title="Download Baby Photo"
+                  >
+                      <DownloadIcon className="w-4 h-4" />
+                      <span>Baby Only</span>
+                  </button>
+
+                  {/* Download Comparison */}
+                  <button 
+                    onClick={handleDownloadComparison}
+                    disabled={isGeneratingComparison}
+                    className={`${buttonClass} bg-gradient-to-r from-indigo-400 to-purple-400 hover:from-indigo-500 hover:to-purple-500 flex-1 ${isGeneratingComparison ? 'opacity-70 cursor-wait' : ''}`}
+                    title="Download Comparison"
+                  >
+                      {isGeneratingComparison ? (
+                         <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                      ) : (
+                         <CameraIcon className="w-4 h-4" />
+                      )}
+                      <span>{isMobile ? "Before/After" : "Before & After"}</span>
+                  </button>
+              </div>
           </div>
       );
   }
@@ -548,14 +713,26 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
                
                {/* Controls */}
                <div className="flex flex-col space-y-3 pt-1">
-                   {/* Actions Row */}
+                   {/* Top Actions Row: Gallery + Share */}
                    <div className="flex justify-between items-center bg-gray-50 p-2 rounded-xl">
                        {renderCompactGalleryControl()}
-                       {renderCompactActions()}
+                       <button
+                         onClick={handleShareWithFriend}
+                         className="flex items-center space-x-1 text-gray-500 text-xs font-bold px-3 py-1.5 rounded-full hover:bg-gray-200 transition-colors"
+                       >
+                         <ShareIcon className="w-3.5 h-3.5" />
+                         <span>Share</span>
+                       </button>
+                   </div>
+
+                   {/* Download Buttons Row */}
+                   <div>
+                      <div className="text-[10px] text-gray-400 font-bold mb-1 uppercase tracking-wide text-center">Save Your Favorite</div>
+                      {renderDownloadActions(true)}
                    </div>
                    
                    {!isLimitReached && (
-                       <div className="flex space-x-2">
+                       <div className="flex space-x-2 mt-2">
                            <button onClick={() => onRegenerate(upload.id)} className="flex-1 py-2 bg-white border border-brand-100 rounded-lg text-xs font-bold text-gray-500">Again</button>
                            <button onClick={() => onRegenerate(upload.id, "Use a softer, dreamier, alternate artistic style.")} className="flex-1 py-2 bg-white border border-brand-100 rounded-lg text-xs font-bold text-gray-500">New Style</button>
                        </div>
@@ -623,7 +800,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
 
                  {/* Right: Actions */}
                  <div className="ml-4">
-                     {renderCompactActions()}
+                     {renderDownloadActions(false)}
                  </div>
              </div>
            )}
