@@ -98,6 +98,12 @@ export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, c
             ? "You have added a photo." 
             : "Upload a photo, tell us its name, and watch as dogs turn into puppies, and cats turn into kittens"}
         </p>
+
+        {!isFull && (
+            <p className="relative text-gray-400 text-xs mt-2 max-w-xs italic">
+                (Use clear, close-up photos with minimal background)
+            </p>
+        )}
       </div>
     </div>
   );
