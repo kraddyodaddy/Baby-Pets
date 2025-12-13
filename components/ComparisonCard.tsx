@@ -285,7 +285,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       
       if (!isSafe) {
         setGalleryStatus('rejected');
-        setGalleryErrorMessage("Sorry, this image doesn't meet our gallery guidelines (must be a clear, appropriate pet photo).");
+        setGalleryErrorMessage("Image not suitable for gallery.");
         setIsSubmittingToGallery(false);
         return;
       }
@@ -306,7 +306,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
     } catch (e) {
       console.error(e);
       setGalleryStatus('error');
-      setGalleryErrorMessage("Something went wrong while saving to the gallery.");
+      setGalleryErrorMessage("Gallery save failed.");
     } finally {
       setIsSubmittingToGallery(false);
     }
@@ -371,7 +371,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
         <img 
           src={result.generatedImageUrl} 
           alt="Baby Pet Version" 
-          className="w-full h-full object-contain animate-fade-in absolute inset-0 md:static"
+          className="w-full h-full object-contain animate-fade-in absolute inset-0" 
         />
       );
     }
@@ -396,147 +396,63 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
     </div>
   );
 
-  const renderRegenerateButtons = () => {
-    if (!isSuccess || isLimitReached) return null;
-    return (
-      <div className="flex flex-row space-x-2 w-full">
-        <button 
-          onClick={() => onRegenerate(upload.id)}
-          className="flex-1 bg-white hover:bg-pastel-pink-light text-gray-600 hover:text-gray-800 border border-brand-100 py-3 md:py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm"
-        >
-          Again
-        </button>
-        <button 
-          onClick={() => onRegenerate(upload.id, "Use a softer, dreamier, alternate artistic style.")}
-          className="flex-1 bg-white hover:bg-pastel-pink-light text-gray-600 hover:text-gray-800 border border-brand-100 py-3 md:py-2.5 rounded-xl text-sm font-bold transition-colors shadow-sm"
-        >
-          New Style
-        </button>
-      </div>
-    );
-  };
-
-  const renderGallerySection = () => {
-    if (!isSuccess) return null;
-
-    if (galleryStatus === 'success') {
-      return (
-        <div className="w-full bg-pastel-mint/30 border border-pastel-mint text-green-700 p-3 rounded-xl text-sm font-medium text-center">
-          ✨ Successfully added to the Gallery!
-        </div>
-      );
-    }
-
-    if (galleryStatus === 'rejected') {
-       return (
-        <div className="w-full bg-red-50 border border-red-200 text-red-500 p-3 rounded-xl text-xs text-center">
-          {galleryErrorMessage}
-        </div>
-       );
-    }
-    
-    if (galleryStatus === 'error') {
-       return (
-        <div className="w-full bg-red-50 border border-red-200 text-red-500 p-3 rounded-xl text-xs text-center">
-          {galleryErrorMessage}
-        </div>
-       );
-    }
-
-    return (
-      <div className="w-full bg-pastel-cream border border-brand-100 rounded-xl p-3 flex flex-col space-y-3">
-        <label className="flex items-center space-x-2 cursor-pointer">
-          <input 
-            type="checkbox" 
-            checked={galleryCheck} 
-            onChange={(e) => setGalleryCheck(e.target.checked)}
-            className="w-4 h-4 text-pastel-pink rounded focus:ring-pastel-pink border-gray-300"
-          />
-          <span className="text-sm text-gray-600 font-medium select-none">Share my transformation to the public gallery</span>
-        </label>
-        
-        {galleryCheck && (
-          <button 
-            onClick={handleAddToGallery}
-            disabled={isSubmittingToGallery}
-            className={`
-              w-full py-2 rounded-lg text-sm font-bold transition-colors shadow-sm flex items-center justify-center
-              ${isSubmittingToGallery 
-                ? 'bg-gray-100 text-gray-400 cursor-wait' 
-                : 'bg-white border-2 border-pastel-pink text-pastel-pink hover:bg-pastel-pink hover:text-white'
-              }
-            `}
-          >
-             {isSubmittingToGallery ? (
-               <>Processing AI Check...</>
-             ) : (
-               <>Submit to Gallery</>
-             )}
-          </button>
-        )}
-      </div>
-    );
-  };
-
-  const renderShareBar = () => {
-    if (!isSuccess) return null;
-    return (
-      <div className="bg-white rounded-xl p-3 flex items-center justify-between border border-brand-50 w-full shadow-sm">
-        <span className="text-[10px] font-bold text-gray-400 px-1 uppercase tracking-wide hidden xs:block">Share:</span>
-        <div className="flex space-x-2 justify-between w-full xs:w-auto">
-          <button onClick={() => handleShare('Facebook')} disabled={isSharing} className="p-2 text-blue-500 bg-white hover:bg-blue-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><FacebookIcon className="w-5 h-5" /></button>
-          <button onClick={() => handleShare('Instagram')} disabled={isSharing} className="p-2 text-pink-500 bg-white hover:bg-pink-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><InstagramIcon className="w-5 h-5" /></button>
-          <button onClick={() => handleShare('Twitter')} disabled={isSharing} className="p-2 text-gray-600 bg-white hover:bg-gray-100 rounded-lg transition-colors shadow-sm"><TwitterIcon className="w-5 h-5" /></button>
-          <button onClick={() => handleShare('TikTok')} disabled={isSharing} className="p-2 text-black bg-white hover:bg-gray-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><TikTokIcon className="w-5 h-5" /></button>
-          <button onClick={() => handleShare('Reddit')} disabled={isSharing} className="p-2 text-orange-500 bg-white hover:bg-orange-50 border border-gray-100 rounded-lg transition-colors shadow-sm"><RedditIcon className="w-5 h-5" /></button>
-        </div>
-      </div>
-    );
-  };
-  
-  const renderShareWithFriendButton = () => {
-     if (!isSuccess) return null;
-     
+  const renderCompactGalleryControl = () => {
+     if (galleryStatus === 'success') {
+         return <span className="text-xs font-bold text-green-600 flex items-center">✅ Added to Gallery</span>;
+     }
+     if (galleryStatus === 'error' || galleryStatus === 'rejected') {
+         return <span className="text-xs text-red-500">{galleryErrorMessage || "Error saving"}</span>;
+     }
      return (
-        <button
-          onClick={handleShareWithFriend}
-          disabled={isSharing}
-          className={`
-            w-full py-3.5 rounded-xl font-bold text-base shadow-md transition-all flex items-center justify-center
-            bg-gradient-to-r from-pastel-blue to-pastel-purple hover:brightness-105 text-white
-            active:transform active:scale-95
-          `}
-        >
-           {copyFeedback ? (
-               <span>Link Copied! ✅</span>
-           ) : (
-               <>
-                 <ShareIcon className="w-5 h-5 mr-2" />
-                 Share with Friend
-               </>
-           )}
-        </button>
+        <div className="flex items-center space-x-2">
+            <label className="flex items-center space-x-2 cursor-pointer hover:opacity-80 transition-opacity">
+                <input 
+                    type="checkbox" 
+                    checked={galleryCheck} 
+                    onChange={(e) => setGalleryCheck(e.target.checked)}
+                    className="w-4 h-4 text-pastel-pink rounded border-gray-300 focus:ring-pastel-pink"
+                />
+                <span className="text-xs md:text-sm text-gray-600 font-medium select-none">Add to Gallery</span>
+            </label>
+            {galleryCheck && (
+                <button 
+                  onClick={(e) => { e.preventDefault(); handleAddToGallery(); }}
+                  disabled={isSubmittingToGallery}
+                  className="text-[10px] bg-pastel-pink text-white px-3 py-1 rounded-full hover:bg-brand-600 shadow-sm font-bold transition-all animate-fade-in"
+                >
+                  {isSubmittingToGallery ? 'Saving...' : 'Post'}
+                </button>
+            )}
+        </div>
      );
   };
 
-  const renderDownloadButton = () => {
-    if (!isSuccess || !result?.generatedImageUrl) return null;
-    
-    // Check if device is likely mobile to show "Save Image" vs "Download Image"
-    const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-
-    return (
-      <a 
-        href={result.generatedImageUrl} 
-        download={`baby-${upload.petName || 'pet'}.png`}
-        onClick={handleDownloadClick}
-        className="bg-pastel-pink hover:bg-brand-600 text-white py-3.5 rounded-xl shadow-md transition-all flex items-center justify-center font-bold text-base w-full active:transform active:scale-95 cursor-pointer"
-      >
-        <DownloadIcon className="w-5 h-5 mr-2" />
-        {isMobile ? 'Save Image' : 'Download Image'}
-      </a>
-    );
-  };
+  const renderCompactActions = () => {
+      const isMobile = typeof navigator !== 'undefined' && /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      return (
+          <div className="flex items-center space-x-2">
+              <button
+                 onClick={handleShareWithFriend}
+                 className="flex items-center space-x-1.5 px-3 py-2 bg-brand-50 hover:bg-brand-100 text-brand-600 rounded-lg text-sm font-bold transition-colors"
+                 title="Share"
+              >
+                  <ShareIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">Share</span>
+              </button>
+              
+              <a 
+                href={result?.generatedImageUrl || '#'} 
+                download={`baby-${upload.petName || 'pet'}.png`}
+                onClick={handleDownloadClick}
+                className="flex items-center space-x-1.5 px-3 py-2 bg-pastel-pink hover:bg-brand-400 text-white rounded-lg text-sm font-bold transition-colors shadow-sm"
+                title="Download"
+              >
+                  <DownloadIcon className="w-4 h-4" />
+                  <span className="hidden sm:inline">{isMobile ? 'Save' : 'Download'}</span>
+              </a>
+          </div>
+      );
+  }
 
   return (
     <div className={`bg-white rounded-3xl shadow-lg border border-brand-100 overflow-hidden relative flex flex-col md:flex-row ${className}`}>
@@ -552,13 +468,9 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
 
       {/* =================================================================================
           MOBILE LAYOUT (< md) 
-          Structure: 
-          1. Images Row (Side-by-side, fully visible)
-          2. Controls Column (Flow below images)
          ================================================================================= */}
       <div className="flex flex-col w-full md:hidden">
-        {/* 1. Side-by-Side Images - Height optimized for small screens (iPhone SE) */}
-        {/* Changed from fixed h-52/h-64/h-80 to aspect ratio 2:1 so each side is a square, reducing tall borders on wide screens */}
+        {/* Images Row - Fixed Aspect Ratio */}
         <div className="flex flex-row w-full aspect-[2/1] border-b border-gray-100">
            {/* Left: Original */}
            <div className="w-1/2 relative border-r border-gray-100 bg-gray-50 flex items-center justify-center">
@@ -568,44 +480,36 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
            
            {/* Right: Result */}
            <div className="w-1/2 relative bg-pastel-pink-superlight flex flex-col items-center justify-center">
-             {renderResultState()}
+             <div className="absolute inset-0 flex items-center justify-center">
+                {renderResultState()}
+             </div>
              {isSuccess && <div className="absolute bottom-2 right-2 bg-pastel-pink/90 text-white text-[10px] font-bold px-2 py-1 rounded backdrop-blur-sm pointer-events-none">Baby Pet</div>}
            </div>
         </div>
 
-        {/* 2. Controls Flow (Below images) */}
+        {/* Controls */}
         <div className="p-4 bg-white">
-           {/* Pet Name or Input */}
            {!isSuccess ? renderNameInput() : (
-             <div className="text-center pb-2 border-b border-gray-50 mb-3">
-               <h3 className="font-display font-bold text-2xl text-gray-800">Baby {upload.petName}</h3>
-             </div>
-           )}
-           
-           {isSuccess && (
-             <div className="flex flex-col space-y-3 animate-fade-in">
+             <div className="flex flex-col space-y-3">
+               <div className="text-center pb-2 border-b border-gray-50">
+                 <h3 className="font-display font-bold text-2xl text-gray-800">Baby {upload.petName}</h3>
+               </div>
                
-               {/* Daily Limit Message if applicable */}
-               {isLimitReached && (
-                 <div className="bg-gray-100 text-gray-500 text-xs font-medium py-2 px-3 rounded-lg text-center">
-                   Daily limit reached. Come back tomorrow!
-                 </div>
-               )}
-
-               {/* b) Again / New Style */}
-               {!isLimitReached && renderRegenerateButtons()}
-               
-               {/* c) Social Share */}
-               {renderShareBar()}
-               
-               {/* d) Share with Friend */}
-               {renderShareWithFriendButton()}
-
-               {/* e) Download Button */}
-               {renderDownloadButton()}
-
-               {/* f) Gallery Submission */}
-               {renderGallerySection()}
+               {/* Controls */}
+               <div className="flex flex-col space-y-3 pt-1">
+                   {/* Actions Row */}
+                   <div className="flex justify-between items-center bg-gray-50 p-2 rounded-xl">
+                       {renderCompactGalleryControl()}
+                       {renderCompactActions()}
+                   </div>
+                   
+                   {!isLimitReached && (
+                       <div className="flex space-x-2">
+                           <button onClick={() => onRegenerate(upload.id)} className="flex-1 py-2 bg-white border border-brand-100 rounded-lg text-xs font-bold text-gray-500">Again</button>
+                           <button onClick={() => onRegenerate(upload.id, "Use a softer, dreamier, alternate artistic style.")} className="flex-1 py-2 bg-white border border-brand-100 rounded-lg text-xs font-bold text-gray-500">New Style</button>
+                       </div>
+                   )}
+               </div>
              </div>
            )}
         </div>
@@ -614,7 +518,6 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
 
       {/* =================================================================================
           DESKTOP LAYOUT (>= md) 
-          Structure: Split View with Overlays
          ================================================================================= */}
       <div className="hidden md:flex md:flex-row w-full h-full min-h-[400px]">
         {/* Left Side: Original + Input */}
@@ -623,10 +526,10 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
              <img src={upload.previewUrl} alt="Original" className="w-full h-full object-contain" />
              <div className="absolute bottom-4 left-4 bg-black/40 text-white text-xs px-2 py-1 rounded-md backdrop-blur-md">Original</div>
            </div>
-           <div className="shrink-0 p-4 bg-white border-t border-brand-100 z-10">
-             {/* Hide input on desktop too if success, replace with name */}
+           {/* Left Footer: Name */}
+           <div className="shrink-0 h-[80px] p-4 bg-white border-t border-brand-100 z-10 flex items-center justify-center">
              {!isSuccess ? renderNameInput() : (
-                <div className="text-center py-2">
+                <div className="text-center w-full">
                    <h3 className="font-display font-bold text-xl text-gray-700">Baby {upload.petName}</h3>
                 </div>
              )}
@@ -636,7 +539,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
         {/* Right Side: Result + Controls */}
         <div className="flex flex-col flex-1 w-1/2 bg-pastel-pink-superlight">
            
-           {/* Image Area (Flex Grow) */}
+           {/* Image Area */}
            <div className="relative flex-1 w-full flex items-center justify-center overflow-hidden">
                {renderResultState()}
                
@@ -659,65 +562,17 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
                )}
            </div>
 
-           {/* Bottom Controls Area (Static) */}
+           {/* Right Footer: Compact Controls */}
            {isSuccess && (
-             <div className="shrink-0 p-4 bg-white border-t border-brand-100 z-10 flex flex-col space-y-3">
-                 {/* Top Row: Share Icons + Gallery Checkbox */}
-                 <div className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-3 bg-gray-50 rounded-xl p-3 border border-gray-100">
-                      {/* Share Icons Section */}
-                      <div className="flex items-center justify-between xl:justify-start w-full xl:w-auto xl:space-x-3">
-                        <span className="text-[10px] font-bold text-gray-400 px-1 uppercase tracking-wide shrink-0">Share:</span>
-                        <div className="flex space-x-1">
-                          <button onClick={() => handleShare('Facebook')} className="p-1.5 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"><FacebookIcon className="w-5 h-5" /></button>
-                          <button onClick={() => handleShare('Instagram')} className="p-1.5 text-pink-600 hover:bg-pink-50 rounded-lg transition-colors"><InstagramIcon className="w-5 h-5" /></button>
-                          <button onClick={() => handleShare('Twitter')} className="p-1.5 text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"><TwitterIcon className="w-5 h-5" /></button>
-                          <button onClick={() => handleShare('TikTok')} className="p-1.5 text-black hover:bg-gray-100 rounded-lg transition-colors"><TikTokIcon className="w-5 h-5" /></button>
-                        </div>
-                      </div>
-
-                      {/* Gallery Checkbox Section */}
-                      {galleryStatus !== 'success' && (
-                        <div className="xl:pl-4 xl:border-l xl:border-gray-200 w-full xl:w-auto flex justify-center xl:justify-end">
-                            {galleryStatus === 'error' || galleryStatus === 'rejected' ? (
-                                <p className="text-[10px] text-red-500 text-center">{galleryErrorMessage}</p>
-                            ) : (
-                                <div className="flex items-center space-x-3">
-                                    <label className="flex items-center space-x-2 cursor-pointer">
-                                        <input 
-                                            type="checkbox" 
-                                            checked={galleryCheck} 
-                                            onChange={(e) => setGalleryCheck(e.target.checked)}
-                                            className="w-3.5 h-3.5 text-pastel-pink rounded focus:ring-pastel-pink border-gray-300"
-                                        />
-                                        <span className="text-xs text-gray-600 font-medium">Add to Gallery</span>
-                                    </label>
-                                    {galleryCheck && (
-                                        <button 
-                                            onClick={handleAddToGallery}
-                                            disabled={isSubmittingToGallery}
-                                            className="text-xs bg-pastel-pink text-white px-3 py-1 rounded-full hover:bg-brand-600 shadow-sm"
-                                        >
-                                            {isSubmittingToGallery ? '...' : 'Post'}
-                                        </button>
-                                    )}
-                                </div>
-                            )}
-                        </div>
-                      )}
-                      
-                      {galleryStatus === 'success' && (
-                          <div className="xl:pl-4 xl:border-l xl:border-gray-200 text-center text-xs text-green-600 font-bold py-1">Shared to Gallery!</div>
-                      )}
+             <div className="shrink-0 h-[80px] px-6 bg-white border-t border-brand-100 z-10 flex items-center justify-between">
+                 {/* Left: Gallery */}
+                 <div className="flex-shrink-0">
+                     {renderCompactGalleryControl()}
                  </div>
 
-                 {/* Bottom Row: Buttons Side by Side */}
-                 <div className="flex flex-row space-x-3">
-                    <div className="flex-1">
-                        {renderShareWithFriendButton()}
-                    </div>
-                    <div className="flex-1">
-                        {renderDownloadButton()}
-                    </div>
+                 {/* Right: Actions */}
+                 <div className="ml-4">
+                     {renderCompactActions()}
                  </div>
              </div>
            )}

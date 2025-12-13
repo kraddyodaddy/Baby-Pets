@@ -1,12 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { getGallery, GalleryItem } from '../services/galleryService';
+import { EXAMPLES } from './Examples';
 
 export const GalleryPage = ({ onNavigate }: { onNavigate: (view: any) => void }) => {
   const [items, setItems] = useState<GalleryItem[]>([]);
 
   useEffect(() => {
-    // Load gallery items on mount
-    setItems(getGallery());
+    // Load gallery items from local storage
+    const storedItems = getGallery();
+
+    // Map the static examples to the GalleryItem format
+    const exampleItems: GalleryItem[] = EXAMPLES.map((ex, i) => ({
+      id: `featured-example-${i}`,
+      petName: ex.name.replace('Baby ', ''), // Remove prefix for consistency if needed, or keep it.
+      originalImage: '', // Signal that there is no original image
+      babyImage: ex.src,
+      timestamp: Date.now() // Use current time or 0
+    }));
+
+    // Combine stored items and example items
+    // We place stored (user) items first, then examples at the bottom
+    setItems([...storedItems, ...exampleItems]);
   }, []);
 
   return (
@@ -38,26 +52,44 @@ export const GalleryPage = ({ onNavigate }: { onNavigate: (view: any) => void })
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto px-4">
           {items.map((item) => (
             <div key={item.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
-              {/* Images Side by Side */}
+              {/* Image Area */}
               <div className="flex h-48 sm:h-56 md:h-64">
-                <div className="w-1/2 relative bg-gray-50 flex items-center justify-center">
-                  <img 
-                    src={item.originalImage} 
-                    alt="Original" 
-                    className="w-full h-full object-contain" 
-                    loading="lazy"
-                  />
-                  <div className="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm">Before</div>
-                </div>
-                <div className="w-1/2 relative bg-brand-50 flex items-center justify-center">
-                  <img 
-                    src={item.babyImage} 
-                    alt="Baby Version" 
-                    className="w-full h-full object-contain"
-                    loading="lazy"
-                  />
-                  <div className="absolute bottom-2 right-2 bg-brand-500/80 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm">After</div>
-                </div>
+                {item.originalImage ? (
+                  /* Comparison View (User Generated) */
+                  <>
+                    <div className="w-1/2 relative bg-gray-50 flex items-center justify-center border-r border-gray-100">
+                      <img 
+                        src={item.originalImage} 
+                        alt="Original" 
+                        className="w-full h-full object-contain" 
+                        loading="lazy"
+                      />
+                      <div className="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm">Before</div>
+                    </div>
+                    <div className="w-1/2 relative bg-brand-50 flex items-center justify-center">
+                      <img 
+                        src={item.babyImage} 
+                        alt="Baby Version" 
+                        className="w-full h-full object-contain"
+                        loading="lazy"
+                      />
+                      <div className="absolute bottom-2 right-2 bg-brand-500/80 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm">After</div>
+                    </div>
+                  </>
+                ) : (
+                  /* Full Width View (Featured Examples) */
+                  <div className="w-full relative bg-gradient-to-br from-brand-50 to-pastel-purple/10 flex items-center justify-center">
+                    <img 
+                      src={item.babyImage} 
+                      alt="Baby Version" 
+                      className="w-full h-full object-cover"
+                      loading="lazy"
+                    />
+                    <div className="absolute top-2 right-2 bg-white/90 text-brand-500 text-[10px] font-bold px-2 py-1 rounded-full shadow-sm backdrop-blur-sm uppercase tracking-wide">
+                      Featured
+                    </div>
+                  </div>
+                )}
               </div>
               
               {/* Footer info */}
@@ -67,7 +99,7 @@ export const GalleryPage = ({ onNavigate }: { onNavigate: (view: any) => void })
                     Baby {item.petName}
                   </h3>
                   <p className="text-xs text-gray-400">
-                    {new Date(item.timestamp).toLocaleDateString()}
+                    {item.originalImage ? new Date(item.timestamp).toLocaleDateString() : 'Featured'}
                   </p>
                 </div>
                 <div className="w-8 h-8 rounded-full bg-brand-50 text-brand-400 flex items-center justify-center">

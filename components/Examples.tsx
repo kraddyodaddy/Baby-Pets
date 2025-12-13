@@ -1,6 +1,6 @@
 import React from 'react';
 
-const EXAMPLES = [
+export const EXAMPLES = [
   { name: 'Baby Addie', src: 'https://i.ibb.co/FbW0vfwz/addie-dog.jpg', alt: 'Baby Addie - Dog transformation example' },
   { name: 'Baby Mochi', src: 'https://i.ibb.co/MDbrwWTg/mochi-cat.jpg', alt: 'Baby Mochi - Cat transformation example' },
   { name: 'Baby Mimoette', src: 'https://i.ibb.co/whKRpbyn/mimoette-cat.jpg', alt: 'Baby Mimoette - Cat transformation example' },

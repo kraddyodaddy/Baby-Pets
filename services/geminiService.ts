@@ -184,11 +184,12 @@ REQUIRED ANATOMICAL CHANGES (Apply Aggressively):
 4. BODY SHAPE: Round, chubby, and compact. Limbs must be shorter and stubbier.
 5. COAT: Use soft, fluffy, fuzzy puppy/kitten down texture, not coarse adult hair.
 
-IDENTITY PRESERVATION (MARKINGS):
-- While changing the ANATOMY, you MUST preserve the exact COLOR PATTERN and UNIQUE MARKINGS of the original pet.
-- If the pet has a specific spot on its left ear, the baby must have it too.
-- If the pet has white socks, the baby must have them.
-- The baby must look like the *same individual* traveling back in time.
+IDENTITY PRESERVATION (MARKINGS) - HIGHEST PRIORITY:
+- You MUST COPY the EXACT color distribution and fur patterns from the original image.
+- PAY ATTENTION to ASYMMETRY. If the original cat has a black patch over the left eye but not the right, the baby MUST have that exact same asymmetric patch.
+- Do NOT use generic "breed standard" markings (e.g. don't make a generic tuxedo cat). 
+- MAP THE TEXTURE: The markings on the baby's face must match the markings on the adult's face 1:1.
+- If the pet has specific white socks, spots on the nose, or a blaze on the forehead, these MUST be present in the baby version.
 
 Style requirement:
 • Photorealistic textures and lighting (Not a cartoon, but adorable proportions)
