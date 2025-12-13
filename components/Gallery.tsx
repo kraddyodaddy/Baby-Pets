@@ -1,27 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import { getGallery, GalleryItem } from '../services/galleryService';
+import { getGallery, removeFromGallery, GalleryItem } from '../services/galleryService';
 import { EXAMPLES } from './Examples';
+import { XMarkIcon } from './Icons';
 
 export const GalleryPage = ({ onNavigate }: { onNavigate: (view: any) => void }) => {
   const [items, setItems] = useState<GalleryItem[]>([]);
 
   useEffect(() => {
+    loadGallery();
+  }, []);
+
+  const loadGallery = () => {
     // Load gallery items from local storage
     const storedItems = getGallery();
 
     // Map the static examples to the GalleryItem format
     const exampleItems: GalleryItem[] = EXAMPLES.map((ex, i) => ({
       id: `featured-example-${i}`,
-      petName: ex.name.replace('Baby ', ''), // Remove prefix for consistency if needed, or keep it.
+      petName: ex.name.replace('Baby ', ''), 
       originalImage: '', // Signal that there is no original image
       babyImage: ex.src,
-      timestamp: Date.now() // Use current time or 0
+      timestamp: Date.now()
     }));
 
     // Combine stored items and example items
-    // We place stored (user) items first, then examples at the bottom
     setItems([...storedItems, ...exampleItems]);
-  }, []);
+  };
+
+  const handleDelete = (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (window.confirm("Are you sure you want to remove this pet from your gallery?")) {
+      removeFromGallery(id);
+      // Reload to reflect changes (or just filter local state)
+      setItems(prev => prev.filter(item => item.id !== id));
+    }
+  };
 
   return (
     <div className="w-full animate-fade-in pb-12">
@@ -51,7 +64,19 @@ export const GalleryPage = ({ onNavigate }: { onNavigate: (view: any) => void })
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto px-4">
           {items.map((item) => (
-            <div key={item.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col">
+            <div key={item.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col relative group">
+              
+              {/* Delete Button - Only for user generated items (those with originalImage) */}
+              {item.originalImage && (
+                <button
+                  onClick={(e) => handleDelete(item.id, e)}
+                  className="absolute top-2 right-2 z-20 bg-white/90 hover:bg-red-50 text-gray-400 hover:text-red-500 p-2 rounded-full shadow-sm backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
+                  title="Remove from gallery"
+                >
+                  <XMarkIcon className="w-4 h-4" />
+                </button>
+              )}
+
               {/* Image Area */}
               <div className="flex h-48 sm:h-56 md:h-64">
                 {item.originalImage ? (

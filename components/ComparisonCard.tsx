@@ -20,25 +20,19 @@ interface ComparisonCardProps {
 }
 
 const LOADING_MESSAGES = [
-  { text: 'Baby pets incoming soon...', icon: '🚀' },
-  { text: 'Get ready to see your angel...', icon: '👼' },
-  { text: 'Preparing extra cute fluff...', icon: '☁️' },
-  { text: 'Almost there, do the cute voice...', icon: '🗣️' },
-  { text: 'Shrinking those paws...', icon: '🐾' },
-  { text: 'Squeal level cuteness loading...', icon: '😱' },
-  { text: 'Sprinkling baby magic... ✨', icon: '✨' },
-  { text: 'Rewinding time...', icon: '⏪' },
-  { text: 'Adding extra adorableness...', icon: '🥰' },
-  { text: 'Unleashing the tiny version...', icon: '🐣' },
-  { text: 'Making eyes bigger...', icon: '👀' },
-  { text: 'Fluffing up the fur...', icon: '🧶' },
-  { text: 'Activating cuteness overload...', icon: '⚡' },
-  { text: 'Time traveling to babyhood...', icon: '⏳' },
-  { text: 'Dialing up the adorable...', icon: '📞' },
-  { text: 'Your baby pet is on the way!', icon: '🚚' },
+  { text: 'Creating something magical...', icon: '✨' },
+  { text: 'Turning back time...', icon: '🕰️' },
+  { text: 'Almost ready...', icon: '☁️' },
+  { text: 'Making memories...', icon: '💝' },
+  { text: 'Bringing out the baby...', icon: '🐾' },
+  { text: 'Just a moment...', icon: '⭐' },
+  { text: 'Adding sweetness...', icon: '🍭' },
+  { text: 'Transforming with care...', icon: '🎨' },
+  { text: 'Nearly there...', icon: '🎀' },
+  { text: 'Sprinkling magic...', icon: '🪄' },
 ];
 
-const ANIMATIONS = ['animate-bounce', 'animate-pulse', 'animate-wiggle', 'animate-slide-up-fade'];
+const ANIMATIONS = ['animate-soft-slide-up', 'animate-gentle-blur', 'animate-dreamy-fade'];
 
 export const ComparisonCard: React.FC<ComparisonCardProps> = ({ 
   upload, 
@@ -384,7 +378,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
         <div className="flex flex-col items-center justify-center p-6 text-center w-full h-full bg-pastel-pink-superlight/50 backdrop-blur-sm z-20">
           
           {/* Animated Icon */}
-          <div className="text-6xl mb-6 animate-bounce-slow filter drop-shadow-md">
+          <div className="text-6xl mb-6 animate-float-gentle filter drop-shadow-md">
             {msg.icon}
           </div>
 
@@ -392,7 +386,7 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
           <div className="h-24 flex items-center justify-center mb-8 w-full max-w-md">
              <h3 
                key={currentMessageIndex}
-               className={`text-2xl md:text-3xl font-display font-black text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-pastel-purple text-center leading-tight drop-shadow-sm ${currentAnimation}`}
+               className={`text-2xl md:text-3xl font-display font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-pastel-purple text-center leading-tight drop-shadow-sm ${currentAnimation}`}
              >
                {msg.text}
              </h3>

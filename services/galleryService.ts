@@ -35,3 +35,15 @@ export const addToGallery = (item: GalleryItem) => {
     throw new Error("Could not save to gallery storage.");
   }
 };
+
+export const removeFromGallery = (id: string) => {
+  try {
+    const currentGallery = getGallery();
+    const updatedGallery = currentGallery.filter(item => item.id !== id);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(updatedGallery));
+    return updatedGallery;
+  } catch (e) {
+    console.error("Failed to remove from gallery", e);
+    throw new Error("Could not remove from gallery.");
+  }
+};

@@ -30,6 +30,27 @@
   100% { opacity: 1; transform: translateY(0); }
 }
 
+/* New Elegant Animations */
+@keyframes softSlideUp {
+  0% { opacity: 0; transform: translateY(8px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes gentleBlur {
+  0% { opacity: 0; filter: blur(4px); transform: scale(0.98); }
+  100% { opacity: 1; filter: blur(0); transform: scale(1); }
+}
+
+@keyframes dreamyFade {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes floatGentle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
 /* Utilities */
 .animate-fade-in {
   animation: fadeIn 0.5s ease-out forwards;
@@ -53,6 +74,23 @@
 
 .animate-slide-up-fade {
   animation: slideUpFade 0.4s ease-out forwards;
+}
+
+/* New Elegant Utility Classes */
+.animate-soft-slide-up {
+  animation: softSlideUp 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
+}
+
+.animate-gentle-blur {
+  animation: gentleBlur 1.5s ease-out forwards;
+}
+
+.animate-dreamy-fade {
+  animation: dreamyFade 1.5s ease-in-out forwards;
+}
+
+.animate-float-gentle {
+  animation: floatGentle 3s ease-in-out infinite;
 }
 
 /* Global Styles */
