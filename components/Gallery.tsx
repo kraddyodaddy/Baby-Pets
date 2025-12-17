@@ -80,25 +80,25 @@ export const GalleryPage = ({ onNavigate }: { onNavigate: (view: any) => void })
                     </button>
                   )}
 
-                  {/* Image Area */}
-                  <div className="flex aspect-video sm:aspect-square md:aspect-video lg:aspect-square overflow-hidden bg-gray-100">
+                  {/* Image Area - Aspect ratio container with background to frame the full image */}
+                  <div className="flex aspect-video sm:aspect-square md:aspect-video lg:aspect-square overflow-hidden bg-gray-50">
                     {item.originalImage ? (
                       /* Comparison View */
                       <>
-                        <div className="w-1/2 relative flex items-center justify-center border-r border-gray-100 bg-gray-50">
+                        <div className="w-1/2 relative flex items-center justify-center border-r border-gray-100 bg-gray-50 p-1">
                           <img 
                             src={item.originalImage} 
                             alt="Original" 
-                            className="w-full h-full object-cover" 
+                            className="w-full h-full object-contain" 
                             loading="lazy"
                           />
                           <div className="absolute bottom-3 left-3 bg-black/60 text-white text-[10px] font-bold px-2.5 py-1 rounded backdrop-blur-md uppercase tracking-widest">Original</div>
                         </div>
-                        <div className="w-1/2 relative flex items-center justify-center bg-brand-50">
+                        <div className="w-1/2 relative flex items-center justify-center bg-brand-50 p-1">
                           <img 
                             src={item.babyImage} 
                             alt="Baby Version" 
-                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-110"
                             loading="lazy"
                           />
                           <div className="absolute bottom-3 right-3 bg-brand-500/90 text-white text-[10px] font-bold px-2.5 py-1 rounded backdrop-blur-md uppercase tracking-widest">Baby Pet</div>
@@ -106,11 +106,11 @@ export const GalleryPage = ({ onNavigate }: { onNavigate: (view: any) => void })
                       </>
                     ) : (
                       /* Full Width View (for those without originals) */
-                      <div className="w-full relative bg-gradient-to-br from-brand-50 to-pastel-purple/10 flex items-center justify-center">
+                      <div className="w-full relative bg-gradient-to-br from-brand-50 to-pastel-purple/10 flex items-center justify-center p-2">
                         <img 
                           src={item.babyImage} 
                           alt="Baby Version" 
-                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          className="w-full h-full object-contain transition-transform duration-700 group-hover:scale-105"
                           loading="lazy"
                         />
                         <div className="absolute top-4 right-4 bg-white/95 text-brand-500 text-[10px] font-black px-4 py-1.5 rounded-full shadow-md backdrop-blur-sm uppercase tracking-widest">
@@ -121,7 +121,7 @@ export const GalleryPage = ({ onNavigate }: { onNavigate: (view: any) => void })
                   </div>
                   
                   {/* Card Footer */}
-                  <div className="p-6 flex items-center justify-between bg-white">
+                  <div className="p-6 flex items-center justify-between bg-white border-t border-gray-50">
                     <div>
                       <h3 className="font-display font-bold text-2xl text-gray-800">
                         Baby {item.petName}

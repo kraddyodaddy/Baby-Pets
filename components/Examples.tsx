@@ -11,25 +11,21 @@ export const EXAMPLES: ExamplePet[] = [
   { 
     name: 'Baby Mochi', 
     src: 'https://i.ibb.co/qMkskHsB/mochi-cat.jpg', 
-    original: 'https://i.ibb.co/MDbrwWTg/mochi-cat.jpg',
     alt: 'Baby Mochi cat' 
   },
   { 
     name: 'Baby Addie', 
     src: 'https://i.ibb.co/Fq85Ccwt/addie-dog.jpg', 
-    original: 'https://i.ibb.co/FbW0vfwz/addie-dog.jpg',
     alt: 'Baby Addie dog' 
   },
   { 
     name: 'Baby Mimoette', 
     src: 'https://i.ibb.co/jvXw4rpy/mimoette-cat.jpg', 
-    original: 'https://i.ibb.co/whKRpbyn/mimoette-cat.jpg',
     alt: 'Baby Mimoette cat' 
   },
   { 
     name: 'Baby Peanut', 
     src: 'https://i.ibb.co/7NyRgNBk/peanut-cat.jpg', 
-    original: 'https://i.ibb.co/C32G6cL4/peanut-cat.jpg',
     alt: 'Baby Peanut cat' 
   },
   { 
@@ -72,11 +68,11 @@ export const Showcase = () => {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 w-full">
                 {selectedExamples.map((item, index) => (
                     <div key={index} className="flex flex-col items-center group w-full">
-                        <div className="w-full aspect-square bg-white rounded-3xl shadow-md overflow-hidden transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-xl p-1.5 flex items-center justify-center">
+                        <div className="w-full aspect-square bg-white/90 rounded-3xl shadow-md overflow-hidden transition-transform duration-300 group-hover:-translate-y-2 group-hover:shadow-xl p-1.5 flex items-center justify-center">
                             <img 
                                 src={item.src} 
                                 alt={item.alt} 
-                                className="w-full h-full object-cover rounded-2xl" 
+                                className="w-full h-full object-contain rounded-2xl" 
                                 loading="lazy"
                             />
                         </div>
