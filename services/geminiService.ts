@@ -1,3 +1,4 @@
+
 import { GoogleGenAI } from "@google/genai";
 
 // Helper to convert File to Base64
@@ -52,9 +53,11 @@ const getRandomPastelColor = () => {
 };
 
 export const validatePetImage = async (imageFile: File): Promise<boolean> => {
+  // Fix: Initializing GoogleGenAI right before the API call as per guidelines
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const base64Data = await fileToBase64(imageFile);
-  const model = 'gemini-2.5-flash';
+  // Fix: Using 'gemini-3-flash-preview' for basic analysis task as per guidelines
+  const model = 'gemini-3-flash-preview';
 
   try {
     const response = await ai.models.generateContent({
@@ -74,6 +77,7 @@ export const validatePetImage = async (imageFile: File): Promise<boolean> => {
       },
     });
     
+    // Fix: access text property directly from GenerateContentResponse
     const text = response.text?.trim().toUpperCase();
     return text?.includes("YES") || false;
   } catch (error) {
@@ -85,6 +89,7 @@ export const validatePetImage = async (imageFile: File): Promise<boolean> => {
 };
 
 export const generateBabyPet = async (imageFile: File, petName?: string, styleInstruction?: string): Promise<string> => {
+  // Fix: Initializing GoogleGenAI right before the API call as per guidelines
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const base64Data = await fileToBase64(imageFile);
   

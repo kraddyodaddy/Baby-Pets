@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { UploadedImage, TransformationResult } from '../types';
 import { 
@@ -475,8 +476,9 @@ export const ComparisonCard: React.FC<ComparisonCardProps> = ({
       const originalBase64 = await fileToBase64(upload.file);
       const base64Prefix = upload.file.type === 'image/png' ? 'data:image/png;base64,' : 'data:image/jpeg;base64,';
       
-      addToGallery({
-        id: uuidv4(),
+      // Fix: Removed 'id' property from object literal as addToGallery expects Omit<GalleryItem, 'id'>.
+      // Added await to ensure the gallery submission finishes.
+      await addToGallery({
         petName: upload.petName || 'Baby Pet',
         originalImage: `${base64Prefix}${originalBase64}`,
         babyImage: result.generatedImageUrl,
