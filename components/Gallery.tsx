@@ -18,135 +18,141 @@ export const GalleryPage = ({ onNavigate }: { onNavigate: (view: any) => void })
     const exampleItems: GalleryItem[] = EXAMPLES.map((ex, i) => ({
       id: `featured-example-${i}`,
       petName: ex.name.replace('Baby ', ''), 
-      originalImage: '', // Signal that there is no original image
+      originalImage: ex.original || '', // Support comparison view for featured items too
       babyImage: ex.src,
-      timestamp: Date.now()
+      timestamp: 0 // Featured items have 0 timestamp to sort them if needed
     }));
 
-    // Combine stored items and example items
-    setItems([...storedItems, ...exampleItems]);
+    // Combine examples first (Featured) then user stored items
+    setItems([...exampleItems, ...storedItems]);
   };
 
   const handleDelete = (id: string, e: React.MouseEvent) => {
     e.stopPropagation();
     if (window.confirm("Are you sure you want to remove this pet from your gallery?")) {
       removeFromGallery(id);
-      // Reload to reflect changes (or just filter local state)
       setItems(prev => prev.filter(item => item.id !== id));
     }
   };
 
   return (
-    <div className="w-full animate-fade-in pb-12">
+    <div className="w-full animate-fade-in pb-12 bg-gray-50/30">
       {/* Header */}
-      <div className="text-center py-12 px-4">
-        <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-          Community <span className="text-brand-500">Gallery</span>
+      <div className="text-center py-16 px-4 bg-white border-b border-gray-100">
+        <h1 className="font-display text-4xl md:text-6xl font-bold text-gray-900 mb-4">
+          Pet <span className="text-brand-500">Showcase</span>
         </h1>
-        <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-          See the adorable baby transformations shared by our community!
+        <p className="text-xl text-gray-600 max-w-2xl mx-auto font-medium">
+          The wall of cuteness! See the transformations shared by our community.
         </p>
       </div>
 
-      {/* Grid */}
-      {items.length === 0 ? (
-        <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100 max-w-2xl mx-auto mx-4">
-          <div className="text-6xl mb-4">🐶</div>
-          <h3 className="text-2xl font-bold text-gray-800 mb-2">No photos yet!</h3>
-          <p className="text-gray-500 mb-8">Be the first to share your baby pet transformation.</p>
-          <button 
-            onClick={() => onNavigate('home')}
-            className="bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:-translate-y-1"
-          >
-            Create a Baby Pet
-          </button>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 max-w-7xl mx-auto px-4">
-          {items.map((item) => (
-            <div key={item.id} className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden hover:shadow-xl transition-shadow duration-300 flex flex-col relative group">
+      {/* Grid Container */}
+      <div className="max-w-7xl mx-auto px-4 py-12">
+        {items.length === 0 ? (
+          <div className="text-center py-20 bg-white rounded-3xl shadow-sm border border-gray-100 max-w-2xl mx-auto">
+            <div className="text-6xl mb-4">🐶</div>
+            <h3 className="text-2xl font-bold text-gray-800 mb-2">No photos yet!</h3>
+            <p className="text-gray-500 mb-8">Be the first to share your baby pet transformation.</p>
+            <button 
+              onClick={() => onNavigate('home')}
+              className="bg-brand-500 hover:bg-brand-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform hover:-translate-y-1"
+            >
+              Create a Baby Pet
+            </button>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {items.map((item) => {
+              const isFeatured = item.id.startsWith('featured-example');
               
-              {/* Delete Button - Only for user generated items (those with originalImage) */}
-              {item.originalImage && (
-                <button
-                  onClick={(e) => handleDelete(item.id, e)}
-                  className="absolute top-2 right-2 z-20 bg-white/90 hover:bg-red-50 text-gray-400 hover:text-red-500 p-2 rounded-full shadow-sm backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
-                  title="Remove from gallery"
-                >
-                  <XMarkIcon className="w-4 h-4" />
-                </button>
-              )}
+              return (
+                <div key={item.id} className="bg-white rounded-[2rem] shadow-md border border-gray-100 overflow-hidden hover:shadow-2xl transition-all duration-500 flex flex-col relative group">
+                  
+                  {/* Delete Button - Only for user generated items */}
+                  {!isFeatured && (
+                    <button
+                      onClick={(e) => handleDelete(item.id, e)}
+                      className="absolute top-4 right-4 z-20 bg-white/90 hover:bg-red-50 text-gray-400 hover:text-red-500 p-2.5 rounded-full shadow-sm backdrop-blur-sm transition-all opacity-0 group-hover:opacity-100"
+                      title="Remove from gallery"
+                    >
+                      <XMarkIcon className="w-5 h-5" />
+                    </button>
+                  )}
 
-              {/* Image Area */}
-              <div className="flex h-48 sm:h-56 md:h-64">
-                {item.originalImage ? (
-                  /* Comparison View (User Generated) */
-                  <>
-                    <div className="w-1/2 relative bg-gray-50 flex items-center justify-center border-r border-gray-100">
-                      <img 
-                        src={item.originalImage} 
-                        alt="Original" 
-                        className="w-full h-full object-contain" 
-                        loading="lazy"
-                      />
-                      <div className="absolute bottom-2 left-2 bg-black/50 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm">Before</div>
+                  {/* Image Area */}
+                  <div className="flex aspect-video sm:aspect-square md:aspect-video lg:aspect-square overflow-hidden bg-gray-100">
+                    {item.originalImage ? (
+                      /* Comparison View */
+                      <>
+                        <div className="w-1/2 relative flex items-center justify-center border-r border-gray-100 bg-gray-50">
+                          <img 
+                            src={item.originalImage} 
+                            alt="Original" 
+                            className="w-full h-full object-cover" 
+                            loading="lazy"
+                          />
+                          <div className="absolute bottom-3 left-3 bg-black/60 text-white text-[10px] font-bold px-2.5 py-1 rounded backdrop-blur-md uppercase tracking-widest">Original</div>
+                        </div>
+                        <div className="w-1/2 relative flex items-center justify-center bg-brand-50">
+                          <img 
+                            src={item.babyImage} 
+                            alt="Baby Version" 
+                            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                            loading="lazy"
+                          />
+                          <div className="absolute bottom-3 right-3 bg-brand-500/90 text-white text-[10px] font-bold px-2.5 py-1 rounded backdrop-blur-md uppercase tracking-widest">Baby Pet</div>
+                        </div>
+                      </>
+                    ) : (
+                      /* Full Width View (for those without originals) */
+                      <div className="w-full relative bg-gradient-to-br from-brand-50 to-pastel-purple/10 flex items-center justify-center">
+                        <img 
+                          src={item.babyImage} 
+                          alt="Baby Version" 
+                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                          loading="lazy"
+                        />
+                        <div className="absolute top-4 right-4 bg-white/95 text-brand-500 text-[10px] font-black px-4 py-1.5 rounded-full shadow-md backdrop-blur-sm uppercase tracking-widest">
+                          Baby Version
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  
+                  {/* Card Footer */}
+                  <div className="p-6 flex items-center justify-between bg-white">
+                    <div>
+                      <h3 className="font-display font-bold text-2xl text-gray-800">
+                        Baby {item.petName}
+                      </h3>
+                      <p className="text-xs font-bold text-pastel-pink uppercase tracking-widest mt-1">
+                        {isFeatured ? 'Featured Artist' : 'Community Creation'}
+                      </p>
                     </div>
-                    <div className="w-1/2 relative bg-brand-50 flex items-center justify-center">
-                      <img 
-                        src={item.babyImage} 
-                        alt="Baby Version" 
-                        className="w-full h-full object-contain"
-                        loading="lazy"
-                      />
-                      <div className="absolute bottom-2 right-2 bg-brand-500/80 text-white text-[10px] font-bold px-2 py-0.5 rounded backdrop-blur-sm">After</div>
-                    </div>
-                  </>
-                ) : (
-                  /* Full Width View (Featured Examples) */
-                  <div className="w-full relative bg-gradient-to-br from-brand-50 to-pastel-purple/10 flex items-center justify-center">
-                    <img 
-                      src={item.babyImage} 
-                      alt="Baby Version" 
-                      className="w-full h-full object-cover"
-                      loading="lazy"
-                    />
-                    <div className="absolute top-2 right-2 bg-white/90 text-brand-500 text-[10px] font-bold px-2 py-1 rounded-full shadow-sm backdrop-blur-sm uppercase tracking-wide">
-                      Featured
+                    <div className="w-10 h-10 rounded-full bg-brand-50 text-brand-500 flex items-center justify-center shadow-inner group-hover:animate-bounce">
+                       🐾
                     </div>
                   </div>
-                )}
-              </div>
-              
-              {/* Footer info */}
-              <div className="p-4 flex items-center justify-between">
-                <div>
-                  <h3 className="font-display font-bold text-lg text-gray-800">
-                    Baby {item.petName}
-                  </h3>
-                  <p className="text-xs text-gray-400">
-                    {item.originalImage ? new Date(item.timestamp).toLocaleDateString() : 'Featured'}
-                  </p>
                 </div>
-                <div className="w-8 h-8 rounded-full bg-brand-50 text-brand-400 flex items-center justify-center">
-                   ❤️
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
+              );
+            })}
+          </div>
+        )}
 
-      {/* CTA Bottom */}
-      {items.length > 0 && (
-        <div className="text-center mt-16">
-           <button 
-            onClick={() => onNavigate('home')}
-            className="bg-white border-2 border-brand-500 text-brand-600 hover:bg-brand-50 font-bold py-3 px-8 rounded-full shadow-md transition-transform hover:-translate-y-1"
-          >
-            Create Your Own
-          </button>
-        </div>
-      )}
+        {/* Call to Action Footer */}
+        {items.length > 0 && (
+          <div className="text-center mt-20 p-12 bg-gradient-to-r from-pastel-pink/10 to-pastel-blue/10 rounded-[3rem] border border-brand-100">
+             <h3 className="font-display text-3xl font-bold text-gray-700 mb-6">Want to see your pet here?</h3>
+             <button 
+              onClick={() => onNavigate('home')}
+              className="bg-brand-500 hover:bg-brand-600 text-white font-bold py-4 px-12 rounded-full shadow-xl transition-all hover:-translate-y-1 hover:shadow-2xl active:scale-95"
+            >
+              Transform Your Pet Now
+            </button>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
