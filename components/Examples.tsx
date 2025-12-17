@@ -1,10 +1,10 @@
 import React from 'react';
 
 export const EXAMPLES = [
-  { name: 'Baby Addie', src: '/addie-dog.jpg', alt: 'Baby Addie - Dog transformation example' },
-  { name: 'Baby Mochi', src: '/mochi-cat.jpg', alt: 'Baby Mochi - Cat transformation example' },
-  { name: 'Baby Mimoette', src: '/mimoette-cat.jpg', alt: 'Baby Mimoette - Cat transformation example' },
-  { name: 'Baby Peanut', src: '/peanut-cat.jpg', alt: 'Baby Peanut - Cat transformation example' },
+  { name: 'Baby Addie', src: 'https://i.ibb.co/FbW0vfwz/addie-dog.jpg', alt: 'Baby Addie - Dog transformation example' },
+  { name: 'Baby Mochi', src: 'https://i.ibb.co/MDbrwWTg/mochi-cat.jpg', alt: 'Baby Mochi - Cat transformation example' },
+  { name: 'Baby Mimoette', src: 'https://i.ibb.co/whKRpbyn/mimoette-cat.jpg', alt: 'Baby Mimoette - Cat transformation example' },
+  { name: 'Baby Peanut', src: 'https://i.ibb.co/C32G6cL4/peanut-cat.jpg', alt: 'Baby Peanut - Cat transformation example' },
 ];
 
 export const Showcase = () => {
