@@ -121,6 +121,7 @@ function App() {
   };
 
   const isLimitReached = usageCount >= MAX_DAILY_GENERATIONS;
+  const remainingGenerations = Math.max(0, MAX_DAILY_GENERATIONS - usageCount);
 
   const renderMainContent = () => {
     if (currentView === 'terms') return <TermsPage />;
@@ -135,10 +136,21 @@ function App() {
       return (
         <div className="flex-1 w-full flex flex-col animate-fade-in">
            <div className="w-full max-w-7xl mx-auto px-4 pt-10 flex flex-col items-center justify-center">
-              <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-700 mb-8 text-center">
-                See Your Pet as a <span className="text-pastel-pink">Baby Pet</span>
+              <h1 className="font-display text-4xl md:text-6xl font-bold text-gray-700 mb-8 text-center leading-tight">
+                See Your Pet as a <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">
+                  Baby Pet Again
+                </span>
               </h1>
               <Uploader onFilesSelected={handleFilesSelected} count={uploads.length} disabled={activeRequests > 0} />
+              
+              <div className="mt-4 px-6 py-2 bg-white rounded-full shadow-sm border border-brand-100 flex items-center space-x-2">
+                 <span className={`w-2 h-2 rounded-full ${remainingGenerations > 0 ? 'bg-green-400' : 'bg-red-400'}`}></span>
+                 <p className="text-sm font-bold text-gray-500">
+                    {remainingGenerations} free generations remaining today
+                 </p>
+              </div>
+
               <Showcase />
            </div>
         </div>
@@ -157,14 +169,17 @@ function App() {
               />
            ))}
          </div>
-         <div className="flex justify-center">
+         <div className="flex flex-col items-center space-y-4">
             <button 
               onClick={handleTransformAll}
               disabled={isLimitReached || uploads.some(u => !u.petName.trim()) || activeRequests > 0}
-              className={`px-10 py-5 rounded-full font-display font-black text-xl shadow-xl transition-all ${isLimitReached ? 'bg-gray-200' : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:scale-105'}`}
+              className={`px-10 py-5 rounded-full font-display font-black text-xl shadow-xl transition-all ${isLimitReached ? 'bg-gray-200 cursor-not-allowed text-gray-400' : 'bg-gradient-to-r from-pink-500 to-purple-500 text-white hover:scale-105 active:scale-95'}`}
             >
               {activeRequests > 0 ? "Transforming..." : "Transform into Baby Pet"}
             </button>
+            <p className="text-sm font-bold text-gray-400">
+               {remainingGenerations} left for today
+            </p>
          </div>
       </div>
     );
@@ -172,13 +187,24 @@ function App() {
 
   return (
     <div className="flex flex-col min-h-screen bg-pastel-cream">
-      <header className="bg-white/80 h-16 flex items-center z-50 sticky top-0 border-b border-brand-100">
+      <header className="bg-white/80 h-20 flex items-center z-50 sticky top-0 border-b border-brand-100">
         <div className="max-w-5xl mx-auto px-4 flex-1 flex items-center justify-between">
-          <button onClick={() => handleNavigate('home')} className="font-display text-2xl font-bold">Baby<span className="text-pastel-pink">Pets</span></button>
-          <nav className="flex space-x-6">
-            <button onClick={() => handleNavigate('gallery')} className="text-sm font-bold text-gray-500 hover:text-pastel-pink">Gallery</button>
-            {/* Admin link hidden slightly for owners */}
-            <button onClick={() => handleNavigate('admin')} className="text-[8px] text-gray-200 hover:text-gray-400">Admin</button>
+          <button onClick={() => handleNavigate('home')} className="font-display text-2xl font-bold flex items-center">
+            <span className="mr-2">🐶🐱✨</span> Baby<span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">Pets</span>
+          </button>
+          <nav className="flex items-center space-x-6">
+            <div className="flex flex-col items-end">
+              <button 
+                onClick={() => handleNavigate('gallery')} 
+                className="text-2xl font-display font-bold text-gray-700 hover:text-pastel-pink transition-colors leading-none"
+              >
+                Gallery
+              </button>
+              <span className="text-[10px] font-bold text-pastel-pink whitespace-nowrap">
+                See more adorable pets!
+              </span>
+            </div>
+            <button onClick={() => handleNavigate('admin')} className="text-[8px] text-gray-200 hover:text-gray-400 self-start mt-1">Admin</button>
           </nav>
         </div>
       </header>
