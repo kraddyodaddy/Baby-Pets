@@ -23,7 +23,12 @@ interface QueueItem {
 type ViewState = 'home' | 'terms' | 'privacy' | 'faq' | 'contact' | 'about' | 'gallery' | 'admin';
 
 function App() {
-  const [currentView, setCurrentView] = useState<ViewState>('home');
+  const [currentView, setCurrentView] = useState<ViewState>(() => {
+    if (typeof window === 'undefined') return 'home';
+    const path = window.location.pathname.replace('/', '');
+    const validViews: ViewState[] = ['terms', 'privacy', 'faq', 'contact', 'about', 'gallery', 'admin'];
+    return (validViews.includes(path as ViewState) ? path : 'home') as ViewState;
+  });
   const [uploads, setUploads] = useState<UploadedImage[]>([]);
   const [results, setResults] = useState<Record<string, TransformationResult>>({});
   const [queue, setQueue] = useState<QueueItem[]>([]);
@@ -50,7 +55,20 @@ function App() {
 
   const handleNavigate = useCallback((view: ViewState) => {
     setCurrentView(view);
+    const url = view === 'home' ? '/' : `/${view}`;
+    window.history.pushState({}, '', url);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
+
+  // Handle browser back/forward buttons
+  useEffect(() => {
+    const handlePopState = () => {
+      const path = window.location.pathname.replace('/', '');
+      const validViews: ViewState[] = ['terms', 'privacy', 'faq', 'contact', 'about', 'gallery', 'admin'];
+      setCurrentView((validViews.includes(path as ViewState) ? path : 'home') as ViewState);
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
   useEffect(() => {
@@ -196,7 +214,7 @@ function App() {
             <div className="flex flex-col items-end">
               <button 
                 onClick={() => handleNavigate('gallery')} 
-                className="text-2xl font-display font-bold text-gray-700 hover:text-pastel-pink transition-colors leading-none"
+                className={`text-2xl font-display font-bold transition-colors leading-none ${currentView === 'gallery' ? 'text-pastel-pink' : 'text-gray-700 hover:text-pastel-pink'}`}
               >
                 Gallery
               </button>
