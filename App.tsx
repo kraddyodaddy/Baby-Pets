@@ -222,7 +222,6 @@ function App() {
                 See more adorable pets!
               </span>
             </div>
-            <button onClick={() => handleNavigate('admin')} className="text-[8px] text-gray-200 hover:text-gray-400 self-start mt-1">Admin</button>
           </nav>
         </div>
       </header>
