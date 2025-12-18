@@ -1,22 +1,10 @@
 
 {
-  "cleanUrls": true,
+  "cleanUrls": false,
   "trailingSlash": false,
   "rewrites": [
     {
-      "source": "/sitemap.xml",
-      "destination": "/sitemap.xml"
-    },
-    {
-      "source": "/ads.txt",
-      "destination": "/ads.txt"
-    },
-    {
-      "source": "/robots.txt",
-      "destination": "/robots.txt"
-    },
-    {
-      "source": "/(.*)",
+      "source": "/((?!sitemap\\.xml|ads\\.txt|robots\\.txt|.*\\..+).*)",
       "destination": "/index.html"
     }
   ]
