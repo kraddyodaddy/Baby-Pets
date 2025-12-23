@@ -1,5 +1,4 @@
-
-import { initializeApp } from "firebase/app";
+import { initializeApp, getApp, getApps } from "firebase/app";
 import { 
   getFirestore, 
   collection, 
@@ -14,8 +13,7 @@ import {
   setDoc,
   updateDoc,
   increment,
-  writeBatch,
-  deleteDoc
+  writeBatch
 } from "firebase/firestore";
 import { 
   getStorage, 
@@ -42,17 +40,35 @@ const firebaseConfig = {
   appId: "1:123456789:web:abcdef123456"
 };
 
-const app = initializeApp(firebaseConfig);
-const db = getFirestore(app);
-const storage = getStorage(app);
+// Singleton initialization pattern to avoid "Firebase App named '[DEFAULT]' already exists" error
+const app = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+
+// Safe service accessor to prevent "Service not available" errors
+const getDb = () => {
+  try {
+    return getFirestore(app);
+  } catch (e) {
+    console.error("Firestore initialization failed:", e);
+    return null;
+  }
+};
+
+const getStore = () => {
+  try {
+    return getStorage(app);
+  } catch (e) {
+    console.error("Storage initialization failed:", e);
+    return null;
+  }
+};
 
 const COLLECTION_NAME = "public_gallery";
 const STATS_COLLECTION = "stats";
 const DAILY_DOC_ID = "daily_tracking";
 
-const MAX_COMMUNITY_ITEMS = 1500; // Trigger cleanup when we reach this
-const DELETE_CHUNK_SIZE = 500;    // Number of items to delete in one cleanup
-const GLOBAL_DAILY_LIMIT = 100;   // Max uploads per day across all users
+const MAX_COMMUNITY_ITEMS = 1500;
+const DELETE_CHUNK_SIZE = 500;
+const GLOBAL_DAILY_LIMIT = 100;
 
 export const FEATURED_PETS: GalleryItem[] = [
   { id: 'f1', petName: 'Mochi', originalImage: '', babyImage: 'https://i.ibb.co/qMkskHsB/mochi-cat.jpg', timestamp: 1 },
@@ -65,68 +81,65 @@ export const FEATURED_PETS: GalleryItem[] = [
   { id: 'f8', petName: 'Nola', originalImage: '', babyImage: 'https://i.ibb.co/yzPg3Yc/nola-dog.jpg', timestamp: 8 },
 ];
 
-/**
- * Global Daily Quota Check
- */
 export const checkGlobalDailyLimit = async (): Promise<boolean> => {
+  const db = getDb();
+  if (!db) return true;
+  
   const today = new Date().toDateString();
   const dailyRef = doc(db, STATS_COLLECTION, DAILY_DOC_ID);
   
   try {
     const dailySnap = await getDoc(dailyRef);
     if (!dailySnap.exists() || dailySnap.data().date !== today) {
-      await setDoc(dailyRef, { date: today, count: 0 });
+      try {
+        await setDoc(dailyRef, { date: today, count: 0 }, { merge: true });
+      } catch (e) {
+        console.warn("Permission denied initializing daily tracking.", e);
+      }
       return true;
     }
     return dailySnap.data().count < GLOBAL_DAILY_LIMIT;
-  } catch (e) {
-    return true; // Default to allow if stats fail
+  } catch (e: any) {
+    console.warn("Firestore access restricted.", e);
+    return true; 
   }
 };
 
-/**
- * FIFO Auto-Cleanup Worker
- * Deletes oldest 500 items if threshold reached
- */
 const runAutoCleanup = async () => {
+  const db = getDb();
+  const storage = getStore();
+  if (!db || !storage) return;
+
   try {
     const q = query(collection(db, COLLECTION_NAME), orderBy("timestamp", "asc"));
     const snapshot = await getDocs(q);
     
     if (snapshot.size > MAX_COMMUNITY_ITEMS) {
-      console.log(`Gallery size ${snapshot.size} exceeds threshold. Cleaning up oldest ${DELETE_CHUNK_SIZE} items...`);
-      
       const toDelete = snapshot.docs.slice(0, DELETE_CHUNK_SIZE);
       const batch = writeBatch(db);
 
       for (const docSnap of toDelete) {
         const data = docSnap.data();
-        
-        // 1. Delete Firestore Record
         batch.delete(docSnap.ref);
-
-        // 2. Attempt to delete Storage files (best effort)
-        // Note: This requires knowing the file name or having the full URL
         try {
           const timestampId = data.timestamp?.toMillis() || Date.now();
           const origRef = ref(storage, `gallery/${timestampId}_original.jpg`);
           const babyRef = ref(storage, `gallery/${timestampId}_baby.jpg`);
           await deleteObject(origRef).catch(() => {}); 
           await deleteObject(babyRef).catch(() => {});
-        } catch (storageErr) {
-          // Ignore storage delete errors during batch
-        }
+        } catch (storageErr) { }
       }
-
       await batch.commit();
-      console.log("Auto-cleanup completed successfully.");
     }
   } catch (e) {
-    console.error("Auto-cleanup failed:", e);
+    console.warn("Auto-cleanup error:", e);
   }
 };
 
 export const getGallery = async (): Promise<GalleryItem[]> => {
+  const db = getDb();
+  if (!db) return [];
+
   try {
     const q = query(
       collection(db, COLLECTION_NAME), 
@@ -139,13 +152,17 @@ export const getGallery = async (): Promise<GalleryItem[]> => {
       items.push({ id: doc.id, ...doc.data() } as GalleryItem);
     });
     return items;
-  } catch (e) {
+  } catch (e: any) {
+    console.error("Firestore read error:", e);
     return [];
   }
 };
 
 export const addToGallery = async (item: Omit<GalleryItem, 'id'>) => {
-  // 1. Check Global Daily Limit
+  const db = getDb();
+  const storage = getStore();
+  if (!db || !storage) throw new Error("Cloud services currently unavailable.");
+
   const canUpload = await checkGlobalDailyLimit();
   if (!canUpload) {
     throw new Error("Community daily upload limit reached. Please try again tomorrow!");
@@ -154,7 +171,7 @@ export const addToGallery = async (item: Omit<GalleryItem, 'id'>) => {
   try {
     const timestampId = Date.now();
     
-    // 2. Upload to Storage
+    // 1. Upload to Storage
     const originalRef = ref(storage, `gallery/${timestampId}_original.jpg`);
     await uploadString(originalRef, item.originalImage, 'data_url');
     const originalUrl = await getDownloadURL(originalRef);
@@ -163,7 +180,7 @@ export const addToGallery = async (item: Omit<GalleryItem, 'id'>) => {
     await uploadString(babyRef, item.babyImage, 'data_url');
     const babyUrl = await getDownloadURL(babyRef);
 
-    // 3. Save to Firestore
+    // 2. Save to Firestore
     await addDoc(collection(db, COLLECTION_NAME), {
       petName: item.petName,
       originalImage: originalUrl,
@@ -171,37 +188,38 @@ export const addToGallery = async (item: Omit<GalleryItem, 'id'>) => {
       timestamp: Timestamp.now()
     });
 
-    // 4. Increment Daily Count
+    // 3. Increment Daily Count (Best effort)
     const dailyRef = doc(db, STATS_COLLECTION, DAILY_DOC_ID);
-    await updateDoc(dailyRef, { count: increment(1) });
+    await updateDoc(dailyRef, { count: increment(1) }).catch(e => {
+        console.warn("Stats document update restricted.");
+    });
 
-    // 5. Trigger Cleanup (Async background-ish)
     runAutoCleanup();
     
-  } catch (e) {
+  } catch (e: any) {
     console.error("Cloud gallery error:", e);
-    throw new Error("Failed to post. The gallery might be temporarily full.");
+    throw new Error(e.message || "Failed to post to gallery.");
   }
 };
 
-/**
- * Admin Stats Fetcher
- */
 export const getAdminStats = async () => {
-  const q = query(collection(db, COLLECTION_NAME));
-  const snap = await getDocs(q);
-  const count = snap.size;
-  
-  const dailyRef = doc(db, STATS_COLLECTION, DAILY_DOC_ID);
-  const dailySnap = await getDoc(dailyRef);
-  const dailyCount = dailySnap.exists() ? dailySnap.data().count : 0;
+  const db = getDb();
+  if (!db) return null;
 
-  return {
-    totalItems: count,
-    limit: MAX_COMMUNITY_ITEMS,
-    remaining: Math.max(0, MAX_COMMUNITY_ITEMS - count),
-    dailyCount: dailyCount,
-    dailyLimit: GLOBAL_DAILY_LIMIT,
-    estimatedStorageMB: (count * 0.8).toFixed(1) // Assuming avg 0.8MB per pair
-  };
+  try {
+    const dailyRef = doc(db, STATS_COLLECTION, DAILY_DOC_ID);
+    const dailySnap = await getDoc(dailyRef);
+    const dailyCount = dailySnap.exists() ? dailySnap.data().count : 0;
+
+    return {
+      totalItems: "FIFO Active",
+      limit: MAX_COMMUNITY_ITEMS,
+      remaining: "...",
+      dailyCount: dailyCount,
+      dailyLimit: GLOBAL_DAILY_LIMIT,
+      estimatedStorageMB: "..."
+    };
+  } catch (e) {
+    return null;
+  }
 };

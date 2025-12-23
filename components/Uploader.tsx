@@ -7,6 +7,8 @@ interface UploaderProps {
   count: number;
 }
 
+const MAX_UPLOADS = 3;
+
 export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, count }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isDragOver, setIsDragOver] = useState(false);
@@ -47,7 +49,7 @@ export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, c
     }
   };
 
-  const isFull = count >= 1;
+  const isFull = count >= MAX_UPLOADS;
 
   return (
     <div className="w-full">
@@ -57,6 +59,7 @@ export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, c
         onChange={handleFileChange}
         className="hidden"
         accept="image/png, image/jpeg, image/webp"
+        multiple={MAX_UPLOADS > 1}
         disabled={disabled || isFull}
       />
       <div
@@ -90,18 +93,18 @@ export const Uploader: React.FC<UploaderProps> = ({ onFilesSelected, disabled, c
         </div>
         
         <h3 className="relative font-display text-xl md:text-2xl font-bold text-gray-700 mb-2 group-hover:text-brand-600 transition-colors">
-          {isFull ? "Photo Added" : "Click or drag photo here"}
+          {isFull ? "Max photos added" : "Click or drag photos here"}
         </h3>
         
         <p className="relative text-gray-500 text-sm md:text-base max-w-sm font-medium">
           {isFull 
-            ? "You have added a photo." 
-            : "Upload a photo, tell us its name, and watch as dogs turn into puppies, and cats turn into kittens"}
+            ? "You have added 3 photos." 
+            : `Upload up to ${MAX_UPLOADS} photos, tell us their names, and watch as pets turn into adorable babies.`}
         </p>
 
         {!isFull && (
             <p className="relative text-gray-400 text-xs mt-2 max-w-xs italic">
-                (Use clear, close-up photos with minimal background)
+                (Use clear, close-up photos for best results)
             </p>
         )}
       </div>
