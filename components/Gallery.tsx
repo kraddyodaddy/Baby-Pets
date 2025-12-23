@@ -26,7 +26,7 @@ export const GalleryPage = ({ onNavigate }: { onNavigate: (view: any) => void })
     <div className="w-full animate-fade-in pb-12 bg-gray-50/30">
       {/* Header */}
       <div className="text-center py-20 px-4 bg-white border-b border-gray-100">
-        <h1 className="font-display text-6xl md:text-9xl font-bold text-gray-900 mb-6 tracking-tight">
+        <h1 className="font-display text-6xl md:text-9xl font-black text-gray-900 mb-6 tracking-tight">
           Gallery
         </h1>
         <p className="text-2xl md:text-3xl text-brand-500 max-w-2xl mx-auto font-bold animate-soft-slide-up">

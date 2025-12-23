@@ -60,8 +60,9 @@ export const Showcase = () => {
 
   return (
     <div className="w-full max-w-7xl mx-auto px-4 py-8 md:py-12">
-        <div className="text-center mb-10">
-            <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-700">See the Magic ✨</h2>
+        <div className="text-center mb-10 space-y-2">
+            <h2 className="font-display text-5xl md:text-8xl font-black text-gray-800 tracking-tight">Gallery</h2>
+            <p className="text-xl md:text-2xl text-brand-500 font-bold">See more adorable pets!</p>
         </div>
         
         <div className="w-full rounded-[2.5rem] p-6 md:p-10 bg-gradient-to-r from-pastel-pink via-pastel-purple to-pastel-blue shadow-xl">
