@@ -1,4 +1,3 @@
-
 import { GoogleGenAI } from "@google/genai";
 
 // Helper to convert File to Base64
@@ -53,10 +52,8 @@ const getRandomPastelColor = () => {
 };
 
 export const validatePetImage = async (imageFile: File): Promise<boolean> => {
-  // Fix: Initializing GoogleGenAI right before the API call as per guidelines
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const base64Data = await fileToBase64(imageFile);
-  // Fix: Using 'gemini-3-flash-preview' for basic analysis task as per guidelines
   const model = 'gemini-3-flash-preview';
 
   try {
@@ -77,69 +74,43 @@ export const validatePetImage = async (imageFile: File): Promise<boolean> => {
       },
     });
     
-    // Fix: access text property directly from GenerateContentResponse
     const text = response.text?.trim().toUpperCase();
     return text?.includes("YES") || false;
   } catch (error) {
     console.error("Error validating image:", error);
-    // If AI fails, we default to conservative 'false' or allow it? 
-    // For safety, let's default to false if we can't verify.
     return false;
   }
 };
 
 export const generateBabyPet = async (imageFile: File, petName?: string, styleInstruction?: string): Promise<string> => {
-  // Fix: Initializing GoogleGenAI right before the API call as per guidelines
   const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
   const base64Data = await fileToBase64(imageFile);
   
-  // Calculate aspect ratio to maintain image shape
   const { width, height } = await getImageDimensions(imageFile);
   const ratio = width / height;
 
-  // Supported aspect ratios for gemini-2.5-flash-image
   const supportedRatios = [
     { label: "1:1", value: 1.0 },
-    { label: "3:4", value: 3/4 }, // 0.75
-    { label: "4:3", value: 4/3 }, // 1.333
-    { label: "9:16", value: 9/16 }, // 0.5625
-    { label: "16:9", value: 16/9 }, // 1.777
+    { label: "3:4", value: 3/4 },
+    { label: "4:3", value: 4/3 },
+    { label: "9:16", value: 9/16 },
+    { label: "16:9", value: 16/9 },
   ];
 
-  // Find the closest supported aspect ratio
   const closestRatio = supportedRatios.reduce((prev, curr) => {
     return Math.abs(curr.value - ratio) < Math.abs(prev.value - ratio) ? curr : prev;
   });
 
-  // Using gemini-2.5-flash-image for image editing/generation tasks
   const model = 'gemini-2.5-flash-image';
-
   const randomColor = getRandomPastelColor();
 
-  // Construct label instruction based on whether a name was provided
   const labelInstruction = petName && petName.trim().length > 0
     ? `TEXT BANNER REQUIREMENT:
 Every final baby image must include a decorative title ribbon.
-
 Content: "Baby ${petName}"
-
-Style:
-– A small ribbon or pennant flag graphic behind the text
-– Soft fabric or cardstock aesthetic
-– Slight shadowing for depth to separate it from the background
-– Elegant cursive script font (handwritten or calligraphic style)
-
-Placement:
-– Top center or top left of the image
-– CRITICAL: Never cover the pet’s face or eyes
-
-Color palette:
-– Ribbon: Neutral pastel or muted tone (e.g., ${randomColor}). The ribbon color must be darker than the text for readability.
-– Ribbon Text: Soft cream or white ink
-
-Design notes:
-– Ribbon edges should be slightly curved or folded
-– The ribbon should look like a high-quality physical scrapbooking element integrated into the scene.`
+Style: Small ribbon or pennant flag graphic behind text, soft fabric/cardstock aesthetic, slight shadowing, elegant cursive script font.
+Placement: Top center or top left, do not cover the pet’s face.
+Color palette: Ribbon: ${randomColor} (darker than text), Ribbon Text: Soft cream or white ink.`
     : `TEXT BANNER REQUIREMENT:
 Every final baby image must include a decorative title ribbon with the text "Baby".
 Style: Small ribbon/pennant, soft fabric look, elegant cursive script.
@@ -147,7 +118,7 @@ Placement: Top center or top left, do not cover face.
 Colors: Muted pastel ribbon with white/cream text.`;
        
   const additionalStyle = styleInstruction 
-    ? `STYLE VARIATION: ${styleInstruction} Ensure the result is distinctly different from a standard generation while maintaining the subject identity.`
+    ? `STYLE VARIATION: ${styleInstruction}`
     : "";
 
   try {
@@ -163,38 +134,30 @@ Colors: Muted pastel ribbon with white/cream text.`;
           },
           {
             text: `Step 1: STRICT QUALITY & CONTENT CHECK
-Before generating any image, analyze the input photo.
-
-1. ANIMAL DETECTION: Does the image contain a recognizable animal?
-   - If NO: Return exactly the text: "No animal detected in this image." and stop.
-
-2. CLARITY CHECK: Is the animal's face clear and in focus?
-   - CRITICAL: Portrait-mode blur is intentional. Ignore background blur when checking clarity. Judge sharpness only on the pet’s face, eyes, and nose.
-   - If the EYES or FACE are blurry, out of focus, or obscured: Do NOT generate the baby version.
-   - Instead, return EXACTLY this text explanation:
-     "Your photo is a bit too blurry for accurate transformation. Please upload a clearer image where your pet’s face is in focus so we can create a realistic Baby version."
+Analyze the input photo. Ensure it contains a recognizable animal and is clear.
 
 Step 2: GENERATION (Only if Step 1 passes)
-TASK: Generate a PHOTOREALISTIC image of this specific animal as a baby (puppy/kitten). The result must look like an actual photograph, not a cartoon or illustration.
+TASK: Transform this pet into an adorable baby version with these CRITICAL specifications. The transformation should be DRAMATIC and obvious.
 
-CRITICAL REQUIREMENTS:
-- Photorealistic style only - must look like a real photograph
-- Natural fur texture with realistic detail
-- Real camera photo quality, not CGI or cartoon
-- Natural lighting and shadows
-- Authentic puppy/kitten proportions and features (approx 2-6 weeks old)
-- Keep it looking like a real animal photo you'd take with a phone camera
-- Preserve the exact coloring and markings from the original photo
-- Match the background and environment from the original photo
-- NO cartoon style, NO illustration style, NO anime style
-- NO overly smoothed or artificial features
-- Must look indistinguishable from a real photograph
+PHYSICAL PROPORTIONS (MOST IMPORTANT):
+- Make the animal SIGNIFICANTLY smaller and younger-looking (Target age: 4-8 weeks).
+- MUCH rounder, pudgier body with visible baby fat.
+- Head should be PROPORTIONALLY LARGER relative to body (large head-to-body ratio).
+- Eyes should be SIGNIFICANTLY LARGER and rounder relative to face size.
+- Shorter, stubbier legs that look like a very young animal.
 
-IDENTITY PRESERVATION (MARKINGS) - HIGHEST PRIORITY:
-- You MUST COPY the EXACT color distribution and fur patterns from the original image.
-- PAY ATTENTION to ASYMMETRY. If the original cat has a black patch over the left eye but not the right, the baby MUST have that exact same asymmetric patch.
-- Do NOT use generic "breed standard" markings.
-- MAP THE TEXTURE: The markings on the baby's face must match the markings on the adult's face 1:1.
+FACIAL FEATURES:
+- Face must be rounder and fuller with chubby cheeks.
+- Snout/muzzle should be MUCH shorter and more button-like.
+- Ears should be smaller and/or floppier if appropriate for the species.
+- Overall more innocent, wide-eyed baby expression.
+
+TEXTURE AND DETAILS:
+- Photorealistic style - must look like a real photograph, NOT a cartoon or CGI.
+- Natural, softer, fluffier fur texture typical of baby animals.
+- Natural lighting and shadows matching the original photo's environment.
+- Preserve the exact coloring, markings, and distinctive patterns from the original photo.
+- MAP THE IDENTITY: If the original has a specific patch or eye color, the baby MUST have that exact same trait.
 
 ${additionalStyle}
 
@@ -212,29 +175,20 @@ Add a small, subtle text watermark in the bottom right corner that reads 'Create
       }
     });
 
-    // Extract image from response
     const parts = response.candidates?.[0]?.content?.parts;
     
     if (!parts) {
       throw new Error("No content generated from Gemini.");
     }
 
-    // Check for image part
     const imagePart = parts.find(p => p.inlineData);
     if (imagePart && imagePart.inlineData && imagePart.inlineData.data) {
         return `data:image/png;base64,${imagePart.inlineData.data}`;
     }
 
-    // Fallback: Check if it generated text explaining why it failed (safety, blurriness, etc)
     const textPart = parts.find(p => p.text);
     if (textPart && textPart.text) {
-        const message = textPart.text;
-        // Check for specific rejection messages
-        if (message.includes("Your photo is a bit too blurry") || message.includes("No animal detected")) {
-             throw new Error(message);
-        }
-        console.warn("Gemini returned text instead of image:", message);
-        throw new Error("The model could not generate an image. It might have been blocked by safety settings or the prompt was interpreted as text-only.");
+        throw new Error(textPart.text);
     }
 
     throw new Error("No image data found in the response.");
