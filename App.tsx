@@ -7,6 +7,7 @@ import { TermsPage, PrivacyPage, FAQPage, ContactPage, AboutPage } from './compo
 import { GalleryPage } from './components/Gallery';
 import { Showcase } from './components/Examples';
 import { AdminDashboard } from './components/Admin';
+import { BlogPage, BlogPostPage } from './components/Blog';
 import { generateBabyPet } from './services/geminiService';
 import type { UploadedImage, TransformationResult } from './types';
 import { MagicIcon, CameraIcon, UploadIcon, ShareIcon } from './components/Icons';
@@ -20,7 +21,29 @@ interface QueueItem {
   styleVariant?: string;
 }
 
-type ViewState = 'home' | 'terms' | 'privacy' | 'faq' | 'contact' | 'about' | 'gallery' | 'admin';
+type ViewState = 'home' | 'terms' | 'privacy' | 'faq' | 'contact' | 'about' | 'gallery' | 'admin' | 'blog' | 'blog-post';
+
+const HeroSection = () => (
+  <section className="w-full max-w-5xl mx-auto px-6 py-16 animate-fade-in text-center border-b border-brand-100">
+    <h2 className="font-display text-4xl md:text-5xl font-black text-gray-900 mb-6 leading-tight">
+      Transform Your Pet Into Their Adorable Baby Self
+    </h2>
+    <p className="text-xl md:text-2xl text-brand-500 font-bold mb-8">
+      Ever wondered what your furry friend looked like as a tiny baby? Our AI-powered tool brings that moment to life.
+    </p>
+    <div className="space-y-6 text-lg text-gray-600 leading-relaxed text-left md:text-center max-w-4xl mx-auto">
+      <p>
+        Whether you adopted your dog as an adult, rescued your cat when they were already grown, or simply missed those precious early weeks, BabyPets.ai gives you a glimpse into the past you never got to see. Using advanced artificial intelligence technology powered by Google's Gemini, we analyze your pet's unique features - from their facial structure and fur patterns to their distinctive markings - and transform them into the impossibly cute baby version they once were.
+      </p>
+      <p>
+        The magic happens in seconds. Simply upload a clear photo of your beloved companion, and watch as our AI works its transformation magic. Within moments, you'll have a heartwarming baby photo that captures your pet's essence while adding that irresistible puppy, kitten, or baby animal charm that melts hearts everywhere. It's perfect for sharing on social media, creating personalized gifts, or simply treasuring as a digital keepsake of what might have been.
+      </p>
+      <p>
+        Best of all, BabyPets.ai is completely free to use with no account required. We believe everyone should experience the joy of seeing their pet as a baby without barriers or costs. Your privacy matters to us too - we process images securely and don't permanently store your photos. Join thousands of pet lovers who've discovered the delight of seeing their furry friends as the babies they once were.
+      </p>
+    </div>
+  </section>
+);
 
 const ContentSections = () => {
   return (
@@ -124,9 +147,15 @@ function App() {
   const [currentView, setCurrentView] = useState<ViewState>(() => {
     if (typeof window === 'undefined') return 'home';
     const path = window.location.pathname.replace('/', '');
-    const validViews: ViewState[] = ['terms', 'privacy', 'faq', 'contact', 'about', 'gallery', 'admin'];
+    if (path.startsWith('blog/')) return 'blog-post';
+    const validViews: ViewState[] = ['terms', 'privacy', 'faq', 'contact', 'about', 'gallery', 'admin', 'blog'];
     return (validViews.includes(path as ViewState) ? path : 'home') as ViewState;
   });
+  const [blogSlug, setBlogSlug] = useState<string>(() => {
+    const path = window.location.pathname;
+    return path.startsWith('/blog/') ? path.replace('/blog/', '') : '';
+  });
+  
   const [uploads, setUploads] = useState<UploadedImage[]>([]);
   const [results, setResults] = useState<Record<string, TransformationResult>>({});
   const [queue, setQueue] = useState<QueueItem[]>([]);
@@ -151,9 +180,10 @@ function App() {
     });
   }, []);
 
-  const handleNavigate = useCallback((view: ViewState) => {
+  const handleNavigate = useCallback((view: ViewState, slug?: string) => {
     setCurrentView(view);
-    const url = view === 'home' ? '/' : `/${view}`;
+    if (slug) setBlogSlug(slug);
+    const url = view === 'home' ? '/' : view === 'blog-post' ? `/blog/${slug}` : `/${view}`;
     window.history.pushState({}, '', url);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
@@ -161,8 +191,13 @@ function App() {
   useEffect(() => {
     const handlePopState = () => {
       const path = window.location.pathname.replace('/', '');
-      const validViews: ViewState[] = ['terms', 'privacy', 'faq', 'contact', 'about', 'gallery', 'admin'];
-      setCurrentView((validViews.includes(path as ViewState) ? path : 'home') as ViewState);
+      if (path.startsWith('blog/')) {
+        setCurrentView('blog-post');
+        setBlogSlug(path.replace('blog/', ''));
+      } else {
+        const validViews: ViewState[] = ['terms', 'privacy', 'faq', 'contact', 'about', 'gallery', 'admin', 'blog'];
+        setCurrentView((validViews.includes(path as ViewState) ? path : 'home') as ViewState);
+      }
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -247,11 +282,16 @@ function App() {
     if (currentView === 'about') return <AboutPage />;
     if (currentView === 'gallery') return <GalleryPage onNavigate={handleNavigate} />;
     if (currentView === 'admin') return <AdminDashboard />;
+    if (currentView === 'blog') return <BlogPage onNavigate={handleNavigate} />;
+    if (currentView === 'blog-post') return <BlogPostPage slug={blogSlug} />;
 
     return (
       <div className="flex-1 w-full flex flex-col">
-         {/* Top Section: Upload Area */}
-         <div id="uploader-section" className="w-full max-w-7xl mx-auto px-4 py-16 flex flex-col items-center justify-center pt-24">
+         {/* NEW Hero Section */}
+         <HeroSection />
+
+         {/* Upload Area */}
+         <div id="uploader-section" className="w-full max-w-7xl mx-auto px-4 py-16 flex flex-col items-center justify-center">
             <h1 className="font-display text-4xl md:text-6xl font-black text-gray-900 mb-4 text-center leading-tight">
                See Your Pet as a <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">Baby Again</span>
             </h1>
@@ -304,7 +344,7 @@ function App() {
             <Showcase />
          </div>
 
-         {/* Bottom Section: Simple, Clean Content Sections */}
+         {/* Bottom Sections: FAQ, Tips, etc. */}
          <ContentSections />
       </div>
     );
@@ -323,6 +363,12 @@ function App() {
               className={`font-display font-bold transition-colors ${currentView === 'gallery' ? 'text-pastel-pink' : 'text-gray-700 hover:text-pastel-pink'}`}
             >
               Gallery
+            </button>
+            <button 
+              onClick={() => handleNavigate('blog')} 
+              className={`font-display font-bold transition-colors ${currentView === 'blog' ? 'text-pastel-pink' : 'text-gray-700 hover:text-pastel-pink'}`}
+            >
+              Blog
             </button>
           </nav>
         </div>

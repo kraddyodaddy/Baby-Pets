@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface FooterProps {
-  onNavigate: (view: any) => void;
+  onNavigate: (view: any, slug?: string) => void;
   currentView: string;
 }
 
@@ -24,6 +24,9 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, currentView }) => {
         <nav className="flex flex-wrap justify-center gap-6 text-sm order-1 md:order-2">
           <button onClick={() => onNavigate('gallery')} className={getLinkClass('gallery')}>
             Gallery
+          </button>
+          <button onClick={() => onNavigate('blog')} className={getLinkClass('blog')}>
+            Blog
           </button>
           <button onClick={() => onNavigate('about')} className={getLinkClass('about')}>
             About Us
