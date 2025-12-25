@@ -1,6 +1,19 @@
 {
   "cleanUrls": false,
   "trailingSlash": false,
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "has": [
+        {
+          "type": "host",
+          "value": "babypets.ai"
+        }
+      ],
+      "destination": "https://www.babypets.ai/$1",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/ads.txt",

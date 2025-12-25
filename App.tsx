@@ -203,6 +203,26 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
+  // SEO: Update canonical tag dynamically
+  useEffect(() => {
+    let canonicalUrl = 'https://www.babypets.ai/';
+    if (currentView !== 'home') {
+      if (currentView === 'blog-post' && blogSlug) {
+        canonicalUrl += `blog/${blogSlug}`;
+      } else {
+        canonicalUrl += currentView;
+      }
+    }
+    
+    let link = document.querySelector("link[rel='canonical']");
+    if (!link) {
+      link = document.createElement('link');
+      link.setAttribute('rel', 'canonical');
+      document.head.appendChild(link);
+    }
+    link.setAttribute('href', canonicalUrl);
+  }, [currentView, blogSlug]);
+
   useEffect(() => {
     if (queue.length === 0 || activeRequests >= CONCURRENCY_LIMIT) return;
     const itemToProcess = queue[0];
