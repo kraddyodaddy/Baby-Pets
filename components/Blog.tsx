@@ -8,7 +8,7 @@ export interface BlogPost {
   image: string;
 }
 
-const BLOG_POSTS: BlogPost[] = [
+export const BLOG_POSTS: BlogPost[] = [
   {
     slug: 'ai-pet-transformation-science',
     title: 'The Science Behind Pet Baby Transformations: How AI Sees Your Pet',
@@ -128,9 +128,12 @@ const BLOG_POSTS: BlogPost[] = [
 export const BlogPage = ({ onNavigate }: { onNavigate: (view: any, slug?: string) => void }) => {
   return (
     <div className="max-w-5xl mx-auto px-6 py-16 animate-fade-in">
-      <h1 className="font-display text-4xl md:text-5xl font-black text-gray-900 mb-12 border-b border-brand-100 pb-6">
-        The BabyPets Blog
-      </h1>
+      <header className="mb-12 border-b border-brand-100 pb-6">
+        <h1 className="font-display text-4xl md:text-5xl font-black text-gray-900 mb-4">
+          The BabyPets Blog
+        </h1>
+        <p className="text-xl text-gray-600">Expert tips on pet care, photography, and AI technology.</p>
+      </header>
       
       <div className="grid md:grid-cols-2 gap-12">
         {BLOG_POSTS.map((post) => (
@@ -160,11 +163,19 @@ export const BlogPage = ({ onNavigate }: { onNavigate: (view: any, slug?: string
           </article>
         ))}
       </div>
+      
+      <div className="mt-20 p-8 bg-brand-50 rounded-[2rem] border border-brand-100 text-center">
+         <h3 className="font-display text-2xl font-bold text-gray-800 mb-4">Ready to see the magic yourself?</h3>
+         <p className="text-gray-600 mb-6">Transform your pet into an adorable baby version in seconds.</p>
+         <button onClick={() => onNavigate('home')} className="bg-brand-500 text-white font-bold py-3 px-8 rounded-full shadow-lg hover:scale-105 transition-all">
+            Try BabyPets.ai Now
+         </button>
+      </div>
     </div>
   );
 };
 
-export const BlogPostPage = ({ slug }: { slug: string }) => {
+export const BlogPostPage = ({ slug, onNavigate }: { slug: string, onNavigate: (view: any) => void }) => {
   const post = BLOG_POSTS.find(p => p.slug === slug);
 
   if (!post) {
@@ -172,13 +183,17 @@ export const BlogPostPage = ({ slug }: { slug: string }) => {
       <div className="max-w-3xl mx-auto py-20 text-center">
         <h1 className="text-4xl font-bold mb-4">Post Not Found</h1>
         <p>Sorry, the blog post you are looking for does not exist.</p>
+        <button onClick={() => onNavigate('blog')} className="mt-8 text-brand-600 font-bold">Back to Blog</button>
       </div>
     );
   }
 
   return (
-    <div className="max-w-3xl mx-auto px-6 py-16 animate-fade-in">
+    <article className="max-w-3xl mx-auto px-6 py-16 animate-fade-in">
       <header className="mb-12">
+        <button onClick={() => onNavigate('blog')} className="text-brand-600 font-bold mb-6 flex items-center gap-2 hover:-translate-x-1 transition-transform">
+          ← Back to Blog
+        </button>
         <h1 className="font-display text-4xl md:text-5xl font-black text-gray-900 mb-8 leading-tight">
           {post.title}
         </h1>
@@ -193,15 +208,13 @@ export const BlogPostPage = ({ slug }: { slug: string }) => {
         {post.content}
       </div>
 
-      <div className="mt-16 pt-8 border-t border-brand-100">
-        <h3 className="font-display text-xl font-bold mb-4">Share this article</h3>
-        <div className="flex gap-4">
-           {/* Placeholder for social sharing buttons */}
-           <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-brand-50 transition-colors cursor-pointer">FB</div>
-           <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-brand-50 transition-colors cursor-pointer">TW</div>
-           <div className="w-10 h-10 bg-gray-100 rounded-full flex items-center justify-center hover:bg-brand-50 transition-colors cursor-pointer">LI</div>
-        </div>
+      <div className="mt-16 pt-12 border-t border-brand-100 flex flex-col items-center">
+        <h3 className="font-display text-2xl font-bold text-gray-800 mb-4">Loved this article?</h3>
+        <p className="text-gray-600 mb-8 text-center">Experience the AI transformation mentioned in this post by uploading your own pet photo.</p>
+        <button onClick={() => onNavigate('home')} className="bg-gradient-to-r from-pink-500 to-purple-500 text-white font-black py-4 px-12 rounded-full shadow-xl hover:scale-105 transition-all active:scale-95">
+          Transform Your Pet
+        </button>
       </div>
-    </div>
+    </article>
   );
 };

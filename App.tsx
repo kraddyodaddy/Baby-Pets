@@ -7,10 +7,9 @@ import { TermsPage, PrivacyPage, FAQPage, ContactPage, AboutPage } from './compo
 import { GalleryPage } from './components/Gallery';
 import { Showcase } from './components/Examples';
 import { AdminDashboard } from './components/Admin';
-import { BlogPage, BlogPostPage } from './components/Blog';
+import { BlogPage, BlogPostPage, BLOG_POSTS } from './components/Blog';
 import { generateBabyPet } from './services/geminiService';
 import type { UploadedImage, TransformationResult } from './types';
-import { MagicIcon, CameraIcon, UploadIcon, ShareIcon } from './components/Icons';
 
 const MAX_DAILY_GENERATIONS = 10;
 const MAX_UPLOADS = 1;
@@ -45,7 +44,8 @@ const HeroSection = () => (
   </section>
 );
 
-const ContentSections = () => {
+// Added ViewState and slug support to onNavigate prop type to fix "Expected 1 arguments, but got 2" errors
+const ContentSections = ({ onNavigate }: { onNavigate: (view: ViewState, slug?: string) => void }) => {
   return (
     <div className="w-full max-w-5xl mx-auto px-6 py-16 animate-fade-in-up space-y-20 border-t border-brand-100 mt-16">
       {/* How It Works Section */}
@@ -58,22 +58,22 @@ const ContentSections = () => {
           </div>
           <div className="space-y-4">
             <h3 className="font-display text-xl font-bold text-gray-700">2. AI Transformation Magic</h3>
-            <p className="text-gray-600 leading-relaxed">Our advanced AI technology analyzes your pet's features including facial structure, fur patterns, coloring, and unique characteristics, then transforms these into a baby version.</p>
+            <p className="text-gray-600 leading-relaxed">Our advanced AI technology analyzes your pet's features including facial structure, fur patterns, coloring, and unique characteristics, then transforms these into a baby version. Learn more about the <button onClick={() => onNavigate('blog-post', 'ai-pet-transformation-science')} className="text-brand-600 hover:underline font-bold">science behind it</button>.</p>
           </div>
           <div className="space-y-4">
             <h3 className="font-display text-xl font-bold text-gray-700">3. Download and Share</h3>
-            <p className="text-gray-600 leading-relaxed">Within seconds, your transformed baby pet photo is ready! Download it in high quality and share it on social media.</p>
+            <p className="text-gray-600 leading-relaxed">Within seconds, your transformed baby pet photo is ready! Download it in high quality and share it on social media. Check our <button onClick={() => onNavigate('blog-post', 'sharing-pet-photos-social-media')} className="text-brand-600 hover:underline font-bold">social media guide</button> for better reach.</p>
           </div>
         </div>
       </section>
 
       {/* Tips Section */}
       <section id="tips-section" className="space-y-8">
-        <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-800">Tips for Best Results</h2>
+        <h2 className="font-display text-3xl md:text-4xl font-bold text-gray-800 text-center">Tips for Best Results</h2>
         <div className="grid md:grid-cols-2 gap-8">
           <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
             <h4 className="font-bold text-gray-800 mb-2">Choose Clear, Front-Facing Photos</h4>
-            <p className="text-gray-600">The AI works best when it can clearly see your pet's face.</p>
+            <p className="text-gray-600">The AI works best when it can clearly see your pet's face. Read our <button onClick={() => onNavigate('blog-post', 'perfect-pet-photo-tips')} className="text-brand-600 hover:underline font-bold">photo tips</button>.</p>
           </div>
           <div className="p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
             <h4 className="font-bold text-gray-800 mb-2">Ensure Good Lighting</h4>
@@ -97,22 +97,22 @@ const ContentSections = () => {
           <div className="text-center p-4">
             <div className="text-3xl mb-3">📸</div>
             <h4 className="font-bold text-gray-800 mb-2">Instant Nostalgia</h4>
-            <p className="text-gray-600 text-sm">See what your pet looked like as a baby</p>
+            <p className="text-gray-600 text-sm">See what your pet looked like as a baby. Perfect for rescues!</p>
           </div>
           <div className="text-center p-4">
             <div className="text-3xl mb-3">📱</div>
-            <h4 className="font-bold text-gray-800 mb-2">Perfect for Social Media</h4>
-            <p className="text-gray-600 text-sm">Baby animal content is universally loved online</p>
+            <h4 className="font-bold text-gray-800 mb-2">Perfect for Socials</h4>
+            <p className="text-gray-600 text-sm">Baby animal content is universally loved online.</p>
           </div>
           <div className="text-center p-4">
             <div className="text-3xl mb-3">✨</div>
-            <h4 className="font-bold text-gray-800 mb-2">Free and Easy to Use</h4>
-            <p className="text-gray-600 text-sm">No sign-up required, completely free</p>
+            <h4 className="font-bold text-gray-800 mb-2">Free and Easy</h4>
+            <p className="text-gray-600 text-sm">No sign-up required, completely free AI tool.</p>
           </div>
           <div className="text-center p-4">
             <div className="text-3xl mb-3">🔒</div>
             <h4 className="font-bold text-gray-800 mb-2">Privacy Focused</h4>
-            <p className="text-gray-600 text-sm">Your pet photos are processed securely</p>
+            <p className="text-gray-600 text-sm">Your pet photos are processed securely.</p>
           </div>
         </div>
       </section>
@@ -123,19 +123,19 @@ const ContentSections = () => {
         <div className="space-y-6">
           <div className="border-b border-gray-100 pb-6">
             <h4 className="font-bold text-gray-800 mb-2">Q: What types of pets work best?</h4>
-            <p className="text-gray-600">A: BabyPets.ai works with dogs, cats, rabbits, guinea pigs, and most common household pets.</p>
+            <p className="text-gray-600">A: BabyPets.ai works best with dogs and cats, but can transform rabbits and other pets too!</p>
           </div>
           <div className="border-b border-gray-100 pb-6">
-            <h4 className="font-bold text-gray-800 mb-2">Q: How long does the transformation take?</h4>
-            <p className="text-gray-600">A: Most transformations complete in 10-30 seconds.</p>
+            <h4 className="font-bold text-gray-800 mb-2">Q: How long does it take?</h4>
+            <p className="text-gray-600">A: Most transformations complete in 10-20 seconds.</p>
           </div>
           <div className="border-b border-gray-100 pb-6">
-            <h4 className="font-bold text-gray-800 mb-2">Q: Is my pet photo stored or shared?</h4>
-            <p className="text-gray-600">A: We process your images securely and don't permanently store uploaded photos.</p>
+            <h4 className="font-bold text-gray-800 mb-2">Q: Is it safe?</h4>
+            <p className="text-gray-600">A: Yes, we prioritize your privacy. Read our <button onClick={() => onNavigate('privacy')} className="text-brand-600 hover:underline">Privacy Policy</button> for more.</p>
           </div>
           <div>
-            <h4 className="font-bold text-gray-800 mb-2">Q: Do I need to create an account?</h4>
-            <p className="text-gray-600">A: No account needed! BabyPets.ai is completely free and requires no sign-up.</p>
+            <h4 className="font-bold text-gray-800 mb-2">Q: More questions?</h4>
+            <p className="text-gray-600">Check our full <button onClick={() => onNavigate('faq')} className="text-brand-600 hover:underline">FAQ page</button>.</p>
           </div>
         </div>
       </section>
@@ -203,24 +203,80 @@ function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // SEO: Update canonical tag dynamically
+  // SEO & Metadata Dynamic Update
   useEffect(() => {
-    let canonicalUrl = 'https://www.babypets.ai/';
-    if (currentView !== 'home') {
-      if (currentView === 'blog-post' && blogSlug) {
-        canonicalUrl += `blog/${blogSlug}`;
-      } else {
-        canonicalUrl += currentView;
+    let title = "BabyPets.ai - Transform Your Pet Into an Adorable Baby | Free AI Pet Creator";
+    let description = "See what your pet looked like as a baby! Free AI-powered tool transforms photos of your dog, cat, or other pets into adorable baby versions. No sign-up required.";
+    let canonicalPath = "";
+    let structuredData: any = null;
+
+    if (currentView === 'home') {
+      canonicalPath = "";
+      structuredData = {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "BabyPets.ai",
+        "url": "https://www.babypets.ai",
+        "description": "Free AI-powered tool to transform pet photos into baby versions",
+        "applicationCategory": "MultimediaApplication",
+        "operatingSystem": "Any",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "USD"
+        }
+      };
+    } else if (currentView === 'gallery') {
+      title = "Community Pet Gallery - BabyPets.ai Transformations";
+      description = "Explore the cuteness of recently transformed pets from our community. See puppies, kittens, and more!";
+      canonicalPath = "gallery";
+    } else if (currentView === 'blog') {
+      title = "Pet Care Tips & AI Technology Blog | BabyPets.ai";
+      description = "Expert tips on pet photography, AI technology, pet care, and social media strategies for pet lovers.";
+      canonicalPath = "blog";
+    } else if (currentView === 'blog-post') {
+      const post = BLOG_POSTS.find(p => p.slug === blogSlug);
+      if (post) {
+        title = `${post.title} | BabyPets.ai Blog`;
+        description = post.excerpt;
+        canonicalPath = `blog/${blogSlug}`;
+        structuredData = {
+          "@context": "https://schema.org",
+          "@type": "BlogPosting",
+          "headline": post.title,
+          "description": post.excerpt,
+          "url": `https://www.babypets.ai/blog/${blogSlug}`,
+          "datePublished": "2024-03-21",
+          "author": { "@type": "Organization", "name": "BabyPets.ai" },
+          "publisher": { "@type": "Organization", "name": "BabyPets.ai" }
+        };
       }
+    } else {
+      title = `${currentView.charAt(0).toUpperCase() + currentView.slice(1)} | BabyPets.ai`;
+      canonicalPath = currentView;
     }
+
+    const fullCanonical = `https://www.babypets.ai/${canonicalPath}`;
     
-    let link = document.querySelector("link[rel='canonical']");
-    if (!link) {
-      link = document.createElement('link');
-      link.setAttribute('rel', 'canonical');
-      document.head.appendChild(link);
+    // Update Document
+    document.title = title;
+    document.querySelector('meta[name="description"]')?.setAttribute('content', description);
+    document.querySelector('link[rel="canonical"]')?.setAttribute('href', fullCanonical);
+    
+    // Update OG
+    document.querySelector('meta[property="og:title"]')?.setAttribute('content', title);
+    document.querySelector('meta[property="og:description"]')?.setAttribute('content', description);
+    document.querySelector('meta[property="og:url"]')?.setAttribute('content', fullCanonical);
+    
+    // Update Twitter
+    document.querySelector('meta[name="twitter:title"]')?.setAttribute('content', title);
+    document.querySelector('meta[name="twitter:description"]')?.setAttribute('content', description);
+    
+    // Update Structured Data
+    const sdTag = document.getElementById('structured-data');
+    if (sdTag && structuredData) {
+      sdTag.textContent = JSON.stringify(structuredData);
     }
-    link.setAttribute('href', canonicalUrl);
   }, [currentView, blogSlug]);
 
   useEffect(() => {
@@ -303,15 +359,15 @@ function App() {
     if (currentView === 'gallery') return <GalleryPage onNavigate={handleNavigate} />;
     if (currentView === 'admin') return <AdminDashboard />;
     if (currentView === 'blog') return <BlogPage onNavigate={handleNavigate} />;
-    if (currentView === 'blog-post') return <BlogPostPage slug={blogSlug} />;
+    if (currentView === 'blog-post') return <BlogPostPage slug={blogSlug} onNavigate={handleNavigate} />;
 
     return (
-      <div className="flex-1 w-full flex flex-col">
+      <main className="flex-1 w-full flex flex-col">
          {/* NEW Hero Section */}
          <HeroSection />
 
          {/* Upload Area */}
-         <div id="uploader-section" className="w-full max-w-7xl mx-auto px-4 py-16 flex flex-col items-center justify-center">
+         <section id="uploader-section" className="w-full max-w-7xl mx-auto px-4 py-16 flex flex-col items-center justify-center">
             <h1 className="font-display text-4xl md:text-6xl font-black text-gray-900 mb-4 text-center leading-tight">
                See Your Pet as a <span className="text-transparent bg-clip-text bg-gradient-to-r from-pink-500 to-purple-500">Baby Again</span>
             </h1>
@@ -357,16 +413,16 @@ function App() {
                  </div>
               </div>
             )}
-         </div>
+         </section>
 
          {/* Middle Section: Gallery (Showcase) */}
-         <div id="gallery-section" className="bg-white/50 py-12">
+         <section id="gallery-section" className="bg-white/50 py-12">
             <Showcase />
-         </div>
+         </section>
 
          {/* Bottom Sections: FAQ, Tips, etc. */}
-         <ContentSections />
-      </div>
+         <ContentSections onNavigate={handleNavigate} />
+      </main>
     );
   };
 
@@ -393,7 +449,7 @@ function App() {
           </nav>
         </div>
       </header>
-      <main className="flex-1">{renderMainContent()}</main>
+      {renderMainContent()}
       <Footer onNavigate={handleNavigate} currentView={currentView} />
     </div>
   );
