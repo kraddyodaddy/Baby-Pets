@@ -1,9 +1,9 @@
 {
-  "cleanUrls": false,
+  "cleanUrls": true,
   "trailingSlash": false,
   "redirects": [
     {
-      "source": "/(.*)",
+      "source": "/((?!sitemap\\.xml|robots\\.txt|ads\\.txt).*)",
       "has": [
         {
           "type": "host",
@@ -15,18 +15,6 @@
     }
   ],
   "rewrites": [
-    {
-      "source": "/ads.txt",
-      "destination": "/ads.txt"
-    },
-    {
-      "source": "/sitemap.xml",
-      "destination": "/sitemap.xml"
-    },
-    {
-      "source": "/robots.txt",
-      "destination": "/robots.txt"
-    },
     {
       "source": "/((?!ads\\.txt|sitemap\\.xml|robots\\.txt|.*\\..+).*)",
       "destination": "/index.html"
